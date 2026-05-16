@@ -1,16 +1,23 @@
 # 08 - Reseller Bible
 
-This file defines the reseller system for TV Project Platform.
+This file defines the reseller system, reseller permissions, reseller customer ownership, credit rules, transaction requirements, sales rules, dashboard behavior, and security boundaries for TV Project Platform.
 
 The reseller system must support licensed player subscriptions only.
 
-Resellers must not sell channels, streams, playlists, or content packages through this platform.
+Resellers must not sell channels, streams, playlists, content packages, or broadcast access through this platform.
 
 ## Product Boundary
 
 TV Project Platform is a Licensed IPTV Player Platform.
 
-Resellers may manage software customers, player subscriptions, devices, and platform credit.
+Resellers may manage:
+
+- Own customers
+- Own customer software subscriptions
+- Own customer device/license status
+- Own credit balance
+- Own credit transactions
+- Own sales history
 
 Resellers must not use this platform as:
 
@@ -53,6 +60,8 @@ A reseller must not:
 - Sell playlist provider access
 - Manage stream sources
 - Manage channel lists
+- Manage content catalogs
+- Use the platform as a content provider
 
 ## Reseller Role
 
@@ -85,6 +94,8 @@ Recommended Reseller model fields:
 - commission_rate
 - created_at
 - updated_at
+- suspended_at
+- disabled_at
 
 Possible statuses:
 
@@ -95,7 +106,9 @@ Possible statuses:
 Rules:
 
 - A disabled reseller cannot perform reseller operations.
-- A suspended reseller cannot create or extend customer subscriptions.
+- A suspended reseller cannot create customers.
+- A suspended reseller cannot use credit.
+- A suspended reseller cannot extend customer subscriptions.
 - Reseller account must be linked to a user account.
 - Reseller user email must be unique through the User model.
 
@@ -112,6 +125,7 @@ Rules:
 - Reseller can only view customers where reseller_id matches their reseller account.
 - Reseller can only edit customers where reseller_id matches their reseller account.
 - Reseller can only create subscriptions for their own customers.
+- Reseller can only extend subscriptions for their own customers.
 - Reseller can only view devices for their own customers.
 - Reseller cannot transfer customers to another reseller unless admin approves.
 
@@ -169,7 +183,9 @@ Rules:
 - Credit add must update reseller balance.
 - Credit add must be audit logged.
 - Amount must be positive.
-- Backend must calculate balance_before and balance_after.
+- Backend must calculate balance_before.
+- Backend must calculate balance_after.
+- Frontend balance values must not be trusted.
 
 Example:
 
@@ -230,7 +246,7 @@ Rules:
 - Manual adjustment must create a transaction.
 - Manual adjustment must include a note.
 - Manual adjustment must be audit logged.
-- Backend must prevent invalid negative balance unless explicitly allowed by business rules.
+- Backend must prevent invalid negative balance unless explicitly allowed by approved business rules.
 - Manual adjustment should be rare.
 
 Example:
@@ -251,6 +267,7 @@ Rules:
 - Reversal must not delete the original transaction.
 - Reversal must be audit logged.
 - Backend must calculate resulting balance.
+- Reversal must not silently modify historical transaction data.
 
 ## Reseller Credit Transaction Rules
 
@@ -287,6 +304,10 @@ Rules:
 - Subscription must be created or extended inside the same transaction.
 - Audit log should be created.
 
+Subscriptions represent software/player access only.
+
+Subscriptions must not represent channel access, stream access, playlist access, or content packages.
+
 ## Subscription Extension
 
 A reseller may extend a subscription for their own customer.
@@ -300,6 +321,7 @@ Rules:
 - Backend must calculate credit cost.
 - Reseller must have enough credit.
 - Credit transaction and subscription update must happen together.
+- Extension must be audit logged.
 
 ## Reseller Customer Creation
 
@@ -337,6 +359,9 @@ Resellers must not:
 - Access unrelated customers
 - Modify payment provider records
 - Modify system plans
+- Manage channels
+- Manage streams
+- Manage playlists as backend-owned data
 
 ## Reseller Device Visibility
 
@@ -352,9 +377,12 @@ Visible device fields may include:
 - Activation date
 - Last seen date
 
-Resellers must not see sensitive app secrets.
+Resellers must not see:
 
-Resellers must not access devices from other resellers.
+- Sensitive app secrets
+- Playlist credentials
+- Other reseller devices
+- Other customer devices outside their ownership scope
 
 ## Reseller Dashboard
 
@@ -368,7 +396,9 @@ The reseller dashboard should show:
 - Recent sales
 - Recent customer activity
 
-Dashboard data must be scoped to the reseller.
+Dashboard data must be scoped to the logged-in reseller.
+
+Dashboard data must not include global platform totals unless explicitly allowed by admin.
 
 ## Reseller Sales History
 
@@ -384,7 +414,13 @@ Sales history may include:
 - Created date
 - Created by reseller user
 
-Sales history must not represent channel or stream sales.
+Sales history must not represent:
+
+- Channel sales
+- Stream sales
+- Playlist sales
+- Content package sales
+- IPTV package sales
 
 ## Reseller API Endpoints
 
@@ -463,7 +499,9 @@ If any step fails, rollback the transaction.
 Reseller actions that should be audit logged:
 
 - Admin creates reseller
+- Admin updates reseller
 - Admin disables reseller
+- Admin suspends reseller
 - Admin adds reseller credit
 - Admin adjusts reseller credit
 - Reseller creates customer
@@ -476,6 +514,10 @@ Reseller actions that should be audit logged:
 
 Audit logs must not contain sensitive data.
 
+Audit logs must not contain playlist credentials.
+
+Audit logs must not contain payment card data.
+
 ## Reseller Security
 
 Reseller security must protect against:
@@ -485,6 +527,7 @@ Reseller security must protect against:
 - Negative balance
 - Fake frontend prices
 - Fake plan durations
+- Fake credit costs
 - Unauthorized subscription extension
 - Unauthorized customer access
 - Unauthorized device access
@@ -506,6 +549,8 @@ Resellers must not manage:
 - Channels
 - Streams
 - Playlists as backend-owned data
+- Content catalogs
+- Broadcast infrastructure
 
 ## Reseller Status Effects
 
@@ -522,7 +567,7 @@ DISABLED:
 
 SUSPENDED:
 
-- May view limited account information.
+- May view limited account information if allowed.
 - Cannot create customers.
 - Cannot use credit.
 - Cannot extend subscriptions.
@@ -545,6 +590,7 @@ Rules:
 - Frontend must not send trusted cost.
 - Admin controls plan credit cost.
 - Plan must be active before reseller can use it.
+- Plan must represent software/player access only.
 
 ## Reseller Notifications
 
@@ -571,6 +617,8 @@ Future reseller reports may include:
 - Device activation summary
 
 Reports must be reseller-scoped.
+
+Reports must not include channel, stream, playlist, or content sales.
 
 ## MVP Reseller Scope
 
@@ -615,6 +663,52 @@ Do not add these reseller features:
 - CDN route management
 - Broadcast infrastructure management
 - Backend playlist provider tools
+- Content package sales
+- IPTV package sales with included channels
+
+## Reseller Testing Requirements
+
+Tests should verify:
+
+- Reseller can view own customers.
+- Reseller cannot view another reseller's customers.
+- Reseller can create own customers.
+- Reseller cannot create admin users.
+- Reseller can use credit for own customer subscription.
+- Reseller cannot use credit for another reseller's customer.
+- Credit use creates transaction.
+- Credit use updates balance.
+- Negative balance is prevented.
+- Frontend credit values are ignored.
+- Frontend plan cost is ignored.
+- Suspended reseller cannot use credit.
+- Disabled reseller cannot perform reseller operations.
+
+## Stable Project Bible Link
+
+This file is part of the stable project-bible tree:
+
+- 00-project-rules.md
+- 01-product-bible.md
+- 02-user-roles.md
+- 03-feature-list.md
+- 04-database-bible.md
+- 05-api-bible.md
+- 06-security-bible.md
+- 07-payment-bible.md
+- 08-reseller-bible.md
+- 09-ui-ux-bible.md
+- 10-app-integration.md
+- 11-marketing-bible.md
+- 12-devops-bible.md
+- 13-decision-log.md
+- 14-testing-bible.md
+- 15-support-bible.md
+- 16-release-bible.md
+
+Do not rename this file without approval.
+
+Do not create conflicting alternative reseller files.
 
 ## Final Rule
 
