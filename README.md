@@ -1,51 +1,80 @@
 # TV Project Platform
 
-TV Project Platform is a Licensed IPTV Player Platform management system.
+TV Project Platform is a Licensed IPTV Player Platform.
 
-This project is not an IPTV broadcast provider. It does not provide, host, relay, transcode, resell, or package TV streams or channel lists.
+This project is not an IPTV broadcast provider. It does not provide, host, relay, transcode, resell, package, or distribute TV streams, channels, CDN services, or playlist-provider services.
 
-The platform manages software access, subscriptions, device activation, reseller credits, payments, application version checks, remote configuration, and an optional web-to-device playlist/profile transfer bridge for user-owned playlist information.
+The backend exists only to manage software access, licensing, activation, payments, reseller operations, app configuration, and optional secure transfer flows for user-owned player profiles.
 
-## Core Scope
+## Project Decision
 
-The backend may manage:
+This repository is designed for a licensed player platform, not a content platform.
+
+The backend must never act as:
+
+- A broadcast provider
+- A stream host
+- A channel provider
+- A CDN
+- A relay
+- A transcoder
+- A playlist provider
+- A copyrighted content source
+- A source of truth for playlist data
+
+## Backend Scope
+
+The backend may manage only the following platform responsibilities:
 
 - User accounts
 - Subscriptions and licenses
 - Device activation
-- Payment status
+- Payments
 - Reseller and credit systems
 - App version checks
 - Remote configuration
-- Optional temporary encrypted playlist/profile transfer from a user's web panel to the user's own device
+- Optional web-to-device playlist/profile push bridge
 
-The backend must not:
+Anything related to providing live content, hosting streams, relaying streams, transcoding streams, selling channel lists, or maintaining playlist inventories is outside the backend scope.
 
-- Provide streams
-- Host streams
-- Sell channel lists
-- Operate as a CDN, relay, or transcoder
-- Become a playlist provider
-- Become a content source
-- Treat playlist data as the platform source of truth
+## Playlist Decision
 
-## Playlist Position
+The backend is not the playlist source of truth.
 
-Playlist information is primarily entered inside the player application.
+Playlist information is entered in the player application by default. The application stores playlist data on the device using encrypted local storage.
 
-The application should support multiple playlist profiles and store them on the device using encrypted local storage.
+The application must support multiple playlist profiles.
 
-A user may optionally send their own playlist/profile from the web panel to their own activated device. That flow is a temporary encrypted transfer bridge, not a hosted playlist service.
+A user may optionally send their own playlist/profile from the web panel to their own activated device. This flow must be designed only as a temporary encrypted transfer bridge.
+
+The bridge must not become:
+
+- Hosted playlist storage
+- A playlist marketplace
+- A shared playlist service
+- A channel catalog
+- A content distribution system
+- A backend-controlled playlist authority
 
 ## Technical Stack
 
 - pnpm monorepo
-- Next.js, React, TypeScript, Tailwind CSS for `apps/web`
-- NestJS, TypeScript, Prisma for `apps/api`
+- Next.js, React, TypeScript, and Tailwind CSS for `apps/web`
+- NestJS, TypeScript, and Prisma for `apps/api`
 - Shared types, constants, and validators in `packages/shared`
 - PostgreSQL
 - Redis
 - Docker Compose
+
+## Repository Map
+
+- `apps/web` — customer, reseller, and admin web interface
+- `apps/api` — backend API for accounts, licenses, devices, payments, reseller credits, app versions, and remote configuration
+- `packages/shared` — shared types, constants, and validators
+- `project-bible` — product, legal, architecture, and decision documentation
+- `docs` — developer and operational documentation
+- `infra` — infrastructure placeholders
+- `.github` — repository automation placeholders
 
 ## Getting Started
 
@@ -57,16 +86,10 @@ pnpm db:generate
 pnpm dev
 ```
 
-## Repository Map
-
-- `apps/web` — customer, reseller, and admin web interface
-- `apps/api` — backend API for accounts, licenses, devices, payments, reseller credits, app versions, and remote config
-- `packages/shared` — shared types, constants, and validators
-- `project-bible` — product, legal, architecture, and decision documentation
-- `docs` — developer and operational documentation
-- `infra` — infrastructure placeholders
-- `.github` — repository automation placeholders
-
-## Important
+## Security And Compliance Rules
 
 Do not commit production secrets, private keys, payment credentials, unauthorized content sources, channel lists, copyrighted media sources, or third-party playlist data.
+
+All environment variables must use placeholder values in example files.
+
+All playlist/profile transfer flows must be user-owned, temporary, encrypted, and device-targeted.
