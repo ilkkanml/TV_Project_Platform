@@ -1,8 +1,6 @@
 # AI Handoff
 
-This file explains how future assistants, coding agents, and new chats should continue the TV Project Platform.
-
-It is a project memory file.
+This file explains how future assistants and coding agents should continue the TV Project Platform.
 
 It must be read before making architectural or implementation decisions.
 
@@ -16,11 +14,21 @@ Main branch:
 
 - main
 
-## Current Reliability Warning
+## Current Phase
 
-Not every file in this repository is final.
+The project is in the foundation and documentation preparation phase.
 
-Some files may still be empty, placeholder-only, too short, or incorrectly formatted.
+The real application implementation has not started yet.
+
+Do not assume that the backend is complete.
+
+Do not assume that the frontend is complete.
+
+Do not assume that the database schema is final.
+
+Do not assume that the admin, reseller, or customer panels are implemented.
+
+## Reliable Project Memory
 
 At this stage, the most reliable project memory files are:
 
@@ -28,23 +36,9 @@ At this stage, the most reliable project memory files are:
 - PROJECT_STATE.md
 - AI_HANDOFF.md
 
-The project-bible and docs directories are planned, but not all files are complete yet.
+Some other files may still be empty, placeholder-only, incomplete, or incorrectly formatted.
 
-Future assistants should not assume that all existing files are finished.
-
-## Current Phase
-
-The project is in the foundation and documentation preparation phase.
-
-The real application implementation has not started yet.
-
-Do not assume the backend is complete.
-
-Do not assume the frontend is complete.
-
-Do not assume the database schema is final.
-
-Do not assume the admin, reseller, or customer panels are implemented.
+Future assistants must not treat every existing file as final.
 
 ## Product Identity
 
@@ -325,7 +319,7 @@ The following files have been manually fixed and verified as real multiline file
 - README.md
 - PROJECT_STATE.md
 
-Known verified line counts at the time of project memory preparation:
+Known verified line counts:
 
 - package.json: 36 lines
 - docker-compose.yml: 54 lines
@@ -355,7 +349,72 @@ Use this method for critical files:
 
 ## Raw GitHub Verification
 
-After changing a critical file, verify it with:
+After changing a critical file, verify it with this pattern:
 
-```bash
 curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_NAME | wc -l
+
+The result must not be 1 for multiline files.
+
+Markdown documentation files should generally have many readable lines.
+
+## New Chat Start Procedure
+
+When a new chat starts, the assistant should:
+
+1. Read README.md.
+2. Read PROJECT_STATE.md.
+3. Read AI_HANDOFF.md.
+4. Check ROADMAP.md.
+5. Check project-bible directory.
+6. Check docs directory.
+7. Continue from the current repository state.
+
+The assistant should not ask the same foundational questions again.
+
+The assistant should not redefine the product as an IPTV content provider.
+
+The assistant should not change the playlist storage decision without user approval.
+
+## Current Immediate Task List
+
+The current documentation priority is:
+
+1. Complete PROJECT_STATE.md.
+2. Complete AI_HANDOFF.md.
+3. Complete ROADMAP.md.
+4. Complete CHANGELOG.md.
+5. Complete SECURITY.md.
+6. Complete LEGAL_SCOPE.md.
+7. Complete project-bible files.
+8. Complete docs files.
+9. Start packages/shared foundation.
+10. Start apps/api foundation.
+11. Start apps/web foundation.
+
+## Do Not Change Without Approval
+
+Do not change these decisions without user approval:
+
+- Player-only product model
+- Backend is not a content provider
+- Backend is not playlist source of truth
+- Playlist credentials are stored locally in the app by default
+- Multi-profile app support
+- Optional temporary web-to-device playlist profile transfer
+- App-generated device ID as primary device identity
+- Reseller credit transactions
+- Role-based access control
+- No card data storage
+- No plain text passwords
+
+## Final Instruction
+
+Keep the project focused on licensed player access, subscriptions, devices, payments, resellers, and app configuration.
+
+Do not add content-provider features.
+
+Do not add stream-hosting features.
+
+Do not add channel-selling features.
+
+Do not make the backend the playlist authority.
