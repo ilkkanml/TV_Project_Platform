@@ -1,26 +1,46 @@
 # 05 - API Bible
 
-This file defines the planned API architecture for TV Project Platform.
+This file defines the planned API architecture, backend modules, endpoint groups, response format, authorization rules, app-facing APIs, and forbidden API areas for TV Project Platform.
 
 The API must support the licensed player platform model.
 
-The API must not provide streams, channels, content packages, playlist marketplace features, or backend playlist authority.
+The API must not become an IPTV provider, content provider, stream provider, channel seller, playlist provider, or broadcast backend.
 
 ## Product Boundary
 
 TV Project Platform is a Licensed IPTV Player Platform.
 
-The API is responsible for software access, accounts, subscriptions, licenses, devices, payments, reseller operations, app version control, remote config, and optional temporary playlist profile transfer.
+The API is responsible for:
 
-The API must not act as:
+- User accounts
+- Authentication
+- Role-based access control
+- Subscriptions
+- Player licenses
+- Device activation
+- Payments
+- Reseller operations
+- Reseller credit transactions
+- App version control
+- Remote configuration
+- Audit logs
+- Optional temporary playlist profile transfer
 
-- IPTV provider
-- Content provider
-- Channel provider
-- Stream provider
-- Playlist provider
-- CDN provider
-- Broadcast backend
+The API must not provide:
+
+- TV channels
+- Live streams
+- VOD streams
+- Stream URLs
+- Stream hosting
+- Stream relay
+- Stream transcoding
+- CDN stream delivery
+- Channel packages
+- Playlist marketplace data
+- Content catalogs
+- Broadcast schedules
+- Permanent playlist credential authority
 
 ## Planned API Stack
 
@@ -37,9 +57,7 @@ The planned backend stack is:
 - Global exception handling
 - Standard API response format
 
-## API Application Location
-
-The API app location is:
+API app location:
 
 - apps/api
 
@@ -75,8 +93,9 @@ The API must follow these principles:
 - Payment confirmations must be verified.
 - Reseller credit operations must be transaction-based.
 - Temporary playlist transfer payloads must expire.
+- API responses must not expose sensitive data.
 
-## Standard Response Format
+## Standard Success Response Format
 
 All successful API responses should follow a consistent format.
 
@@ -88,7 +107,7 @@ Suggested shape:
 - data
 - meta
 
-Example fields:
+Example:
 
 - success: true
 - code: OK
@@ -96,7 +115,7 @@ Example fields:
 - data: response payload
 - meta: pagination or extra metadata
 
-## Standard Error Format
+## Standard Error Response Format
 
 All API errors should follow a consistent format.
 
@@ -108,7 +127,7 @@ Suggested shape:
 - errors
 - request_id
 
-Example fields:
+Example:
 
 - success: false
 - code: VALIDATION_ERROR
@@ -138,9 +157,11 @@ Initial error codes:
 - MAINTENANCE_MODE
 - PAYMENT_FAILED
 - PAYMENT_NOT_VERIFIED
+- PAYMENT_ALREADY_PROCESSED
 - RESELLER_INSUFFICIENT_CREDIT
 - PLAYLIST_TRANSFER_EXPIRED
 - PLAYLIST_TRANSFER_NOT_FOUND
+- APP_VERSION_UNSUPPORTED
 
 ## Authentication
 
@@ -202,7 +223,7 @@ Every protected endpoint should validate:
 
 ## Role Guards
 
-The API should include role guards for:
+The API should include guards for:
 
 - Admin-only routes
 - Reseller-only routes
@@ -213,7 +234,30 @@ Reseller routes must also check reseller ownership.
 
 Customer routes must also check customer ownership.
 
-## User Module
+Role checks alone are not enough for reseller and customer records.
+
+## Request Context
+
+The API should track request context.
+
+Useful request context fields:
+
+- request ID
+- user ID
+- role
+- IP address
+- user agent
+- endpoint
+- method
+
+Request context helps:
+
+- Audit logging
+- Debugging
+- Security review
+- Support investigation
+
+## Users Module
 
 The Users module manages platform users.
 
@@ -238,16 +282,20 @@ Rules:
 - Customers can only manage their own account.
 - Resellers can only access allowed reseller-scoped records.
 - Password hashes must never be returned.
+- Users must not assign roles to themselves.
 
 ## Plans Module
 
-The Plans module manages software access plans.
+The Plans module manages software/player access plans.
 
-Plans represent software/player access.
+Plans represent software access.
 
-Plans do not represent channel packages.
+Plans do not represent:
 
-Plans do not represent stream access.
+- Channel packages
+- Stream access
+- Playlist provider access
+- Content packages
 
 Admin endpoints may include:
 
@@ -266,12 +314,14 @@ Rules:
 
 - Backend controls plan price.
 - Backend controls plan duration.
+- Backend controls device limits.
+- Backend controls reseller credit cost.
 - Frontend price and duration values must not be trusted.
 - Plans must not describe content access.
 
 ## Subscriptions Module
 
-The Subscriptions module manages software subscriptions.
+The Subscriptions module manages software/player subscriptions.
 
 Subscription endpoints may include:
 
@@ -280,27 +330,31 @@ Subscription endpoints may include:
 - POST /admin/subscriptions
 - PATCH /admin/subscriptions/:id/extend
 - PATCH /admin/subscriptions/:id/cancel
+- PATCH /admin/subscriptions/:id/suspend
 - GET /account/subscription
 - GET /reseller/customers/:customerId/subscription
 
 Rules:
 
-- Subscriptions are for software access only.
+- Subscriptions are for software/player access only.
 - Subscriptions are not for channel access.
+- Subscriptions are not for stream access.
 - Extension requires admin action, verified payment, or valid reseller credit operation.
 - Subscription changes should be audit logged.
+- Subscription dates must be calculated by backend.
 
 ## License Module
 
 The License module provides app-facing license validation.
 
-App-facing endpoints may include:
+App-facing endpoint may include:
 
 - GET /license/status
 
 License status should consider:
 
 - Authenticated user
+- User status
 - Device activation
 - Device status
 - Subscription status
@@ -321,12 +375,16 @@ Possible denial reasons:
 - LICENSE_INVALID
 - FORCE_UPDATE_REQUIRED
 - MAINTENANCE_MODE
+- USER_DISABLED
+- APP_VERSION_UNSUPPORTED
 
 Rules:
 
 - The backend is the license authority.
 - The app must not decide license validity alone.
 - License checks may be logged.
+- License responses must not include playlist credentials.
+- License responses must not include stream URLs.
 
 ## Devices Module
 
@@ -358,6 +416,30 @@ Rules:
 - Android ID is only a secondary signal.
 - Device activation must check user ownership and plan limits.
 - Blocked devices must not pass license checks.
+- Device endpoints must not return playlist credentials.
+
+## Device Activation Request
+
+Device activation request may include:
+
+- app_generated_device_id
+- android_id
+- device_model
+- platform
+- app_version_code
+- app_version_name
+- activation_code
+- device_name
+
+Device activation response may include:
+
+- activated
+- device_id
+- device_status
+- license_status
+- subscription_status
+- message
+- next_action
 
 ## Resellers Module
 
@@ -371,7 +453,8 @@ Admin endpoints may include:
 - PATCH /admin/resellers/:id
 - PATCH /admin/resellers/:id/status
 - GET /admin/resellers/:id/customers
-- GET /admin/resellers/:id/credits
+- GET /admin/resellers/:id/credit-transactions
+- GET /admin/resellers/:id/sales
 - POST /admin/resellers/:id/credits/add
 - POST /admin/resellers/:id/credits/adjust
 
@@ -382,10 +465,13 @@ Reseller endpoints may include:
 - POST /reseller/customers
 - GET /reseller/customers/:id
 - PATCH /reseller/customers/:id
-- GET /reseller/credits
-- GET /reseller/credit-transactions
+- GET /reseller/customers/:id/subscription
 - POST /reseller/customers/:id/subscriptions
 - PATCH /reseller/customers/:id/subscriptions/:subscriptionId/extend
+- GET /reseller/customers/:id/devices
+- GET /reseller/credits
+- GET /reseller/credit-transactions
+- GET /reseller/sales
 
 Rules:
 
@@ -395,6 +481,7 @@ Rules:
 - Negative balances must be prevented.
 - Credit writes must use database transactions.
 - Credit changes must be audit logged.
+- Reseller APIs must not manage channels, streams, playlists, or content.
 
 ## Reseller Credit Transaction Rules
 
@@ -422,6 +509,15 @@ Transaction types may include:
 - MANUAL_ADJUSTMENT
 - REVERSAL
 
+Rules:
+
+- Backend calculates credit cost.
+- Backend calculates balance_before.
+- Backend calculates balance_after.
+- Frontend final balance is ignored.
+- Frontend credit cost is ignored.
+- Credit usage must happen in a database transaction.
+
 ## Payments Module
 
 The Payments module manages payment records.
@@ -430,16 +526,21 @@ Card data must not be stored.
 
 MVP may support manual payment records.
 
-Payment endpoints may include:
+Customer endpoints may include:
 
 - GET /account/payments
+- GET /account/payments/:id
 - POST /checkout
 - GET /payments/:id/status
+
+Admin endpoints may include:
+
 - GET /admin/payments
 - GET /admin/payments/:id
 - POST /admin/payments/manual
 - PATCH /admin/payments/:id/approve
 - PATCH /admin/payments/:id/reject
+- PATCH /admin/payments/:id/refund
 
 Webhook endpoints may include:
 
@@ -451,11 +552,30 @@ Rules:
 
 - Do not store card numbers.
 - Do not store CVV.
+- Do not store raw card data.
 - Do not trust frontend price values.
 - Verify webhook signatures.
 - Extend subscriptions only after verified payment confirmation.
 - Manual payment approval must be admin-only.
 - Payment approvals should be audit logged.
+
+## Checkout Rules
+
+Checkout flow should work like this:
+
+1. User selects a plan.
+2. Backend loads plan from database.
+3. Backend calculates amount and duration.
+4. Backend creates payment record.
+5. Backend creates provider checkout session when provider is enabled.
+6. User completes payment.
+7. Provider sends webhook.
+8. Backend verifies webhook.
+9. Backend marks payment as succeeded.
+10. Backend extends subscription.
+11. Backend records audit log.
+
+Frontend success page must not directly extend subscription.
 
 ## App Versions Module
 
@@ -488,6 +608,7 @@ Rules:
 - Old app versions may be blocked.
 - Force update rules must be backend-controlled.
 - App version changes should be audit logged.
+- App version response must not include secrets.
 
 ## Remote Config Module
 
@@ -518,12 +639,15 @@ Feature flags may include:
 - favorites_enabled
 - multi_profile_enabled
 - web_playlist_push_enabled
+- manual_payment_enabled
+- reseller_enabled
 
 Rules:
 
 - Remote config must not include secrets.
 - Remote config must not include playlist credentials.
 - Remote config changes should be audit logged.
+- App must respect maintenance mode and force update rules.
 
 ## Playlist Push Module
 
@@ -553,7 +677,31 @@ Rules:
 - Payload must expire.
 - Payload should be deleted or marked consumed after pickup.
 - Payload must not become permanent playlist storage.
+- Payload must not be logged.
 - Playlist transfer actions should be audit logged.
+
+## Playlist Push Request Rules
+
+Playlist push creation should validate:
+
+- Authenticated customer
+- Target device ownership
+- Device status
+- Feature flag status
+- Payload size
+- Expiration time
+
+Playlist push consumption should validate:
+
+- Authenticated app or device context
+- Target device
+- Transfer status
+- Expiration time
+- Single-use behavior when enabled
+
+Expired transfer payloads must not be consumed.
+
+Consumed transfer payloads should not be reusable.
 
 ## Audit Logs Module
 
@@ -581,6 +729,7 @@ Rules:
 - Sensitive data must not be logged.
 - Playlist credentials must not be logged.
 - Payment card data must not be logged.
+- Tokens and secrets must not be logged.
 - Audit logs should be append-only where possible.
 
 ## Health Module
@@ -616,6 +765,8 @@ Auth endpoints should have stricter limits.
 
 Device and license endpoints may need balanced limits because apps may call them regularly.
 
+Rate limits should avoid blocking normal app usage while still preventing abuse.
+
 ## Input Validation
 
 Every endpoint accepting input should use DTO validation.
@@ -628,6 +779,7 @@ Validation should check:
 - Email format
 - Number ranges
 - Date validity
+- UUID or ID format
 - Ownership-sensitive IDs
 - Status transitions
 
@@ -686,23 +838,7 @@ Common sort fields:
 
 Sorting must validate allowed fields to prevent unsafe queries.
 
-## Request Context
-
-The API should track request context.
-
-Useful request context fields:
-
-- request ID
-- user ID
-- role
-- IP address
-- user agent
-- endpoint
-- method
-
-Request context helps audit logging and debugging.
-
-## Security Headers and CORS
+## Security Headers And CORS
 
 The API should use secure defaults.
 
@@ -714,6 +850,8 @@ Security areas:
 - Rate limits
 - Safe error responses
 - Production stack trace hiding
+
+Do not use wildcard CORS in production.
 
 ## Environment Configuration
 
@@ -746,6 +884,7 @@ App-facing endpoints include:
 
 - POST /device/activate
 - GET /device/status
+- PATCH /device/heartbeat
 - GET /license/status
 - GET /app/version
 - GET /remote-config
@@ -760,6 +899,14 @@ The app should respect:
 - Device blocked
 - Force update required
 - Maintenance mode
+
+App-facing APIs must not return:
+
+- Channel lists
+- Stream URLs
+- Playlist marketplace data
+- Content catalogs
+- Broadcast schedules
 
 ## Admin API Rules
 
@@ -781,6 +928,8 @@ Sensitive admin areas:
 - Remote config
 - System settings
 
+Admin APIs must not include stream source management or channel package management.
+
 ## Reseller API Rules
 
 Reseller APIs require reseller role.
@@ -793,9 +942,11 @@ Resellers must not access admin-only settings.
 
 Reseller credit usage must be transactional.
 
+Reseller APIs must not include content-selling or channel-selling features.
+
 ## Customer API Rules
 
-Customer APIs require customer role or authenticated user ownership.
+Customer APIs require authenticated user ownership.
 
 Customers can only access their own:
 
@@ -826,6 +977,8 @@ Webhook records should be stored where useful.
 Webhook processing should not trust unverified payloads.
 
 Subscription changes should happen only after verified payment success.
+
+Webhook endpoints must not expose secrets in logs.
 
 ## Idempotency
 
@@ -864,6 +1017,8 @@ Do not create endpoints for:
 - /content-catalog
 - /cdn-routes
 - /transcoding-jobs
+- /broadcast-schedules
+- /public-playlists
 
 These would violate the product boundary.
 
@@ -874,6 +1029,7 @@ MVP API should include:
 - Auth
 - Current user
 - Role guards
+- Ownership checks
 - Plans
 - Subscriptions
 - Devices
@@ -896,11 +1052,37 @@ Post-MVP API ideas may include:
 - Support tickets
 - Invoice generation
 - Referral system
-- Admin 2FA
+- Admin two-factor authentication
 - Advanced analytics
 - Encrypted cloud playlist sync with explicit user consent
 
 Each post-MVP feature requires separate approval.
+
+## Stable Project Bible Link
+
+This file is part of the stable project-bible tree:
+
+- 00-project-rules.md
+- 01-product-bible.md
+- 02-user-roles.md
+- 03-feature-list.md
+- 04-database-bible.md
+- 05-api-bible.md
+- 06-security-bible.md
+- 07-payment-bible.md
+- 08-reseller-bible.md
+- 09-ui-ux-bible.md
+- 10-app-integration.md
+- 11-marketing-bible.md
+- 12-devops-bible.md
+- 13-decision-log.md
+- 14-testing-bible.md
+- 15-support-bible.md
+- 16-release-bible.md
+
+Do not rename this file without approval.
+
+Do not create conflicting alternative API bible files.
 
 ## Final Rule
 
@@ -911,5 +1093,7 @@ Do not create stream-hosting APIs.
 Do not create channel-selling APIs.
 
 Do not create content-provider APIs.
+
+Do not create playlist marketplace APIs.
 
 Do not make the backend the playlist authority.
