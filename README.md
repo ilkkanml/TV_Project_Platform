@@ -1,133 +1,129 @@
 # TV Project Platform
 
+Format status:
+
+Readable multiline Markdown.
+
+## Platform Identity
+
 TV Project Platform is a Licensed IPTV Player Platform.
 
 This project is not an IPTV broadcast provider.
 
-It does not provide TV streams.
+This project is not a content provider.
 
-It does not host TV streams.
+This project is not a stream provider.
 
-It does not relay TV streams.
+This project is not a playlist provider.
 
-It does not transcode TV streams.
+The platform manages licensed player access.
 
-It does not operate CDN services.
+The platform does not distribute TV content.
 
-It does not sell channel lists.
+The platform does not sell channel lists.
 
-It does not act as a playlist provider.
+The platform does not operate stream infrastructure.
 
-The platform manages licensed player access only.
+## Backend Boundaries
 
-The backend exists to support accounts, licenses, devices, payments,
-reseller operations, app configuration, and secure device transfer flows.
+The backend must not provide streams.
 
-## Project Decision
+The backend must not host streams.
 
-This repository is for a licensed player platform.
+The backend must not relay streams.
 
-It is not a content platform.
+The backend must not transcode streams.
 
-It is not an IPTV provider.
+The backend must not operate a CDN.
 
-It is not a broadcast backend.
+The backend must not provide channels.
 
-It is not a playlist authority.
+The backend must not sell channel packages.
 
-The backend must never become the source of truth for playlist data.
+The backend must not store playlist inventory.
 
-## Backend Scope
+The backend must not become playlist source of truth.
 
-The backend may manage these responsibilities:
+## Allowed Backend Scope
+
+The backend may manage only platform services.
+
+Allowed services are:
 
 - User accounts
 - Subscriptions
 - Licenses
 - Device activation
 - Payments
-- Reseller system
-- Credit system
+- Reseller accounts
+- Reseller credits
 - App version checks
 - Remote configuration
-- Optional web-to-device playlist/profile push bridge
-
-The backend must not manage these responsibilities:
-
-- TV streams
-- Stream hosting
-- Stream relaying
-- Stream transcoding
-- Channel catalogs
-- Channel packages
-- Playlist inventory
-- Playlist marketplace features
-- CDN delivery
-- Copyrighted media sources
-- Third-party playlist data
+- Temporary web-to-device profile transfer
 
 ## Playlist Decision
 
-The backend is not the playlist source of truth.
+Playlist data belongs to the user.
 
-Playlist information is entered in the player application by default.
+Playlist data is entered in the player app by default.
 
-Playlist information is stored on the device.
+Playlist data is stored on the device by default.
 
-Playlist storage must use encrypted local storage.
+Playlist data must use encrypted local storage.
 
-The player application must support multiple playlist profiles.
+The app must support multiple playlist profiles.
 
-Each playlist profile belongs to the user.
+The backend is not the playlist authority.
 
-Each playlist profile remains device-side by default.
+The backend is not the playlist database.
 
-## Web-To-Device Transfer Bridge
+The backend is not the playlist provider.
 
-A user may optionally send a playlist/profile from the web panel.
+## Web-To-Device Bridge
 
-The transfer target must be the user's own activated device.
+The web panel may send a user-owned playlist/profile.
 
-This flow must be temporary.
+The target must be the user's own activated device.
 
-This flow must be encrypted.
+The transfer must be temporary.
 
-This flow must be device-targeted.
+The transfer must be encrypted.
 
-This flow must not become permanent hosted playlist storage.
+The transfer must be device-targeted.
 
-This flow must not become a playlist marketplace.
+The transfer must not become permanent hosted storage.
 
-This flow must not become a channel catalog.
+The transfer must not become a playlist marketplace.
 
-This flow must not become a content distribution system.
+The transfer must not become a channel catalog.
+
+The transfer must not become content distribution.
 
 ## Technical Stack
 
 - pnpm monorepo
-- Next.js for `apps/web`
-- React for `apps/web`
-- TypeScript for `apps/web`
-- Tailwind CSS for `apps/web`
-- NestJS for `apps/api`
-- TypeScript for `apps/api`
-- Prisma for `apps/api`
-- Shared types in `packages/shared`
-- Shared constants in `packages/shared`
-- Shared validators in `packages/shared`
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- NestJS
+- Prisma
 - PostgreSQL
 - Redis
 - Docker Compose
+- Shared package for types
+- Shared package for constants
+- Shared package for validators
 
-## Repository Map
+## Repository Areas
 
-- `apps/web` — web interface
-- `apps/api` — backend API
-- `packages/shared` — shared project code
-- `project-bible` — product and architecture decisions
-- `docs` — developer and operational documentation
-- `infra` — infrastructure placeholders
-- `.github` — repository automation placeholders
+- `apps/web`
+- `apps/api`
+- `packages/shared`
+- `project-bible`
+- `docs`
+- `infra`
+- `.github`
 
 ## Getting Started
 
@@ -145,6 +141,8 @@ Do not commit production secrets.
 
 Do not commit private keys.
 
+Do not commit real API keys.
+
 Do not commit payment credentials.
 
 Do not commit unauthorized content sources.
@@ -155,4 +153,4 @@ Do not commit copyrighted media sources.
 
 Do not commit third-party playlist data.
 
-Example environment files must use placeholder values only.
+Use placeholder values in example environment files.
