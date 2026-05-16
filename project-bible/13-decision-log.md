@@ -1,274 +1,396 @@
 # 13 - Decision Log
 
-This file records important product, architecture, security, database, payment, reseller, app integration, and legal decisions for TV Project Platform.
+This file records approved product, architecture, security, payment, reseller, app integration, DevOps, UI, and documentation decisions for TV Project Platform.
 
-Do not delete historical decisions.
+Future developers and assistants must check this file before changing major direction.
 
-If a decision changes, add a new decision entry with the reason.
+Do not silently reverse these decisions.
 
-## Decision Log Rules
+## Decision Log Purpose
 
-Each major decision should include:
+The decision log exists to prevent repeated confusion and accidental scope changes.
 
-- Decision ID
-- Date or phase
-- Decision
-- Reason
-- Impact
-- Status
+It records:
+
+- What was decided
+- Why it was decided
+- What must not be changed without approval
+- Which project areas are affected
+- Which files should be updated when a decision changes
+
+## Decision Status Values
 
 Decision statuses:
 
-- Accepted
-- Rejected
-- Superseded
-- Under review
+- APPROVED
+- PENDING
+- REJECTED
+- SUPERSEDED
 
-## DEC-001 - Product Is Licensed IPTV Player Platform
+Only APPROVED decisions are active project rules.
 
-Status:
+PENDING decisions require approval before implementation.
 
-- Accepted
+REJECTED decisions must not be implemented.
 
-Phase:
+SUPERSEDED decisions were replaced by newer decisions.
 
-- Foundation
+## Decision Change Rule
+
+Do not change an APPROVED decision unless the project owner explicitly approves the change.
+
+When a decision changes, update:
+
+- This file
+- README.md when relevant
+- PROJECT_STATE.md when relevant
+- AI_HANDOFF.md when relevant
+- ROADMAP.md when relevant
+- Related project-bible files
+- Related docs files
+
+## Decision 001 - Product Type
+
+Status: APPROVED
 
 Decision:
 
 TV Project Platform is a Licensed IPTV Player Platform.
 
-It is not an IPTV broadcast provider, content provider, playlist provider, channel seller, or stream hosting service.
-
 Reason:
 
-The product must stay focused on software access, player licensing, device activation, subscriptions, reseller operations, payments, app version control, and remote configuration.
+The product must remain a software platform for managing licensed player access, subscriptions, devices, payments, resellers, app version control, remote config, audit logs, and app integration.
 
-Impact:
+Implications:
 
-All backend, frontend, marketing, payment, reseller, and app integration work must follow the player-only model.
+- The product is software.
+- The product is not media.
+- The product is not a content provider.
+- The product is not an IPTV broadcast provider.
+- The product is not a playlist provider.
+- The product is not a channel seller.
 
-## DEC-002 - Backend Must Not Provide Streams
+Affected areas:
 
-Status:
+- Product
+- Marketing
+- Legal
+- API
+- Database
+- UI
+- App integration
+- Support
 
-- Accepted
+## Decision 002 - Backend Is Not Content Provider
 
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-The backend must never provide, host, relay, transcode, package, sell, or distribute TV streams.
+The backend must never provide, host, relay, transcode, package, sell, resell, or distribute TV streams.
 
 Reason:
 
-The platform is not a content delivery system.
+The backend must stay within the licensed player platform scope.
 
-Impact:
+Implications:
 
-No stream hosting, relay, CDN stream delivery, stream source, transcoding, or broadcast infrastructure features should be added.
+Do not build:
 
-## DEC-003 - Backend Is Not Playlist Source Of Truth
+- Stream hosting
+- Stream relay
+- Stream transcoding
+- CDN stream delivery
+- Channel package management
+- Content catalog management
+- Broadcast infrastructure
 
-Status:
+Affected areas:
 
-- Accepted
+- API
+- Database
+- DevOps
+- Security
+- Marketing
+- UI
 
-Phase:
+## Decision 003 - No Backend Channel Source Of Truth
 
-- Foundation
+Status: APPROVED
 
 Decision:
 
-The backend must not become the source of truth for playlist data.
+The backend must not become the source of truth for TV channels, stream URLs, VOD streams, channel packages, playlists, or content catalogs.
 
 Reason:
 
-Playlist data belongs to the user and should be managed locally in the app by default.
+The platform must not become a content delivery or IPTV provider system.
 
-Impact:
+Implications:
 
-The backend should not permanently store playlist credentials by default.
+Do not create source-of-truth models or endpoints for:
 
-No playlist marketplace or permanent playlist authority should be implemented.
+- Channel
+- StreamSource
+- ChannelPackage
+- ContentCatalog
+- PlaylistMarketplaceItem
+- BroadcastSchedule
+- CdnRoute
+- TranscodingJob
 
-## DEC-004 - Playlist Credentials Stored Locally In App
+Affected areas:
 
-Status:
+- Database
+- API
+- Admin UI
+- Reseller UI
+- Public marketing
 
-- Accepted
+## Decision 004 - Playlist Local-First Model
 
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-Playlist credentials are entered inside the app by default and stored locally on the device using encrypted local storage.
+Playlist information is local-first.
+
+By default, users enter playlist or provider information inside the app.
+
+The app stores playlist credentials on the device.
 
 Reason:
 
-This keeps playlist management local-first and avoids turning the backend into a playlist provider.
+The backend must not become permanent playlist authority.
 
-Impact:
+Implications:
 
-The app must implement secure local storage for playlist profiles.
+- App manages playlist profiles locally.
+- App stores credentials securely.
+- Backend does not permanently store playlist credentials by default.
+- Web panel playlist transfer is optional and temporary only.
 
-The backend must not be required for normal playlist storage.
+Affected areas:
 
-## DEC-005 - App Must Support Multiple Playlist Profiles
+- App integration
+- Security
+- Database
+- API
+- UI
+- Support
 
-Status:
+## Decision 005 - Local Encrypted Playlist Storage
 
-- Accepted
-
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-The app should support multiple playlist profiles and allow switching between profiles.
+Playlist credentials stored on the device must use encrypted local storage.
 
 Reason:
 
-Users may need more than one legal provider/profile on their own device.
+Playlist credentials may contain sensitive provider information.
 
-Impact:
+Implications:
 
-The app should support add, edit, delete, select, and switch profile actions.
+The app must protect:
 
-Profiles remain local to the app by default.
+- Playlist URL
+- Server URL
+- Username
+- Password
+- Provider credentials
+- Related playlist access data
 
-## DEC-006 - Optional Web-To-Device Playlist Transfer
+The app must not log playlist credentials.
 
-Status:
+Affected areas:
 
-- Accepted
+- App integration
+- Security
+- Testing
+- Support
 
-Phase:
+## Decision 006 - Multi-Profile App Support
 
-- Foundation
+Status: APPROVED
 
 Decision:
 
-The user may optionally send a playlist profile from the web panel to their own device.
-
-The backend may act only as a temporary encrypted transfer bridge.
+The app should support multiple local playlist profiles.
 
 Reason:
 
-This improves usability while preserving the rule that backend is not playlist source of truth.
+Users may need more than one profile and should be able to switch between them inside the app.
 
-Impact:
+Implications:
 
-Transfer payloads must be encrypted, temporary, device-scoped, user-scoped, expirable, and deleted or marked consumed after pickup when possible.
+The app should support:
 
-## DEC-007 - Encrypted Cloud Sync Is Not Default
+- Add profile
+- Edit profile
+- Delete profile
+- Rename profile
+- Select active profile
+- Switch active profile
 
-Status:
+Affected areas:
 
-- Accepted
+- App integration
+- UI
+- Testing
 
-Phase:
+## Decision 007 - Optional Web-To-Device Playlist Transfer
 
-- Foundation
+Status: APPROVED
+
+Decision:
+
+The web panel may optionally allow a user to send a playlist profile to their own device.
+
+This feature must work only as a temporary encrypted transfer bridge.
+
+Reason:
+
+This improves user convenience without making the backend playlist source of truth.
+
+Implications:
+
+Transfer payload must be:
+
+- Temporary
+- Encrypted
+- User-scoped
+- Device-scoped
+- Expirable
+- Deleted or marked consumed after pickup when possible
+
+This feature must not become:
+
+- Permanent cloud playlist storage
+- Playlist marketplace
+- Shared playlist library
+- Public playlist search
+- Playlist provider service
+
+Affected areas:
+
+- API
+- Database
+- App integration
+- Security
+- UI
+- Testing
+
+## Decision 008 - Encrypted Cloud Sync Not Default
+
+Status: APPROVED
 
 Decision:
 
 Encrypted cloud sync is not part of the default architecture.
 
-It may be considered later only with explicit user consent.
+It may be considered later only with explicit approval and user consent.
 
 Reason:
 
-Default cloud storage of playlist credentials would increase legal, privacy, and security risk.
+Default backend playlist storage would weaken the local-first product boundary.
 
-Impact:
+Implications:
 
-No default backend playlist credential sync should be built.
+Do not build encrypted cloud sync without approval.
 
-Any future sync feature requires separate approval.
+If approved later, it must be:
 
-## DEC-008 - MAC Address Is Not Primary Device Identity
+- Opt-in
+- Encrypted
+- Consent-based
+- Clearly explained
+- Not a playlist provider feature
 
-Status:
+Affected areas:
 
-- Accepted
+- Product
+- Security
+- App integration
+- Database
+- UI
+- Legal
 
-Phase:
+## Decision 009 - Primary Device Identity
 
-- Foundation
+Status: APPROVED
 
 Decision:
 
 MAC address must not be used as the primary device identifier.
 
+The primary device identifier is:
+
+- app_generated_device_id
+
 Reason:
 
-MAC address availability and reliability vary by device and platform.
+MAC address is not reliable, not always available, and should not be the primary identity.
 
-Impact:
+Implications:
 
-The backend and app should not depend on MAC address for primary licensing identity.
+The app should generate app_generated_device_id on first launch and persist it securely.
 
-## DEC-009 - app_generated_device_id Is Primary Device Identity
+Secondary signals may include:
 
-Status:
+- Android ID
+- Device model
+- Platform
+- App version code
+- App version name
+- Install metadata
 
-- Accepted
+Affected areas:
 
-Phase:
+- App integration
+- API
+- Database
+- License checks
+- Testing
 
-- Foundation
+## Decision 010 - Backend-Authoritative License Checks
+
+Status: APPROVED
 
 Decision:
 
-The primary device identity should be app_generated_device_id.
+The backend is the authority for license status.
+
+The app must not decide final license validity alone.
 
 Reason:
 
-A stable app-generated ID is more controllable and suitable for app licensing.
+License, subscription, device, account, app version, and maintenance rules must be centrally enforced.
 
-Impact:
+Implications:
 
-The app must generate and persist app_generated_device_id.
+License status should consider:
 
-The backend should use it during activation and license checks.
+- User status
+- Subscription status
+- Device activation status
+- Device block status
+- App version rules
+- Remote config rules
+- Maintenance mode
 
-## DEC-010 - Device Metadata As Secondary Signals
+Affected areas:
 
-Status:
+- API
+- App integration
+- Database
+- Security
+- Testing
 
-- Accepted
+## Decision 011 - Primary Roles
 
-Phase:
-
-- Foundation
-
-Decision:
-
-Secondary device signals may include Android ID, device model, platform, app version code, app version name, and install metadata.
-
-Reason:
-
-Secondary signals help debugging, fraud review, and device management without replacing the primary app-generated identity.
-
-Impact:
-
-Device metadata may be stored but should not override app_generated_device_id as primary identity.
-
-## DEC-011 - Three Primary Roles
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
@@ -280,89 +402,87 @@ The platform has three primary roles:
 
 Reason:
 
-These roles match the planned product structure.
+These roles cover the MVP product model clearly.
 
-Impact:
+Implications:
 
-API, web dashboards, database, and authorization must support these roles.
-
-## DEC-012 - Backend Authorization Is Mandatory
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
-
-Decision:
+Role checks must be enforced on the backend.
 
 Frontend route hiding is not enough.
 
-Backend authorization is mandatory.
+Affected areas:
 
-Reason:
+- API
+- Web app
+- Shared package
+- Database
+- Security
+- Testing
 
-Security cannot depend on frontend visibility.
+## Decision 012 - Backend Authorization Required
 
-Impact:
-
-Every protected backend endpoint must check authentication, role, ownership, and action permission.
-
-## DEC-013 - Resellers Can Access Only Own Customers
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-A reseller must only access customers owned by that reseller.
+Every protected backend endpoint must enforce authentication, role authorization, ownership checks, resource status checks, and action permission checks.
 
 Reason:
 
-Cross-reseller data access would be a serious security and business issue.
+Frontend-only security is not real security.
 
-Impact:
+Implications:
 
-All reseller queries and mutations must be scoped by reseller ownership.
+Protected endpoints must check:
 
-## DEC-014 - Customers Can Access Only Own Data
+- Authentication
+- User role
+- Resource ownership
+- Resource status
+- Action permission
 
-Status:
+Affected areas:
 
-- Accepted
+- API
+- Security
+- Testing
+- UI
 
-Phase:
+## Decision 013 - Reseller Customer Ownership
 
-- Foundation
+Status: APPROVED
 
 Decision:
 
-Customers must only access their own account, subscription, devices, payments, and optional playlist transfer records.
+Resellers may only access their own customers and related records.
 
 Reason:
 
-Customer data isolation is required.
+Cross-reseller data access would be a serious security and business logic failure.
 
-Impact:
+Implications:
 
-Customer APIs must check ownership for every sensitive resource.
+Reseller-owned customer records should be scoped by reseller_id.
 
-## DEC-015 - Reseller Credit Must Be Transaction-Based
+Resellers must not access:
 
-Status:
+- Other reseller customers
+- Other reseller devices
+- Other reseller subscriptions
+- Other reseller payment data
+- Global platform data
 
-- Accepted
+Affected areas:
 
-Phase:
+- API
+- Database
+- Reseller UI
+- Security
+- Testing
 
-- Foundation
+## Decision 014 - Transaction-Based Reseller Credit
+
+Status: APPROVED
 
 Decision:
 
@@ -372,269 +492,242 @@ A simple balance field is not enough.
 
 Reason:
 
-Credit operations must be auditable and safe.
+Credit changes require accountability, auditability, and reliable financial history.
 
-Impact:
+Implications:
 
-Every credit operation must create a ResellerCreditTransaction record.
+Every credit operation must create a transaction record.
 
-## DEC-016 - Reseller Balance Field May Exist For Fast Reads
+Credit transactions should include:
 
-Status:
+- Reseller ID
+- Transaction type
+- Amount
+- Balance before
+- Balance after
+- Related customer
+- Related subscription
+- Created by
+- IP address
+- Note
+- Created date
 
-- Accepted
+Affected areas:
 
-Phase:
+- Database
+- API
+- Reseller UI
+- Admin UI
+- Security
+- Testing
 
-- Foundation
+## Decision 015 - Backend Calculates Reseller Credit Usage
 
-Decision:
-
-A reseller balance field may exist for fast reads, but transaction records are required for accountability.
-
-Reason:
-
-Balance is useful for dashboards, but history is needed for auditability.
-
-Impact:
-
-Credit balance updates must happen together with transaction creation.
-
-## DEC-017 - Prevent Negative Reseller Balances
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-Negative reseller balances must be prevented.
+The backend must calculate reseller credit cost and balance changes.
 
-Reason:
-
-Credit cannot be overspent unless a future business rule explicitly allows it.
-
-Impact:
-
-Credit usage must validate available balance inside a database transaction.
-
-## DEC-018 - Backend Must Not Trust Frontend Credit Values
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
-
-Decision:
-
-The backend must never trust frontend-provided credit values.
+Frontend credit values must not be trusted.
 
 Reason:
 
 Frontend values can be manipulated.
 
-Impact:
+Implications:
 
-The backend must calculate credit cost, balance_before, balance_after, and final transaction state.
+The backend must calculate:
 
-## DEC-019 - Backend Must Not Trust Frontend Pricing
+- Plan credit cost
+- Balance before
+- Balance after
+- Subscription result
 
-Status:
+Negative balances must be prevented.
 
-- Accepted
+Affected areas:
 
-Phase:
+- API
+- Database
+- Security
+- Testing
 
-- Foundation
+## Decision 016 - Reseller Credit Operations Use Database Transactions
 
-Decision:
-
-The backend must never trust frontend-provided prices, durations, discounts, or plan limits.
-
-Reason:
-
-Payment and subscription logic must be backend-authoritative.
-
-Impact:
-
-Checkout, manual payments, subscription creation, and reseller operations must load plan data from the backend database.
-
-## DEC-020 - No Payment Card Data Storage
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-The system must not store payment card data.
+Reseller credit operations must happen inside database transactions.
 
 Reason:
 
-Reducing payment data risk is mandatory.
+Credit deduction and subscription creation or extension must succeed or fail together.
 
-Impact:
+Implications:
 
-No card numbers, CVV, or full raw card payloads should be stored.
+If credit deduction succeeds but subscription update fails, the operation must rollback.
 
-Payment providers should handle card data.
+If subscription update succeeds but credit transaction fails, the operation must rollback.
 
-## DEC-021 - Manual Payments Allowed In MVP
+Affected areas:
 
-Status:
+- API
+- Database
+- Testing
 
-- Accepted
+## Decision 017 - Payments Are For Software Access Only
 
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-Manual payment records may be supported during MVP.
+Payments are for software/player access only.
 
 Reason:
 
-Manual payments are simpler while the platform foundation is built.
+The platform must not sell content, streams, channels, playlists, or broadcast access.
 
-Impact:
+Payments may be for:
 
-Admin-only approval and rejection flow may be implemented before real payment provider integration.
+- Software access
+- Player license access
+- Subscription time
+- Device activation rights
+- Reseller credit
+- Platform account features
 
-## DEC-022 - Payment Webhooks Must Be Verified
+Payments must not be for:
 
-Status:
+- Channels
+- Streams
+- Playlists
+- Content packages
+- Broadcast access
 
-- Accepted
+Affected areas:
 
-Phase:
+- Payment
+- Marketing
+- Legal
+- UI
+- Support
 
-- Foundation
+## Decision 018 - Manual Payment MVP
+
+Status: APPROVED
 
 Decision:
 
-Payment provider webhook signatures must be verified.
+The MVP may start with manual payment records.
 
 Reason:
 
-Unverified payment webhooks are unsafe.
+Manual payments allow the platform foundation to be built before real provider integration.
 
-Impact:
+Implications:
+
+Manual payment approval must be admin-only.
+
+Manual payment rejection must be admin-only.
+
+Manual payment approval may extend subscriptions only through backend logic.
+
+Affected areas:
+
+- Payment
+- Admin UI
+- API
+- Database
+- Audit logs
+
+## Decision 019 - No Card Data Storage
+
+Status: APPROVED
+
+Decision:
+
+The platform must not store payment card data.
+
+Reason:
+
+Card data requires strict payment compliance and should be handled by approved payment providers.
+
+Implications:
+
+Do not store:
+
+- Card numbers
+- CVV
+- Full raw card payloads
+- Payment provider secrets in database
+- Webhook secrets in database
+
+Affected areas:
+
+- Payment
+- Security
+- Database
+- API
+- Logging
+
+## Decision 020 - Payment Webhook Verification
+
+Status: APPROVED
+
+Decision:
+
+When payment providers are integrated, webhook signatures must be verified.
+
+Reason:
+
+Unsigned or unverified webhooks cannot be trusted.
+
+Implications:
 
 Subscription extension must happen only after verified payment confirmation.
 
-## DEC-023 - Subscription Represents Software Access
+Frontend success pages must not directly extend subscriptions.
 
-Status:
+Affected areas:
 
-- Accepted
+- Payment
+- API
+- Security
+- Testing
 
-Phase:
+## Decision 021 - Planned Payment Providers
 
-- Foundation
-
-Decision:
-
-Subscriptions represent software/player access only.
-
-They do not represent channels, streams, playlists, or content packages.
-
-Reason:
-
-This protects the legal and product boundary.
-
-Impact:
-
-Plan names, payment records, marketing copy, and UI copy must avoid content-provider language.
-
-## DEC-024 - App Version Control Required
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-The backend should support app version control.
+Possible future payment providers may include:
+
+- Iyzico
+- PayTR
+- Stripe
+- Other approved payment processors
 
 Reason:
 
-The platform must be able to enforce minimum supported versions and force updates.
+Provider selection should remain flexible until implementation.
 
-Impact:
+Implications:
 
-The backend should expose app version rules to the app.
+No provider should be hardcoded as final without approval.
 
-Admin should manage app version records.
+Affected areas:
 
-## DEC-025 - Remote Config Required
+- Payment
+- API
+- DevOps
+- Documentation
 
-Status:
+## Decision 022 - Passwords Must Be Hashed
 
-- Accepted
-
-Phase:
-
-- Foundation
-
-Decision:
-
-The backend should support remote config.
-
-Reason:
-
-The platform needs maintenance mode, announcements, and feature flags.
-
-Impact:
-
-The app should fetch remote config and respect maintenance mode and feature flags.
-
-## DEC-026 - Audit Logs Required For Critical Actions
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
-
-Decision:
-
-Critical admin and reseller actions must be audit logged.
-
-Reason:
-
-Auditability is required for security, finance, support, and operational review.
-
-Impact:
-
-Audit logs should record actor, role, action, target, IP, user agent, metadata, and timestamp.
-
-## DEC-027 - Passwords Must Be Hashed
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
@@ -644,405 +737,359 @@ Reason:
 
 Plain text password storage is unacceptable.
 
-Impact:
+Implications:
 
-Use secure password hashing such as Argon2 or bcrypt.
+Use a strong password hashing algorithm such as:
 
-## DEC-028 - Standard API Response Format
+- Argon2
+- bcrypt
 
-Status:
+Password hashes must never be returned by the API.
 
-- Accepted
+Password hashes must never be logged.
 
-Phase:
+Affected areas:
 
-- Foundation
+- Auth
+- API
+- Database
+- Security
+- Testing
 
-Decision:
+## Decision 023 - Token Security
 
-The API should use a standard success and error response format.
-
-Reason:
-
-Consistent API responses simplify frontend and app integration.
-
-Impact:
-
-API responses should include success, code, message, data, and meta where useful.
-
-## DEC-029 - pnpm Monorepo
-
-Status:
-
-- Accepted
-
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-The project uses a pnpm monorepo.
+Authentication should use secure access and refresh token handling.
 
 Reason:
 
-The platform includes multiple apps and shared packages.
+Tokens protect account access and must be handled carefully.
 
-Impact:
+Implications:
 
-The repository should use package.json, pnpm-workspace.yaml, apps/web, apps/api, and packages/shared.
+- Access tokens should be short-lived.
+- Refresh tokens should be handled securely.
+- Refresh tokens should be stored as hashes where practical.
+- Logout should invalidate refresh tokens where possible.
+- Tokens must not be logged.
 
-## DEC-030 - Planned Web Stack
+Affected areas:
 
-Status:
+- API
+- Web app
+- App integration
+- Security
 
-- Accepted
+## Decision 024 - Audit Logs Required For Critical Actions
 
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-The web app should use Next.js, React, TypeScript, and Tailwind CSS.
+Critical platform actions should be audit logged.
 
 Reason:
 
-This stack supports modern dashboard and public website development.
+Audit logs support security review, accountability, support, reseller credit tracking, payment review, and incident investigation.
 
-Impact:
+Implications:
 
-apps/web should be built with this stack.
+Audit logs should include:
 
-## DEC-031 - Planned API Stack
+- Actor user ID
+- Actor role
+- Action type
+- Target resource type
+- Target resource ID
+- IP address
+- User agent
+- Metadata
+- Created date
 
-Status:
+Sensitive data must not be logged.
 
-- Accepted
+Affected areas:
 
-Phase:
+- API
+- Database
+- Admin UI
+- Security
 
-- Foundation
+## Decision 025 - App Version Control
+
+Status: APPROVED
 
 Decision:
 
-The API should use NestJS, TypeScript, Prisma, PostgreSQL, and Redis.
+The platform should support app version control.
 
 Reason:
 
-This stack supports modular backend development, database access, caching, rate limiting, and future background jobs.
+The app may need minimum version rules, force update behavior, APK URLs, and changelogs.
 
-Impact:
+Implications:
 
-apps/api should be built with this stack.
+Admin should be able to manage:
 
-## DEC-032 - Shared Package Required
+- Platform
+- Version code
+- Version name
+- Minimum version code
+- Force update flag
+- APK URL
+- Changelog
+- Active status
 
-Status:
+Affected areas:
 
-- Accepted
+- API
+- Database
+- Admin UI
+- App integration
+- DevOps
 
-Phase:
+## Decision 026 - Remote Config
 
-- Foundation
+Status: APPROVED
 
 Decision:
 
-A shared TypeScript package should provide shared constants, types, and validation schemas.
+The platform should support remote configuration.
 
 Reason:
 
-Shared definitions reduce duplication between web and API.
+The app and platform need central control for maintenance mode, announcements, and feature flags.
 
-Impact:
+Implications:
 
-packages/shared should contain roles, status enums, API codes, and shared types.
+Remote config may include:
 
-## DEC-033 - Documentation First Workflow
+- Maintenance mode
+- Maintenance message
+- Announcement
+- Feature flags
+- Minimum version code
+- Platform-specific config
 
-Status:
+Remote config must not contain secrets.
 
-- Accepted
+Affected areas:
 
-Phase:
+- API
+- Database
+- Admin UI
+- App integration
+- Security
 
-- Foundation
+## Decision 027 - Maintenance Mode
+
+Status: APPROVED
 
 Decision:
 
-Project memory and documentation should be completed before real implementation.
+The platform should support maintenance mode through remote config.
 
 Reason:
 
-The project has many legal, security, reseller, app integration, and product-boundary decisions that must be preserved.
+Maintenance mode helps safely control app and platform access during incidents or risky deployments.
 
-Impact:
+Implications:
 
-README, PROJECT_STATE, AI_HANDOFF, ROADMAP, project-bible, and docs should be prepared before implementation.
+The app must respect maintenance mode.
 
-## DEC-034 - Manual Editing For Critical Multiline Files
+The web dashboard may show maintenance banners.
 
-Status:
+Admin access may remain available when needed.
 
-- Accepted
+Affected areas:
 
-Phase:
+- Remote config
+- App integration
+- Web UI
+- DevOps
 
-- Foundation
+## Decision 028 - Planned Technical Stack
+
+Status: APPROVED
 
 Decision:
 
-Critical multiline files should be edited manually through GitHub web editor or Codespaces when needed.
+The planned technical stack is:
+
+- pnpm monorepo
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- NestJS
+- Prisma
+- PostgreSQL
+- Redis
+- Docker Compose
 
 Reason:
 
-Automated GitHub updates previously collapsed Markdown, JSON, YAML, and ENV files into long single-line files.
+This stack supports modern full-stack TypeScript development with clear separation between web, API, shared types, database, cache, and local development infrastructure.
 
-Impact:
+Implications:
 
-User should replace file contents manually and verify raw GitHub line counts.
+Do not change the stack without approval.
 
-## DEC-035 - Raw GitHub Line Count Verification
+Affected areas:
 
-Status:
+- DevOps
+- Web app
+- API
+- Shared package
+- Documentation
 
-- Accepted
+## Decision 029 - Monorepo Structure
 
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-Critical files should be verified with raw GitHub line-count checks.
+The planned monorepo structure is:
+
+- apps/web
+- apps/api
+- packages/shared
+- project-bible
+- docs
+- infra
+- .github
 
 Reason:
 
-This confirms that files are real multiline files.
+This keeps frontend, backend, shared code, documentation, infrastructure, and workflows organized.
 
-Impact:
+Implications:
 
-Use this pattern after edits:
+Do not create duplicate nested folders such as:
 
-curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_NAME | wc -l
+- project-bible/project-bible
+- docs/docs
+- apps/apps
+- packages/packages
 
-## DEC-036 - No Stream Infrastructure
+Affected areas:
 
-Status:
+- Repository structure
+- DevOps
+- Documentation
+- Future implementation
 
-- Accepted
+## Decision 030 - Stable Project Bible Tree
 
-Phase:
-
-- Foundation
+Status: APPROVED
 
 Decision:
 
-DevOps and infrastructure must not be designed for stream hosting, relay, transcoding, or CDN stream delivery.
+The stable project-bible tree is:
+
+- 00-project-rules.md
+- 01-product-bible.md
+- 02-user-roles.md
+- 03-feature-list.md
+- 04-database-bible.md
+- 05-api-bible.md
+- 06-security-bible.md
+- 07-payment-bible.md
+- 08-reseller-bible.md
+- 09-ui-ux-bible.md
+- 10-app-integration.md
+- 11-marketing-bible.md
+- 12-devops-bible.md
+- 13-decision-log.md
+- 14-testing-bible.md
+- 15-support-bible.md
+- 16-release-bible.md
 
 Reason:
 
-The platform does not deliver content.
+The project-bible must stay predictable and easy to use as long-term project memory.
 
-Impact:
+Implications:
 
-Infrastructure should focus on web, API, database, Redis, logs, monitoring, backups, and app release files.
+Do not rename these files without approval.
 
-## DEC-037 - Public Marketing Must Be Legally Careful
+Do not create conflicting alternative Bible files.
 
-Status:
+Affected areas:
 
-- Accepted
+- Documentation
+- AI handoff
+- Future development
 
-Phase:
+## Decision 031 - Deprecated Bible Names
 
-- Foundation
+Status: APPROVED
 
 Decision:
 
-Marketing must clearly state that the platform does not provide channels, streams, playlists, or content.
+The following old or conflicting Bible names should not be used:
+
+- 02-legal-boundaries.md
+- 03-playlist-philosophy.md
+- 04-architecture-principles.md
+- 05-reseller-credit-system.md
+- 06-device-activation.md
+- 07-payment-subscriptions.md
+- 08-remote-config-versioning.md
+- 09-security-privacy.md
+- 10-ops-and-deployment.md
+- 11-ui-product-guidelines.md
+- 12-testing-strategy.md
 
 Reason:
 
-Public messaging must match the player-only product boundary.
+The project-bible tree must be stable and avoid duplicate concepts.
 
-Impact:
+Implications:
 
-Homepage, pricing, FAQ, download page, reseller copy, and legal pages must avoid content-provider claims.
+Useful content from old names should be moved into the stable tree.
 
-## DEC-038 - Optional Future Features Require Approval
+Old conflicting files should be removed after migration.
 
-Status:
+Affected areas:
 
-- Accepted
+- Documentation
+- Repository structure
 
-Phase:
+## Decision 032 - Manual Editing Workflow For Critical Docs
 
-- Foundation
+Status: APPROVED
 
 Decision:
 
-Some post-MVP features require separate approval.
-
-Examples:
-
-- Real payment provider integration
-- Encrypted cloud playlist sync
-- Affiliate system
-- Admin 2FA
-- SMS notifications
-- Advanced reseller commission models
-- Invoice generation
-- Support ticket system
+Critical multiline files may be edited manually through GitHub web editor or Codespaces.
 
 Reason:
 
-These features affect scope, security, cost, and complexity.
+Automated GitHub connector updates previously caused multiline files to collapse into long single-line content.
 
-Impact:
+Implications:
 
-Do not implement these features automatically.
+For critical documentation files, verify line counts through raw GitHub.
 
-## Rejected Decisions
+Affected areas:
 
-This section records decisions that were rejected.
+- Documentation workflow
+- GitHub workflow
+- AI handoff
 
-## REJ-001 - Backend As IPTV Provider
+## Decision 033 - Raw GitHub Line Count Verification
 
-Status:
+Status: APPROVED
 
-- Rejected
+Decision:
 
-Phase:
+Critical documentation files should be verified with raw GitHub line count checks.
 
-- Foundation
+Recommended command:
 
-Rejected idea:
-
-Use the backend as an IPTV provider or content provider.
-
-Reason:
-
-This violates the product boundary.
-
-Impact:
-
-No content-provider features should be implemented.
-
-## REJ-002 - Backend As Playlist Source Of Truth
-
-Status:
-
-- Rejected
-
-Phase:
-
-- Foundation
-
-Rejected idea:
-
-Store and manage all playlist credentials permanently in the backend by default.
-
-Reason:
-
-This would turn the backend into playlist authority.
-
-Impact:
-
-Playlist storage remains local-first inside the app.
-
-## REJ-003 - MAC Address As Primary Device Identity
-
-Status:
-
-- Rejected
-
-Phase:
-
-- Foundation
-
-Rejected idea:
-
-Use MAC address as the primary device identifier.
-
-Reason:
-
-MAC address is unreliable and not suitable as the primary app licensing identity.
-
-Impact:
-
-Use app_generated_device_id instead.
-
-## REJ-004 - Simple Reseller Balance Without Transactions
-
-Status:
-
-- Rejected
-
-Phase:
-
-- Foundation
-
-Rejected idea:
-
-Use only a reseller balance field without transaction history.
-
-Reason:
-
-This is not auditable or safe enough.
-
-Impact:
-
-Every reseller credit operation must create a transaction record.
-
-## REJ-005 - Frontend-Trusted Pricing Or Credits
-
-Status:
-
-- Rejected
-
-Phase:
-
-- Foundation
-
-Rejected idea:
-
-Allow frontend to decide final prices, durations, credit costs, or credit balances.
-
-Reason:
-
-Frontend values can be manipulated.
-
-Impact:
-
-Backend must calculate all trusted payment, plan, subscription, and credit values.
-
-## Future Decision Areas
-
-The following areas still need future decisions:
-
-- Exact payment provider
-- Exact deployment target
-- Exact app activation flow
-- Whether pairing-code activation is MVP or post-MVP
-- Email provider
-- SMS provider
-- Support system approach
-- Admin two-factor authentication timing
-- Invoice and PDF receipt timing
-- API versioning approach
-- Production backup provider
-- Monitoring provider
-
-## Final Rule
-
-Do not change accepted decisions silently.
-
-If a decision changes, add a new entry explaining:
-
-- What changed
-- Why it changed
-- Who approved it
-- What impact it has
-
-The player-only product boundary must remain protected.
+```bash
+curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_PATH | wc -l
