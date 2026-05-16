@@ -1,105 +1,263 @@
 # TV Project Platform
 
-Format status:
-
-Readable multiline Markdown.
-
-## Platform Identity
-
-TV Project Platform is a Licensed IPTV Player Platform.
+TV Project Platform is a licensed IPTV player platform.
 
 This project is not an IPTV broadcast provider.
 
-This project is not a content provider.
+It does not provide TV streams.
 
-This project is not a stream provider.
+It does not host TV streams.
 
-This project is not a playlist provider.
+It does not relay TV streams.
 
-The platform manages licensed player access.
+It does not transcode TV streams.
 
-The platform does not distribute TV content.
+It does not operate CDN services.
 
-The platform does not sell channel lists.
+It does not sell channel lists.
 
-The platform does not operate stream infrastructure.
+It does not act as a playlist provider.
 
-## Backend Boundaries
+The platform manages licensed player access only.
 
-The backend must not provide streams.
+The backend exists to support accounts, licenses, devices, payments, reseller operations, app configuration, and optional secure device transfer flows.
 
-The backend must not host streams.
+## Project Decision
 
-The backend must not relay streams.
+This repository is for a licensed player platform.
 
-The backend must not transcode streams.
+It is not a content platform.
 
-The backend must not operate a CDN.
+It is not an IPTV provider.
 
-The backend must not provide channels.
+It is not a broadcast backend.
 
-The backend must not sell channel packages.
+It is not a playlist authority.
 
-The backend must not store playlist inventory.
+The backend must never become the source of truth for playlist data.
 
-The backend must not become playlist source of truth.
+Users are responsible for their own legal playlist or provider information.
 
-## Allowed Backend Scope
+The app is responsible for local player behavior.
 
-The backend may manage only platform services.
+The backend is responsible for licensing and platform management.
 
-Allowed services are:
+## Core Scope
+
+The platform will manage the following areas:
 
 - User accounts
-- Subscriptions
-- Licenses
+- Customer authentication
+- Admin authentication
+- Reseller authentication
+- Subscription status
+- License status
 - Device activation
-- Payments
-- Reseller accounts
-- Reseller credits
-- App version checks
+- Payment records
+- Reseller credit system
+- App version control
 - Remote configuration
-- Temporary web-to-device profile transfer
+- Maintenance mode
+- Feature flags
+- Optional web-to-device playlist profile transfer
+
+## Out of Scope
+
+The platform will not manage or provide the following:
+
+- TV channels
+- Live streams
+- VOD streams
+- CDN delivery
+- Stream relay
+- Stream transcoding
+- Channel packages
+- Playlist provider services
+- Content ownership
+- Broadcast infrastructure
 
 ## Playlist Decision
 
-Playlist data belongs to the user.
+Playlist information is not backend source of truth.
 
-Playlist data is entered in the player app by default.
+By default, playlist information is entered inside the app.
 
-Playlist data is stored on the device by default.
+Playlist credentials are stored on the device.
 
-Playlist data must use encrypted local storage.
+Playlist credentials must be stored using encrypted local storage.
 
-The app must support multiple playlist profiles.
+The backend should not permanently store playlist credentials by default.
 
-The backend is not the playlist authority.
+The user may optionally send a playlist profile from the web panel to their own device.
 
-The backend is not the playlist database.
+This optional feature must work only as a temporary encrypted transfer bridge.
 
-The backend is not the playlist provider.
+After the app receives the transferred profile, the backend should expire or delete the temporary payload.
 
-## Web-To-Device Bridge
+Encrypted cloud sync may be added later only with explicit user consent.
 
-The web panel may send a user-owned playlist/profile.
+## App Responsibilities
 
-The target must be the user's own activated device.
+The Android TV or Fire TV app is responsible for:
 
-The transfer must be temporary.
+- Generating an app device ID
+- Registering or activating the device
+- Checking license status
+- Checking subscription status
+- Checking app version
+- Fetching remote config
+- Managing local playlist profiles
+- Storing playlist credentials securely on the device
+- Supporting multiple playlist profiles
+- Switching between profiles
+- Opening the player only when license rules allow it
 
-The transfer must be encrypted.
+## Backend Responsibilities
 
-The transfer must be device-targeted.
+The backend is responsible for:
 
-The transfer must not become permanent hosted storage.
+- User account management
+- Role-based access control
+- Customer subscriptions
+- License validation
+- Device activation
+- Payment records
+- Reseller accounts
+- Reseller credit transactions
+- App version settings
+- Remote config settings
+- Audit logs
+- Optional temporary playlist profile transfer
 
-The transfer must not become a playlist marketplace.
+## Device Identity
 
-The transfer must not become a channel catalog.
+MAC address must not be used as the primary device identifier.
 
-The transfer must not become content distribution.
+The primary device identity should be an app-generated device ID.
+
+Recommended primary identifier:
+
+- app_generated_device_id
+
+Recommended secondary signals:
+
+- Android ID
+- Device model
+- Platform
+- App version code
+- App version name
+- Install metadata
+
+## User Roles
+
+The platform has three main roles.
+
+### Admin
+
+The admin can manage:
+
+- Users
+- Customers
+- Resellers
+- Plans
+- Subscriptions
+- Payments
+- Devices
+- App versions
+- Remote config
+- Audit logs
+- System settings
+
+### Reseller
+
+The reseller can manage:
+
+- Own customers
+- Own credit balance
+- Own sales
+- Own customer subscriptions
+- Own device/license records
+
+A reseller must not access customers owned by other resellers.
+
+### Customer
+
+The customer can manage:
+
+- Own account
+- Own subscription
+- Own devices
+- Own payment history
+- Optional web-to-device playlist profile transfer
+
+## Reseller Credit System
+
+The reseller credit system must be transaction-based.
+
+A simple balance field is not enough.
+
+Every credit operation must create a transaction record.
+
+Credit transactions should include:
+
+- Reseller ID
+- Transaction type
+- Amount
+- Balance before
+- Balance after
+- Related customer
+- Related subscription
+- Created by
+- IP address
+- Note
+- Created date
+
+The backend must never trust credit values sent from the frontend.
+
+Credit usage must be validated and committed inside database transactions.
+
+Negative reseller balances must be prevented.
+
+## Security Principles
+
+Passwords must never be stored in plain text.
+
+Payment card data must never be stored directly.
+
+Critical admin and reseller actions must be audit logged.
+
+Frontend values must not be trusted for pricing, credits, roles, or permissions.
+
+Role-based access control is required.
+
+Auth endpoints must be rate limited.
+
+Payment webhooks must be verified.
+
+Device license checks must be backend authoritative.
+
+Temporary playlist transfer payloads must expire.
+
+## Payment Principles
+
+The platform may support manual payment records during MVP.
+
+Real payment integration should be added through a secure provider.
+
+Possible providers may include:
+
+- Iyzico
+- PayTR
+- Stripe
+- Other approved payment processors
+
+Card information must not be stored in this system.
+
+Subscription extension should happen only after verified payment confirmation.
 
 ## Technical Stack
+
+The planned stack is:
 
 - pnpm monorepo
 - Next.js
@@ -111,46 +269,128 @@ The transfer must not become content distribution.
 - PostgreSQL
 - Redis
 - Docker Compose
-- Shared package for types
-- Shared package for constants
-- Shared package for validators
 
-## Repository Areas
+## Monorepo Structure
 
-- `apps/web`
-- `apps/api`
-- `packages/shared`
-- `project-bible`
-- `docs`
-- `infra`
-- `.github`
+The repository is organized as:
 
-## Getting Started
+- apps/web
+- apps/api
+- packages/shared
+- project-bible
+- docs
+- infra
 
-```bash
-pnpm install
-cp .env.example .env
-pnpm infra:up
-pnpm db:generate
-pnpm dev
-```
+## Web App
 
-## Security Rules
+The web app will include:
 
-Do not commit production secrets.
+- Public landing page
+- Pricing page
+- Device selector
+- Download page
+- Login page
+- Register page
+- Customer dashboard
+- Reseller dashboard
+- Admin dashboard
+- Checkout screens
+- Legal pages
 
-Do not commit private keys.
+## API App
 
-Do not commit real API keys.
+The API app will include:
 
-Do not commit payment credentials.
+- Auth module
+- Users module
+- Plans module
+- Subscriptions module
+- Devices module
+- Licenses module
+- Resellers module
+- Payments module
+- App versions module
+- Remote config module
+- Playlist push module
+- Audit logs module
+- Health module
 
-Do not commit unauthorized content sources.
+## Shared Package
 
-Do not commit channel lists.
+The shared package will include:
 
-Do not commit copyrighted media sources.
+- Roles
+- API response codes
+- Device types
+- Subscription statuses
+- Payment statuses
+- Shared validation schemas
+- Shared TypeScript types
 
-Do not commit third-party playlist data.
+## Project Bible
 
-Use placeholder values in example environment files.
+The project-bible directory stores product, technical, security, reseller, payment, app integration, marketing, testing, support, and release decisions.
+
+Major decisions must be recorded in the project bible.
+
+New conversations should read the bible before changing the architecture.
+
+## New Chat Continuation
+
+When continuing this project in a new chat, the assistant should inspect:
+
+- README.md
+- PROJECT_STATE.md
+- AI_HANDOFF.md
+- ROADMAP.md
+- CHANGELOG.md
+- project-bible directory
+- docs directory
+
+The assistant should not ask the same foundational questions again.
+
+The assistant should continue from the current repository state.
+
+## Current Status
+
+The repository structure has been created.
+
+Root configuration files are being stabilized.
+
+The next major steps are:
+
+- Complete documentation foundation
+- Complete shared package foundation
+- Complete API foundation
+- Complete web foundation
+- Build authentication
+- Build role-based access control
+- Build subscription and license engine
+- Build reseller credit engine
+- Build app integration endpoints
+
+## License and Legal Position
+
+This project is a software platform.
+
+It is not a media provider.
+
+It is not a broadcaster.
+
+It is not a playlist seller.
+
+It is not responsible for user-provided playlist/provider data.
+
+Users must use the platform only with legal playlist/provider information that they are allowed to access.
+
+## Development Rule
+
+Do not turn this project into a content provider.
+
+Do not add stream hosting features.
+
+Do not add channel-selling features.
+
+Do not make the backend the playlist authority.
+
+Keep the platform focused on licensed player access, subscriptions, devices, payments, resellers, and application configuration.
