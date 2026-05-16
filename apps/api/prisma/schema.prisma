@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  RESELLER
+  ADMIN
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+  SUSPENDED
+}
+
+enum DeviceStatus {
+  PENDING
+  ACTIVE
+  REVOKED
+  BLOCKED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(CUSTOMER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  devices       Device[]
+  subscriptions Subscription[]
+  reseller      ResellerProfile?
+}
+
+model Device {
+  id          String       @id @default(cuid())
+  userId      String
+  name        String
+  deviceKey   String       @unique
+  status      DeviceStatus @default(PENDING)
+  activatedAt DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id        String             @id @default(cuid())
+  userId    String
+  status    SubscriptionStatus @default(TRIALING)
+  startsAt  DateTime
+  endsAt    DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model ResellerProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  creditBalance Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user   User                @relation(fields: [userId], references: [id])
+  ledger CreditLedgerEntry[]
+}
+
+model CreditLedgerEntry {
+  id          String   @id @default(cuid())
+  resellerId  String
+  amount      Int
+  reason      String
+  referenceId String?
+  createdAt   DateTime @default(now())
+
+  reseller ResellerProfile @relation(fields: [resellerId], references: [id])
+}
+
+model RemoteConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  valueJson Json
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AppVersion {
+  id                  String   @id @default(cuid())
+  platform            String
+  version             String
+  minimumSupported    String?
+  updateUrl           String?
+  forceUpdate         Boolean  @default(false)
+  releaseNotes        String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model PlaylistTransferSession {
+  id                String   @id @default(cuid())
+  userId            String
+  deviceId          String
+  encryptedPayload  String
+  expiresAt         DateTime
+  consumedAt        DateTime?
+  createdAt         DateTime @default(now())
+
+  @@index([userId, deviceId])
+  @@index([expiresAt])
+}
+
+model PaymentEvent {
+  id             String   @id @default(cuid())
+  provider       String
+  providerEventId String  @unique
+  eventType      String
+  payloadJson    Json
+  createdAt      DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  target    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tv-platform-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tv_platform
+      POSTGRES_PASSWORD: tv_platform_dev_password
+      POSTGRES_DB: tv_platform_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - tv_platform_postgres_data:/var/lib/postgresql/data
+    networks:
+      - tv_platform_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: tv-platform-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - tv_platform_redis_data:/data
+    networks:
+      - tv_platform_network
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: tv-platform-mailpit
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - tv_platform_network
+
+volumes:
+  tv_platform_postgres_data:
+  tv_platform_redis_data:
+
+networks:
+  tv_platform_network:
+    driver: bridge

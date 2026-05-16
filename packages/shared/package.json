@@ -1,0 +1,17 @@
+{
+  "name": "@tv-platform/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "echo \"Shared lint is not configured yet\"",
+    "test": "echo \"Shared tests are not configured yet\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  }
+}
