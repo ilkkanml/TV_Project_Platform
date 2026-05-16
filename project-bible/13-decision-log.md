@@ -1093,3 +1093,805 @@ Recommended command:
 
 ```bash
 curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_PATH | wc -l
+```
+
+Reason:
+
+This catches collapsed single-line files.
+
+Implications:
+
+Multiline documentation files should not return `1`.
+
+Affected areas:
+
+- Documentation
+- GitHub workflow
+
+## Decision 034 - Public Website Required
+
+Status: APPROVED
+
+Decision:
+
+The platform should include a public website.
+
+Reason:
+
+The product needs clear communication, pricing, device support, app downloads, FAQ, and legal pages.
+
+Implications:
+
+Public website should include:
+
+- Home page
+- Pricing page
+- Device selector page
+- Download page
+- FAQ page
+- Terms of service page
+- Privacy policy page
+- Refund policy page
+- Acceptable use policy page
+- Support entry point
+
+Affected areas:
+
+- Web app
+- Marketing
+- Legal
+- UI
+
+## Decision 035 - Legal Boundary Pages Required
+
+Status: APPROVED
+
+Decision:
+
+The public website should include legal boundary pages.
+
+Reason:
+
+The product must clearly communicate its software/player-only scope.
+
+Implications:
+
+Required pages:
+
+- Terms of service
+- Privacy policy
+- Refund policy
+- Acceptable use policy
+
+These pages must clearly state that the platform does not provide channels, streams, playlists, or content.
+
+Affected areas:
+
+- Legal
+- Marketing
+- UI
+- Support
+
+## Decision 036 - Marketing Must Be Player-Only
+
+Status: APPROVED
+
+Decision:
+
+Marketing must describe the product as a licensed player platform.
+
+Reason:
+
+Marketing must not create confusion that the product includes IPTV content.
+
+Implications:
+
+Marketing must not imply:
+
+- Included channels
+- Included streams
+- Included content
+- IPTV subscription with content
+- Channel package access
+- Playlist provider access
+
+Affected areas:
+
+- Marketing
+- UI
+- Legal
+- Support
+
+## Decision 037 - Support Must Not Provide Content
+
+Status: APPROVED
+
+Decision:
+
+Support may help with platform, account, subscription, device, license, payment, reseller, app version, remote config, and temporary transfer issues.
+
+Support must not provide channels, streams, playlists, provider credentials, or content recommendations.
+
+Reason:
+
+Support must respect the product boundary.
+
+Implications:
+
+Support can help with:
+
+- Account issues
+- Login issues
+- Subscription status
+- Device activation
+- License status
+- App updates
+- Payment status
+- Reseller credit questions
+- Temporary playlist transfer issues
+
+Support must not help users find IPTV content.
+
+Affected areas:
+
+- Support
+- Legal
+- Marketing
+- UI
+
+## Decision 038 - Infrastructure Must Not Support Stream Delivery
+
+Status: APPROVED
+
+Decision:
+
+Infrastructure must not be designed for stream hosting, stream relay, transcoding, CDN stream delivery, channel package delivery, or broadcast infrastructure.
+
+Reason:
+
+DevOps must reinforce the licensed player platform boundary.
+
+Implications:
+
+Allowed infrastructure:
+
+- Web app
+- API app
+- PostgreSQL
+- Redis
+- Background jobs
+- APK storage
+- Logs
+- Monitoring
+- Backups
+
+Forbidden infrastructure:
+
+- Stream servers
+- Transcoding workers
+- CDN stream routes
+- Broadcast systems
+
+Affected areas:
+
+- DevOps
+- Architecture
+- Security
+
+## Decision 039 - Redis Usage
+
+Status: APPROVED
+
+Decision:
+
+Redis may be used for platform operations such as rate limiting, cache, queues, temporary state, and expiring temporary transfer data.
+
+Reason:
+
+Redis is useful for backend operations but must not become permanent playlist or stream infrastructure.
+
+Implications:
+
+Redis must not store permanent playlist credentials.
+
+Redis must not be used for stream delivery.
+
+Affected areas:
+
+- API
+- DevOps
+- Security
+
+## Decision 040 - APK Storage Is Allowed
+
+Status: APPROVED
+
+Decision:
+
+APK storage and APK download links are allowed for app distribution.
+
+Reason:
+
+The platform supports app version management and app downloads.
+
+Implications:
+
+APK storage may support:
+
+- Approved APK URL
+- Versioned app releases
+- Admin-managed app version records
+- Changelogs
+
+APK storage must not be mixed with stream hosting infrastructure.
+
+Affected areas:
+
+- App integration
+- DevOps
+- Web app
+- Admin UI
+
+## Decision 041 - UI Must Not Look Like Content Provider
+
+Status: APPROVED
+
+Decision:
+
+The UI must not make the product look like an IPTV content provider.
+
+Reason:
+
+The user experience must match the licensed player platform identity.
+
+Implications:
+
+Do not create UI for:
+
+- Channel lists
+- Stream source management
+- Channel package builder
+- Content catalog
+- Playlist marketplace
+- Public playlist search
+- Broadcast schedule
+
+Affected areas:
+
+- UI
+- Marketing
+- Legal
+- Product
+
+## Decision 042 - Checkout Copy Must Clarify Software Access
+
+Status: APPROVED
+
+Decision:
+
+Checkout pages must clearly state that payment is for software/player access only.
+
+Reason:
+
+Payment pages must not imply channels, streams, playlists, or content are included.
+
+Implications:
+
+Checkout should include a boundary statement similar to:
+
+Payment is for software/player access only. TV Project Platform does not provide channels, streams, playlists, or content.
+
+Affected areas:
+
+- Payment
+- UI
+- Marketing
+- Legal
+
+## Decision 043 - Feature Flags Are Not Security
+
+Status: APPROVED
+
+Decision:
+
+Feature flags may hide or enable features, but they must not replace backend authorization.
+
+Reason:
+
+Frontend visibility is not security.
+
+Implications:
+
+Backend must still check roles, ownership, status, and permissions even when a feature flag hides UI.
+
+Affected areas:
+
+- API
+- Web app
+- App integration
+- Security
+
+## Decision 044 - Production Secrets Must Not Be Committed
+
+Status: APPROVED
+
+Decision:
+
+Production secrets must never be committed to the repository.
+
+Reason:
+
+Committed secrets can compromise the platform.
+
+Implications:
+
+`.env.example` may contain placeholders only.
+
+Real secrets must be stored in environment variables or hosting provider secret configuration.
+
+Affected areas:
+
+- DevOps
+- Security
+- API
+- Web app
+
+## Decision 045 - MVP Foundation First
+
+Status: APPROVED
+
+Decision:
+
+The project should stabilize documentation, architecture, and repository foundation before rushing implementation.
+
+Reason:
+
+The product boundary, role model, reseller credit model, payment rules, app integration, and project structure must be clear before coding.
+
+Implications:
+
+Foundation phase includes:
+
+- README
+- PROJECT_STATE
+- AI_HANDOFF
+- ROADMAP
+- project-bible
+- docs
+- root config files
+- local setup files
+
+Affected areas:
+
+- Project management
+- Documentation
+- Future implementation
+
+## Decision 046 - MVP Feature Scope
+
+Status: APPROVED
+
+Decision:
+
+MVP should include:
+
+- Auth
+- Role-based access control
+- Customer panel
+- Reseller panel
+- Admin panel
+- Plan management
+- Subscription management
+- Device activation
+- License status API
+- App version API
+- Remote config API
+- Reseller credit system
+- Manual payment records
+- Audit logs
+- Basic public website
+- Basic legal pages
+
+Reason:
+
+This is the minimum platform foundation for licensed player access operations.
+
+Implications:
+
+Do not add post-MVP features before MVP foundation is stable unless approved.
+
+Affected areas:
+
+- Roadmap
+- API
+- Web app
+- Database
+- Testing
+
+## Decision 047 - MVP Must Not Include Content Features
+
+Status: APPROVED
+
+Decision:
+
+MVP must not include:
+
+- Stream hosting
+- Stream relay
+- Stream transcoding
+- CDN stream delivery
+- Channel selling
+- Channel package management
+- Playlist marketplace
+- Content catalog
+- Broadcast infrastructure
+- Backend playlist source of truth
+- Default cloud playlist credential storage
+
+Reason:
+
+MVP must protect the product boundary.
+
+Affected areas:
+
+- Product
+- API
+- Database
+- UI
+- DevOps
+- Marketing
+
+## Decision 048 - Post-MVP Features Need Approval
+
+Status: APPROVED
+
+Decision:
+
+Post-MVP features require explicit approval before implementation.
+
+Reason:
+
+The project must avoid accidental scope creep.
+
+Post-MVP candidates include:
+
+- Real payment provider integration
+- Email notifications
+- SMS notifications
+- Ticket system
+- Affiliate system
+- Referral codes
+- Invoice generation
+- PDF receipts
+- Admin two-factor authentication
+- Advanced device limits
+- Advanced reseller reporting
+- Encrypted cloud playlist sync with explicit user consent
+
+Affected areas:
+
+- Roadmap
+- Product
+- API
+- Web app
+- App integration
+
+## Decision 049 - Testing Must Include Boundary Protection
+
+Status: APPROVED
+
+Decision:
+
+Testing must verify that the platform does not expose content-provider behavior.
+
+Reason:
+
+Boundary protection is a core product and legal requirement.
+
+Implications:
+
+Tests should verify:
+
+- No channel management endpoints exist.
+- No stream source endpoints exist.
+- No playlist marketplace endpoints exist.
+- Public copy does not imply included content.
+- Backend does not return stream URLs.
+- Reseller cannot sell channel packages.
+- Payment copy is software-access-only.
+
+Affected areas:
+
+- Testing
+- API
+- UI
+- Marketing
+
+## Decision 050 - Future Assistants Must Read Project Memory
+
+Status: APPROVED
+
+Decision:
+
+Future assistants and developers must read project memory files before making major changes.
+
+Reason:
+
+The project has many fixed decisions that must not be rediscovered or accidentally reversed.
+
+Required memory files:
+
+- README.md
+- PROJECT_STATE.md
+- AI_HANDOFF.md
+- ROADMAP.md
+- SECURITY.md
+- LEGAL_SCOPE.md
+- project-bible directory
+- docs directory
+
+Affected areas:
+
+- Documentation
+- AI workflow
+- Development workflow
+
+## Pending Decision 001 - Final App Activation Method
+
+Status: PENDING
+
+Decision needed:
+
+Choose the final app activation method for MVP.
+
+Options:
+
+- Login inside app
+- Activation code entered in web panel
+- QR code activation
+- Device code activation
+- Hybrid approach
+
+Current direction:
+
+MVP may start with the simplest approved method.
+
+Do not implement final app activation flow without approval.
+
+## Pending Decision 002 - Final Payment Provider
+
+Status: PENDING
+
+Decision needed:
+
+Choose the final real payment provider when moving beyond manual payment MVP.
+
+Options:
+
+- Iyzico
+- PayTR
+- Stripe
+- Other approved provider
+
+Current direction:
+
+MVP may start with manual payment records.
+
+Do not implement real provider integration without approval.
+
+## Pending Decision 003 - Hosting Provider
+
+Status: PENDING
+
+Decision needed:
+
+Choose the production hosting provider.
+
+Options may include:
+
+- VPS
+- Docker-based deployment
+- Managed platform
+- Cloud provider
+- Managed PostgreSQL
+- Managed Redis
+
+Current direction:
+
+Local development uses Docker Compose.
+
+Production hosting requires approval.
+
+## Pending Decision 004 - Encrypted Cloud Playlist Sync
+
+Status: PENDING
+
+Decision needed:
+
+Decide whether encrypted cloud playlist sync will ever be added.
+
+Current direction:
+
+Not part of default architecture.
+
+May be considered later only with explicit user consent and approval.
+
+Do not implement by default.
+
+## Pending Decision 005 - Multi-Language UI
+
+Status: PENDING
+
+Decision needed:
+
+Decide whether the UI will support multiple languages.
+
+Current direction:
+
+Initial UI may be English.
+
+Turkish support may be added later if approved.
+
+## Rejected Decision 001 - Backend Stream Hosting
+
+Status: REJECTED
+
+Rejected idea:
+
+Use backend to host, relay, transcode, or distribute streams.
+
+Reason:
+
+This violates the product boundary.
+
+Do not implement.
+
+## Rejected Decision 002 - Channel Package Sales
+
+Status: REJECTED
+
+Rejected idea:
+
+Sell channel packages through plans, reseller dashboard, admin dashboard, or payment system.
+
+Reason:
+
+The product sells software/player access only.
+
+Do not implement.
+
+## Rejected Decision 003 - Backend Playlist Marketplace
+
+Status: REJECTED
+
+Rejected idea:
+
+Create a backend marketplace for public or shared playlists.
+
+Reason:
+
+The backend must not become playlist provider or playlist marketplace.
+
+Do not implement.
+
+## Rejected Decision 004 - Frontend-Trusted Payment Success
+
+Status: REJECTED
+
+Rejected idea:
+
+Extend subscriptions directly from frontend payment success page.
+
+Reason:
+
+Payment success must be verified by backend.
+
+Do not implement.
+
+## Rejected Decision 005 - Simple Reseller Balance Without Transactions
+
+Status: REJECTED
+
+Rejected idea:
+
+Use only a reseller balance field without credit transaction history.
+
+Reason:
+
+Credit history must be auditable and transaction-based.
+
+Do not implement.
+
+## Rejected Decision 006 - MAC Address As Primary Device ID
+
+Status: REJECTED
+
+Rejected idea:
+
+Use MAC address as the primary device identifier.
+
+Reason:
+
+MAC address is not reliable and must not be the primary identity.
+
+Use app_generated_device_id instead.
+
+## Rejected Decision 007 - Permanent Backend Playlist Credential Storage By Default
+
+Status: REJECTED
+
+Rejected idea:
+
+Store all user playlist credentials permanently in backend by default.
+
+Reason:
+
+The project uses local-first playlist management.
+
+Do not implement.
+
+## Decision Update Template
+
+Use this template when adding a new decision:
+
+```md
+## Decision XXX - Title
+
+Status: APPROVED
+
+Decision:
+
+What was decided.
+
+Reason:
+
+Why this decision was made.
+
+Implications:
+
+What this means for the project.
+
+Affected areas:
+
+- Area 1
+- Area 2
+- Area 3
+```
+
+## Stable Project Bible Link
+
+This file is part of the stable project-bible tree:
+
+- 00-project-rules.md
+- 01-product-bible.md
+- 02-user-roles.md
+- 03-feature-list.md
+- 04-database-bible.md
+- 05-api-bible.md
+- 06-security-bible.md
+- 07-payment-bible.md
+- 08-reseller-bible.md
+- 09-ui-ux-bible.md
+- 10-app-integration.md
+- 11-marketing-bible.md
+- 12-devops-bible.md
+- 13-decision-log.md
+- 14-testing-bible.md
+- 15-support-bible.md
+- 16-release-bible.md
+
+Do not rename this file without approval.
+
+Do not create conflicting alternative decision log files.
+
+## Final Rule
+
+This decision log is a source of project truth.
+
+Do not reverse approved decisions silently.
+
+Do not implement rejected decisions.
+
+Do not implement pending decisions without approval.
+
+When in doubt, preserve the licensed player platform boundary.
