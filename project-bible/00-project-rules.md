@@ -2,15 +2,19 @@
 
 This file defines the non-negotiable project rules for TV Project Platform.
 
-Every future feature, code change, documentation update, and architectural decision must follow these rules.
+Every future feature, code change, documentation update, architecture decision, UI decision, API decision, database decision, reseller decision, payment decision, app integration decision, and marketing decision must follow these rules.
 
 ## Rule 1 - Product Identity
 
 TV Project Platform is a Licensed IPTV Player Platform.
 
+It is a software platform.
+
 It is not an IPTV broadcast provider.
 
-It is not a content platform.
+It is not a media provider.
+
+It is not a content provider.
 
 It is not a playlist provider.
 
@@ -18,17 +22,31 @@ It is not a channel seller.
 
 It is not a stream hosting service.
 
-## Rule 2 - Backend Product Boundary
+## Rule 2 - Product Must Stay Player-Only
 
-The backend must never provide, host, relay, transcode, package, sell, or distribute TV streams.
+The product must stay focused on licensed player access.
+
+The platform may manage software subscriptions, licenses, device activation, reseller operations, payments, app versions, remote configuration, and account access.
+
+The platform must not become a content platform.
+
+The platform must not become a broadcast platform.
+
+The platform must not become a playlist marketplace.
+
+## Rule 3 - Backend Product Boundary
+
+The backend must never provide, host, relay, transcode, package, sell, resell, or distribute TV streams.
 
 The backend must never operate as a CDN.
+
+The backend must never become a stream relay.
 
 The backend must never become a broadcast backend.
 
 The backend must never become the source of truth for playlist data.
 
-## Rule 3 - Backend Allowed Scope
+## Rule 4 - Backend Allowed Scope
 
 The backend may manage:
 
@@ -48,7 +66,7 @@ The backend may manage:
 - Audit logs
 - Optional temporary web-to-device playlist profile transfer
 
-## Rule 4 - Backend Forbidden Scope
+## Rule 5 - Backend Forbidden Scope
 
 The backend must not manage or provide:
 
@@ -65,7 +83,25 @@ The backend must not manage or provide:
 - Broadcast infrastructure
 - Permanent playlist credential authority
 
-## Rule 5 - Playlist Storage
+## Rule 6 - No Content Provider Features
+
+Do not add features for:
+
+- Channel inventory
+- Channel packages
+- Stream source management
+- Stream relay routes
+- Stream transcoding jobs
+- CDN stream delivery
+- Broadcast schedules
+- Content catalogs
+- Playlist marketplaces
+- Public playlist search
+- Shared playlist libraries
+
+These features violate the product boundary.
+
+## Rule 7 - Playlist Storage Decision
 
 Playlist information is not backend source of truth.
 
@@ -77,21 +113,38 @@ Playlist credentials must be stored using encrypted local storage.
 
 The backend should not permanently store playlist credentials by default.
 
-## Rule 6 - Optional Playlist Transfer
+## Rule 8 - Local-First Playlist Model
+
+The app is responsible for playlist profile management.
+
+The app should support:
+
+- Adding playlist profiles
+- Editing playlist profiles
+- Deleting playlist profiles
+- Selecting an active profile
+- Switching between profiles
+- Storing credentials securely on the device
+
+The backend must not be required for normal playlist storage.
+
+## Rule 9 - Optional Playlist Transfer
 
 The user may optionally send a playlist profile from the web panel to their own device.
 
 This feature must only work as a temporary encrypted transfer bridge.
 
+The transfer payload must be temporary.
+
 The transfer payload must expire.
 
-The transfer payload should be deleted after successful pickup when possible.
+The transfer payload should be deleted or marked consumed after successful pickup when possible.
 
 This feature must not turn the backend into permanent playlist storage.
 
 This feature must not turn the backend into a playlist provider.
 
-## Rule 7 - Encrypted Cloud Sync
+## Rule 10 - Encrypted Cloud Sync
 
 Encrypted cloud sync is not part of the default architecture.
 
@@ -103,15 +156,21 @@ If implemented later, it must be encrypted.
 
 If implemented later, it must not change the product into a playlist provider.
 
-## Rule 8 - Device Identity
+Encrypted cloud sync requires explicit approval before implementation.
+
+## Rule 11 - Device Identity
 
 MAC address must not be used as the primary device identifier.
 
-The primary device identifier should be:
+The primary device identifier is:
 
 - app_generated_device_id
 
-Secondary signals may include:
+The app should generate this identifier on first launch and persist it securely.
+
+## Rule 12 - Secondary Device Signals
+
+Secondary device signals may include:
 
 - Android ID
 - Device model
@@ -120,7 +179,11 @@ Secondary signals may include:
 - App version name
 - Install metadata
 
-## Rule 9 - User Roles
+Secondary signals may help with debugging, fraud review, and device management.
+
+Secondary signals must not replace app_generated_device_id as the primary identity.
+
+## Rule 13 - User Roles
 
 The system must support three main roles:
 
@@ -134,7 +197,7 @@ Frontend route hiding is not enough.
 
 Backend authorization is mandatory.
 
-## Rule 10 - Admin Permissions
+## Rule 14 - Admin Scope
 
 Admin users may manage:
 
@@ -150,23 +213,26 @@ Admin users may manage:
 - Audit logs
 - System settings
 
-Admin actions that affect users, money, reseller credits, devices, subscriptions, or system configuration must be audit logged.
+Admin actions that affect users, money, reseller credits, devices, subscriptions, app versions, remote config, or system configuration must be audit logged.
 
-## Rule 11 - Reseller Permissions
+## Rule 15 - Reseller Scope
 
 Resellers may manage:
 
 - Own customers
 - Own credit balance
+- Own credit transactions
 - Own sales
 - Own customer subscriptions
-- Own device and license records
+- Own customer device and license records
 
 A reseller must not access customers owned by another reseller.
 
 A reseller must not modify system-wide settings unless explicitly permitted by an admin.
 
-## Rule 12 - Customer Permissions
+A reseller must not manage channels, streams, playlists, or content through this platform.
+
+## Rule 16 - Customer Scope
 
 Customers may manage:
 
@@ -176,11 +242,27 @@ Customers may manage:
 - Own payment history
 - Optional playlist profile transfer to own device
 
-Customers must not access admin or reseller resources.
+Customers must not access admin resources.
+
+Customers must not access reseller resources.
 
 Customers must not access other customers' data.
 
-## Rule 13 - Reseller Credit System
+## Rule 17 - Backend Authorization
+
+Every protected backend endpoint must check:
+
+- Authentication
+- User role
+- Resource ownership
+- Resource status
+- Action permission
+
+Role checks alone are not enough.
+
+Ownership checks are required for reseller and customer resources.
+
+## Rule 18 - Reseller Credit System
 
 The reseller credit system must be transaction-based.
 
@@ -196,7 +278,7 @@ Credit usage must happen inside database transactions.
 
 Negative reseller balances must be prevented.
 
-## Rule 14 - Reseller Credit Transaction Fields
+## Rule 19 - Reseller Credit Transaction Fields
 
 Credit transactions should include:
 
@@ -212,21 +294,92 @@ Credit transactions should include:
 - Note
 - Created date
 
-## Rule 15 - Payment Rules
+Corrections should use adjustment or reversal records.
+
+Transaction history should not be silently deleted.
+
+## Rule 20 - Reseller Credit Transaction Types
+
+Initial reseller credit transaction types may include:
+
+- CREDIT_ADD
+- CREDIT_USE
+- CREDIT_REFUND
+- MANUAL_ADJUSTMENT
+- REVERSAL
+
+Every type must be processed by the backend.
+
+Every type must be auditable.
+
+## Rule 21 - Payment Scope
+
+Payments are for software/player access only.
+
+Payments may be for:
+
+- Software access
+- Player license access
+- Subscription time
+- Device activation rights
+- Reseller credit
+- Platform account features
+
+Payments must not be for:
+
+- TV channels
+- Live streams
+- VOD streams
+- Channel packages
+- Playlists
+- Content packages
+- Broadcast access
+
+## Rule 22 - Payment Security
 
 Card data must not be stored in this system.
+
+Do not store:
+
+- Card numbers
+- CVV
+- Full raw card payloads
+- Payment provider secrets in database
+- Webhook secrets in database
 
 Payment processing must use secure payment providers when real payments are enabled.
 
 Manual payment records may be supported during MVP.
 
+## Rule 23 - Payment Verification
+
 Subscription extension must happen only after verified payment confirmation.
 
 Payment provider webhook signatures must be verified.
 
+Frontend payment success pages must not directly extend subscriptions.
+
 Frontend price values must never be trusted.
 
-## Rule 16 - Password Security
+Frontend duration values must never be trusted.
+
+The backend must calculate the final amount and subscription result.
+
+## Rule 24 - Manual Payment MVP
+
+Manual payment records may be used during MVP.
+
+Manual payment approval must be admin-only.
+
+Manual payment rejection must be admin-only.
+
+Manual payment approval should create an audit log.
+
+Manual payment rejection should create an audit log.
+
+Manual payment approval may extend a subscription only through backend logic.
+
+## Rule 25 - Password Security
 
 Passwords must never be stored in plain text.
 
@@ -237,9 +390,11 @@ Recommended hashing options:
 - Argon2
 - bcrypt
 
-Password hashing configuration must be production-safe.
+Password hashes must never be returned by the API.
 
-## Rule 17 - Token Security
+Password hashes must never be exposed in logs.
+
+## Rule 26 - Token Security
 
 Authentication should use:
 
@@ -253,7 +408,9 @@ Access tokens should be short-lived.
 
 Refresh tokens should be handled securely.
 
-## Rule 18 - API Security
+Refresh tokens should be stored as hashes where practical.
+
+## Rule 27 - API Security
 
 API endpoints must use:
 
@@ -261,12 +418,13 @@ API endpoints must use:
 - DTO validation
 - Authentication guards
 - Role guards
+- Ownership checks
 - Standard response format
 - Standard error format
 - Rate limiting for sensitive endpoints
 - Audit logging for critical actions
 
-## Rule 19 - Sensitive Data
+## Rule 28 - Sensitive Data
 
 Do not log sensitive data.
 
@@ -279,8 +437,9 @@ Logs must not contain:
 - Full refresh tokens
 - Encryption keys
 - Payment provider secrets
+- Database passwords
 
-## Rule 20 - Environment Variables
+## Rule 29 - Environment Variables
 
 Secrets must be stored in environment variables.
 
@@ -290,37 +449,139 @@ The `.env.example` file may contain placeholder values only.
 
 Production secrets must be generated securely.
 
-## Rule 21 - Documentation First
+Default secrets must never be used in production.
 
-Major architectural decisions must be documented.
+## Rule 30 - Database Transactions
 
-Important decisions should be recorded in:
+Critical database writes must use transactions.
 
-- README.md
-- PROJECT_STATE.md
-- AI_HANDOFF.md
-- ROADMAP.md
-- project-bible/13-decision-log.md
+Transaction-required areas include:
 
-## Rule 22 - Project Bible Authority
+- Reseller credit add
+- Reseller credit use
+- Reseller credit refund
+- Manual credit adjustment
+- Subscription extension
+- Payment confirmation
+- Device activation
+- Playlist transfer consumption
 
-The project-bible directory is the long-term memory of the project.
+If one critical step fails, the full operation should rollback.
 
-Before making major changes, future assistants should check:
+## Rule 31 - Audit Logs
 
-- README.md
-- PROJECT_STATE.md
-- AI_HANDOFF.md
-- ROADMAP.md
-- project-bible directory
+Audit logs should record important platform actions.
 
-## Rule 23 - Code Structure
+Audit logs should include:
 
-Do not build the project as a single-file application.
+- Actor user ID
+- Actor role
+- Action type
+- Target resource type
+- Target resource ID
+- IP address
+- User agent
+- Metadata
+- Created date
 
-The project must remain modular.
+Audit logs must not contain sensitive data.
 
-The planned monorepo structure is:
+Audit logs must not contain playlist credentials.
+
+Audit logs must not contain payment card data.
+
+## Rule 32 - Actions That Must Be Audited
+
+The following actions should be audit logged:
+
+- User creation
+- User update
+- User disable
+- Role change
+- Reseller creation
+- Reseller update
+- Reseller credit add
+- Reseller credit use
+- Reseller credit refund
+- Manual credit adjustment
+- Subscription creation
+- Subscription extension
+- Subscription cancellation
+- Payment approval
+- Payment rejection
+- Device block
+- Device unblock
+- App version change
+- Remote config change
+- Playlist transfer creation
+- Playlist transfer consumption
+
+## Rule 33 - App Integration
+
+The Android TV or Fire TV app should:
+
+- Generate app_generated_device_id
+- Register or activate the device
+- Check license status
+- Check subscription status
+- Check app version
+- Fetch remote config
+- Manage local playlist profiles
+- Store playlist credentials securely on the device
+- Support multiple playlist profiles
+- Respect maintenance mode
+- Respect force update rules
+
+## Rule 34 - License Authority
+
+The backend is the license authority.
+
+The app must not decide final license validity alone.
+
+License checks should consider:
+
+- User status
+- Subscription status
+- Device activation status
+- Device block status
+- App version rules
+- Maintenance mode
+- Remote config rules
+
+## Rule 35 - App-Facing Endpoints
+
+App-facing endpoints may include:
+
+- POST /device/activate
+- GET /device/status
+- PATCH /device/heartbeat
+- GET /license/status
+- GET /app/version
+- GET /remote-config
+- POST /playlist-push/consume
+
+These endpoints must not return channel lists, stream URLs, playlist marketplaces, or content catalogs.
+
+## Rule 36 - Technical Stack
+
+The planned technical stack is:
+
+- pnpm monorepo
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- NestJS
+- Prisma
+- PostgreSQL
+- Redis
+- Docker Compose
+
+Do not change the planned stack without approval.
+
+## Rule 37 - Monorepo Structure
+
+The planned repository structure is:
 
 - apps/web
 - apps/api
@@ -328,8 +589,18 @@ The planned monorepo structure is:
 - project-bible
 - docs
 - infra
+- .github
 
-## Rule 24 - Frontend Rules
+Do not create duplicate nested folders.
+
+Wrong examples:
+
+- project-bible/project-bible
+- docs/docs
+- apps/apps
+- packages/packages
+
+## Rule 38 - Web App Responsibility
 
 The web app should include:
 
@@ -337,7 +608,8 @@ The web app should include:
 - Pricing page
 - Device selector
 - Download page
-- Auth pages
+- Login page
+- Register page
 - Customer dashboard
 - Reseller dashboard
 - Admin dashboard
@@ -346,7 +618,7 @@ The web app should include:
 
 Frontend checks must not replace backend authorization.
 
-## Rule 25 - Backend Rules
+## Rule 39 - API App Responsibility
 
 The API app should include:
 
@@ -364,7 +636,7 @@ The API app should include:
 - Audit logs module
 - Health module
 
-## Rule 26 - Shared Package Rules
+## Rule 40 - Shared Package Responsibility
 
 The shared package should include:
 
@@ -373,77 +645,84 @@ The shared package should include:
 - Device types
 - Subscription statuses
 - Payment statuses
+- Reseller transaction types
 - Shared validation schemas
 - Shared TypeScript types
 
-## Rule 27 - Database Rules
+## Rule 41 - Documentation First
 
-Critical database writes must use transactions.
+Major architectural decisions must be documented.
 
-Transaction-required areas include:
+Important decisions should be recorded in:
 
-- Reseller credit usage
-- Reseller credit refunds
-- Subscription extension
-- Payment confirmation
-- Device activation
-- Playlist transfer consumption
+- README.md
+- PROJECT_STATE.md
+- AI_HANDOFF.md
+- ROADMAP.md
+- project-bible/13-decision-log.md
 
-## Rule 28 - Audit Log Rules
+Do not silently change important decisions.
 
-Audit logs should record:
+## Rule 42 - Project Bible Authority
 
-- Actor user ID
-- Actor role
-- Action type
-- Target resource type
-- Target resource ID
-- IP address
-- User agent
-- Metadata
-- Created date
+The project-bible directory is the long-term memory of the project.
 
-## Rule 29 - App Integration Rules
+Before making major changes, future assistants and developers should check:
 
-The app should:
+- README.md
+- PROJECT_STATE.md
+- AI_HANDOFF.md
+- ROADMAP.md
+- SECURITY.md
+- LEGAL_SCOPE.md
+- project-bible directory
+- docs directory
 
-- Generate app_generated_device_id
-- Register or activate the device
-- Check license status
-- Check subscription status
-- Check app version
-- Fetch remote config
-- Manage local playlist profiles
-- Store playlist credentials securely on the device
-- Support multiple playlist profiles
-- Respect maintenance mode
-- Respect force update rules
+## Rule 43 - Stable Project Bible Tree
 
-## Rule 30 - Marketing Rules
+The stable project-bible tree is:
 
-Marketing must describe the product as a licensed player platform.
+- 00-project-rules.md
+- 01-product-bible.md
+- 02-user-roles.md
+- 03-feature-list.md
+- 04-database-bible.md
+- 05-api-bible.md
+- 06-security-bible.md
+- 07-payment-bible.md
+- 08-reseller-bible.md
+- 09-ui-ux-bible.md
+- 10-app-integration.md
+- 11-marketing-bible.md
+- 12-devops-bible.md
+- 13-decision-log.md
+- 14-testing-bible.md
+- 15-support-bible.md
+- 16-release-bible.md
 
-Marketing must not imply:
+Do not rename these files without approval.
 
-- Included channels
-- Included streams
-- Included content
-- IPTV subscription with content
-- Channel package access
-- Playlist provider access
+Do not create conflicting alternative Bible file names.
 
-## Rule 31 - Legal Pages
+## Rule 44 - Deprecated Bible Names
 
-The public website should include:
+Do not use these old or conflicting names:
 
-- Terms of service
-- Privacy policy
-- Refund policy
-- Acceptable use policy
+- 02-legal-boundaries.md
+- 03-playlist-philosophy.md
+- 04-architecture-principles.md
+- 05-reseller-credit-system.md
+- 06-device-activation.md
+- 07-payment-subscriptions.md
+- 08-remote-config-versioning.md
+- 09-security-privacy.md
+- 10-ops-and-deployment.md
+- 11-ui-product-guidelines.md
+- 12-testing-strategy.md
 
-These pages must clearly explain the player-only product model.
+If these exist, their useful content should be moved into the stable Bible tree and the old files should be removed.
 
-## Rule 32 - Manual Editing Workflow
+## Rule 45 - Manual Editing Workflow
 
 Critical multiline files may be edited manually through GitHub web editor or Codespaces.
 
@@ -451,9 +730,169 @@ Automated GitHub connector updates previously caused files to collapse into long
 
 For critical documentation files, verify line counts through raw GitHub.
 
-## Rule 33 - Raw GitHub Verification
+## Rule 46 - Raw GitHub Verification
 
 After editing critical files, verify with:
 
 ```bash
-curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_NAME | wc -l
+curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_PATH | wc -l
+
+Multiline documentation files should not return 1.
+
+Rule 47 - Repository Tree Safety
+
+Before creating new files or folders, inspect the real repository tree.
+
+Do not assume a file exists.
+
+Do not assume a folder structure exists.
+
+Do not create duplicate nested folders.
+
+Do not continue blindly if the real tree differs from the expected tree.
+
+Rule 48 - Marketing Rules
+
+Marketing must describe the product as a licensed player platform.
+
+Marketing must not imply:
+
+Included channels
+Included streams
+Included content
+IPTV subscription with content
+Channel package access
+Playlist provider access
+Rule 49 - Legal Pages
+
+The public website should include:
+
+Terms of service
+Privacy policy
+Refund policy
+Acceptable use policy
+
+These pages must clearly explain the player-only product model.
+
+Rule 50 - Support Rules
+
+Support may help with:
+
+Account issues
+Login issues
+Subscription status
+Device activation
+License status
+App updates
+Payment status
+Reseller credit questions
+Temporary playlist transfer issues
+
+Support must not provide:
+
+Channel lists
+Stream URLs
+IPTV playlists
+Provider credentials
+Content recommendations
+Rule 51 - Testing Rules
+
+Testing must verify:
+
+Authentication
+Role-based access control
+Ownership rules
+Reseller credit transactions
+Payment verification
+Subscription logic
+Device activation
+License checks
+App version rules
+Remote config
+Playlist transfer expiration
+Sensitive data protection
+Product boundary protection
+
+Tests must not assume the backend provides streams, channels, playlists, or content.
+
+Rule 52 - DevOps Rules
+
+Infrastructure may support:
+
+Web application
+API application
+PostgreSQL database
+Redis cache
+Background jobs
+APK release files
+Logs
+Monitoring
+Backups
+
+Infrastructure must not support:
+
+Stream hosting
+Stream relay
+Stream transcoding
+CDN stream delivery
+Channel package delivery
+Broadcast infrastructure
+Rule 53 - Release Rules
+
+No release should go live unless the following are checked:
+
+Product boundary is preserved
+Security checks pass
+Role permissions work
+Reseller credit transactions work
+Payment rules are safe
+Device license checks work
+App version rules work
+Remote config works
+Sensitive data is not exposed
+Documentation is updated
+Rule 54 - Do Not Change Without Approval
+
+Do not change these decisions without explicit approval:
+
+Player-only product model
+Backend is not a content provider
+Backend is not playlist source of truth
+Playlist credentials are stored locally in the app by default
+Multi-profile app support
+Optional temporary web-to-device playlist profile transfer
+App-generated device ID as primary identity
+Reseller credit transactions
+Role-based access control
+No card data storage
+No plain text passwords
+Backend-authoritative license checks
+Manual-first payment MVP
+pnpm monorepo structure
+Next.js web app
+NestJS API app
+Prisma PostgreSQL backend
+
+Rule 55 - Implementation Has Not Started Yet
+
+The project is still in foundation and documentation stabilization phase unless PROJECT_STATE.md says otherwise.
+
+Do not assume the real backend is complete.
+
+Do not assume the real frontend is complete.
+
+Do not assume the Prisma schema is final.
+
+Do not assume admin, reseller, or customer dashboards are implemented.
+
+Rule 56 - Final Rule
+
+Keep the project focused on licensed player access, subscriptions, devices, payments, resellers, app versions, remote config, audit logs, and app integration.
+
+Do not add stream-hosting features.
+
+Do not add channel-selling features.
+
+Do not add content-provider features.
+
+Do not make the backend the playlist authority.
