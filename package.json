@@ -2,22 +2,22 @@
   "name": "tv-project-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "Licensed IPTV Player Platform monorepo for account, subscription, license, device activation, reseller, payment, remote config, and optional user-owned playlist profile transfer.",
-  "packageManager": "pnpm@9.0.0",
+  "description": "Licensed IPTV Player Platform - Web, API, Admin, Reseller and Customer management system.",
+  "packageManager": "pnpm@9.15.0",
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=20.11.0",
     "pnpm": ">=9.0.0"
   },
   "scripts": {
     "dev": "pnpm -r --parallel --if-present run dev",
     "dev:web": "pnpm --filter @tv-platform/web run dev",
-    "dev:api": "pnpm --filter @tv-platform/api run dev",
+    "dev:api": "pnpm --filter @tv-platform/api run start:dev",
     "build": "pnpm -r --if-present run build",
     "start": "pnpm -r --if-present run start",
     "lint": "pnpm -r --if-present run lint",
     "test": "pnpm -r --if-present run test",
     "typecheck": "pnpm -r --if-present run typecheck",
-    "format:check": "pnpm -r --if-present run format:check",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css,yml,yaml}\"",
     "db:generate": "pnpm --filter @tv-platform/api exec prisma generate",
     "db:migrate": "pnpm --filter @tv-platform/api exec prisma migrate dev",
     "db:studio": "pnpm --filter @tv-platform/api exec prisma studio",
@@ -29,7 +29,9 @@
   },
   "devDependencies": {
     "@types/node": "latest",
+    "prettier": "^3.4.2",
     "prisma": "latest",
+    "turbo": "^2.3.3",
     "typescript": "latest"
   }
 }

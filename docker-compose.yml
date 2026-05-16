@@ -1,47 +1,55 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: tv-platform-postgres
+    container_name: tv_platform_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: tv_platform
-      POSTGRES_PASSWORD: tv_platform_dev_password
-      POSTGRES_DB: tv_platform_dev
+      POSTGRES_PASSWORD: tv_platform_password
+      POSTGRES_DB: tv_project_platform
     ports:
       - "5432:5432"
     volumes:
       - tv_platform_postgres_data:/var/lib/postgresql/data
-    networks:
-      - tv_platform_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tv_platform -d tv_project_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: tv-platform-redis
+    container_name: tv_platform_redis
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "6379:6379"
     volumes:
       - tv_platform_redis_data:/data
-    networks:
-      - tv_platform_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  mailpit:
-    image: axllent/mailpit:latest
-    container_name: tv-platform-mailpit
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: tv_platform_pgadmin
     restart: unless-stopped
     profiles:
       - tools
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@tvplatform.local
+      PGADMIN_DEFAULT_PASSWORD: admin_password
     ports:
-      - "1025:1025"
-      - "8025:8025"
-    networks:
-      - tv_platform_network
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - tv_platform_pgadmin_data:/var/lib/pgadmin
 
 volumes:
   tv_platform_postgres_data:
   tv_platform_redis_data:
-
-networks:
-  tv_platform_network:
-    driver: bridge
+  tv_platform_pgadmin_data:
