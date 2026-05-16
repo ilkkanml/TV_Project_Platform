@@ -736,10 +736,11 @@ After editing critical files, verify with:
 
 ```bash
 curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_PATH | wc -l
+```
 
-Multiline documentation files should not return 1.
+Multiline documentation files should not return `1`.
 
-Rule 47 - Repository Tree Safety
+## Rule 47 - Repository Tree Safety
 
 Before creating new files or folders, inspect the real repository tree.
 
@@ -751,129 +752,133 @@ Do not create duplicate nested folders.
 
 Do not continue blindly if the real tree differs from the expected tree.
 
-Rule 48 - Marketing Rules
+## Rule 48 - Marketing Rules
 
 Marketing must describe the product as a licensed player platform.
 
 Marketing must not imply:
 
-Included channels
-Included streams
-Included content
-IPTV subscription with content
-Channel package access
-Playlist provider access
-Rule 49 - Legal Pages
+- Included channels
+- Included streams
+- Included content
+- IPTV subscription with content
+- Channel package access
+- Playlist provider access
+
+## Rule 49 - Legal Pages
 
 The public website should include:
 
-Terms of service
-Privacy policy
-Refund policy
-Acceptable use policy
+- Terms of service
+- Privacy policy
+- Refund policy
+- Acceptable use policy
 
 These pages must clearly explain the player-only product model.
 
-Rule 50 - Support Rules
+## Rule 50 - Support Rules
 
 Support may help with:
 
-Account issues
-Login issues
-Subscription status
-Device activation
-License status
-App updates
-Payment status
-Reseller credit questions
-Temporary playlist transfer issues
+- Account issues
+- Login issues
+- Subscription status
+- Device activation
+- License status
+- App updates
+- Payment status
+- Reseller credit questions
+- Temporary playlist transfer issues
 
 Support must not provide:
 
-Channel lists
-Stream URLs
-IPTV playlists
-Provider credentials
-Content recommendations
-Rule 51 - Testing Rules
+- Channel lists
+- Stream URLs
+- IPTV playlists
+- Provider credentials
+- Content recommendations
+
+## Rule 51 - Testing Rules
 
 Testing must verify:
 
-Authentication
-Role-based access control
-Ownership rules
-Reseller credit transactions
-Payment verification
-Subscription logic
-Device activation
-License checks
-App version rules
-Remote config
-Playlist transfer expiration
-Sensitive data protection
-Product boundary protection
+- Authentication
+- Role-based access control
+- Ownership rules
+- Reseller credit transactions
+- Payment verification
+- Subscription logic
+- Device activation
+- License checks
+- App version rules
+- Remote config
+- Playlist transfer expiration
+- Sensitive data protection
+- Product boundary protection
 
 Tests must not assume the backend provides streams, channels, playlists, or content.
 
-Rule 52 - DevOps Rules
+## Rule 52 - DevOps Rules
 
 Infrastructure may support:
 
-Web application
-API application
-PostgreSQL database
-Redis cache
-Background jobs
-APK release files
-Logs
-Monitoring
-Backups
+- Web application
+- API application
+- PostgreSQL database
+- Redis cache
+- Background jobs
+- APK release files
+- Logs
+- Monitoring
+- Backups
 
 Infrastructure must not support:
 
-Stream hosting
-Stream relay
-Stream transcoding
-CDN stream delivery
-Channel package delivery
-Broadcast infrastructure
-Rule 53 - Release Rules
+- Stream hosting
+- Stream relay
+- Stream transcoding
+- CDN stream delivery
+- Channel package delivery
+- Broadcast infrastructure
+
+## Rule 53 - Release Rules
 
 No release should go live unless the following are checked:
 
-Product boundary is preserved
-Security checks pass
-Role permissions work
-Reseller credit transactions work
-Payment rules are safe
-Device license checks work
-App version rules work
-Remote config works
-Sensitive data is not exposed
-Documentation is updated
-Rule 54 - Do Not Change Without Approval
+- Product boundary is preserved
+- Security checks pass
+- Role permissions work
+- Reseller credit transactions work
+- Payment rules are safe
+- Device license checks work
+- App version rules work
+- Remote config works
+- Sensitive data is not exposed
+- Documentation is updated
+
+## Rule 54 - Do Not Change Without Approval
 
 Do not change these decisions without explicit approval:
 
-Player-only product model
-Backend is not a content provider
-Backend is not playlist source of truth
-Playlist credentials are stored locally in the app by default
-Multi-profile app support
-Optional temporary web-to-device playlist profile transfer
-App-generated device ID as primary identity
-Reseller credit transactions
-Role-based access control
-No card data storage
-No plain text passwords
-Backend-authoritative license checks
-Manual-first payment MVP
-pnpm monorepo structure
-Next.js web app
-NestJS API app
-Prisma PostgreSQL backend
+- Player-only product model
+- Backend is not a content provider
+- Backend is not playlist source of truth
+- Playlist credentials are stored locally in the app by default
+- Multi-profile app support
+- Optional temporary web-to-device playlist profile transfer
+- App-generated device ID as primary identity
+- Reseller credit transactions
+- Role-based access control
+- No card data storage
+- No plain text passwords
+- Backend-authoritative license checks
+- Manual-first payment MVP
+- pnpm monorepo structure
+- Next.js web app
+- NestJS API app
+- Prisma PostgreSQL backend
 
-Rule 55 - Implementation Has Not Started Yet
+## Rule 55 - Implementation Has Not Started Yet
 
 The project is still in foundation and documentation stabilization phase unless PROJECT_STATE.md says otherwise.
 
@@ -885,7 +890,7 @@ Do not assume the Prisma schema is final.
 
 Do not assume admin, reseller, or customer dashboards are implemented.
 
-Rule 56 - Final Rule
+## Rule 56 - Final Rule
 
 Keep the project focused on licensed player access, subscriptions, devices, payments, resellers, app versions, remote config, audit logs, and app integration.
 
