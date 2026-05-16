@@ -1,26 +1,28 @@
 # 06 - Security Bible
 
-This file defines the security architecture and security rules for TV Project Platform.
+This file defines the security architecture, security rules, sensitive data rules, authentication rules, authorization rules, payment security rules, reseller security rules, device security rules, and app integration security rules for TV Project Platform.
 
-Security is mandatory across the API, web app, database, reseller system, payment system, app integration, and optional playlist transfer bridge.
+Security is mandatory across the API, web app, database, reseller system, payment system, app integration, deployment, support process, and optional playlist transfer bridge.
 
 ## Product Boundary
 
 TV Project Platform is a Licensed IPTV Player Platform.
 
-The platform is not an IPTV provider.
+The platform is not:
 
-The platform is not a content provider.
+- IPTV provider
+- Content provider
+- Channel provider
+- Stream provider
+- Playlist provider
+- CDN provider
+- Broadcast backend
 
-The platform is not a playlist provider.
+Security must protect the player-only product boundary.
 
-The platform is not a stream hosting service.
+The backend must never provide, host, relay, transcode, package, sell, or distribute TV streams.
 
-Security must protect the product boundary.
-
-The backend must not provide, host, relay, transcode, package, sell, or distribute TV streams.
-
-The backend must not become the source of truth for playlist data.
+The backend must never become the source of truth for playlist data.
 
 ## Core Security Rules
 
@@ -34,11 +36,13 @@ The platform must follow these rules:
 - Never trust frontend-provided permissions.
 - Always validate input.
 - Always enforce backend authorization.
+- Always check resource ownership.
 - Always audit critical admin actions.
 - Always audit reseller credit operations.
 - Always verify payment webhooks.
 - Always make license checks backend-authoritative.
 - Always expire temporary playlist transfer payloads.
+- Always avoid logging sensitive data.
 
 ## Authentication Security
 
@@ -49,10 +53,13 @@ Required rules:
 - Passwords must be hashed.
 - Plain text passwords must never be stored.
 - Password hashes must never be returned by the API.
+- Password hashes must never be logged.
 - Login must be rate limited.
 - Register must be rate limited.
 - Refresh token endpoints must be protected.
 - Logout must invalidate refresh tokens where possible.
+- Disabled users must not access protected resources.
+- Suspended users should be restricted according to business rules.
 
 Recommended password hashing:
 
@@ -61,9 +68,23 @@ Recommended password hashing:
 
 Access tokens should be short-lived.
 
-Refresh tokens should be stored as hashes.
+Refresh tokens should be stored as hashes where practical.
 
 Refresh token rotation should be considered.
+
+## Token Security
+
+Token rules:
+
+- Do not log access tokens.
+- Do not log refresh tokens.
+- Do not expose tokens in error messages.
+- Do not store refresh tokens in plain text.
+- Use separate secrets for access and refresh tokens.
+- Use strong secrets in production.
+- Rotate secrets if exposed.
+- Invalidate refresh tokens on logout.
+- Invalidate refresh tokens when suspicious activity is detected where possible.
 
 ## Authorization Security
 
@@ -103,13 +124,16 @@ Critical admin actions include:
 - Changing roles
 - Creating resellers
 - Updating resellers
+- Disabling resellers
 - Adding reseller credit
 - Adjusting reseller credit
 - Creating plans
 - Updating plans
 - Changing subscriptions
 - Approving manual payments
+- Rejecting manual payments
 - Blocking devices
+- Unblocking devices
 - Changing app version rules
 - Changing remote config
 - Changing system settings
@@ -137,6 +161,10 @@ Reseller users must not access:
 - App version settings
 - Remote config settings
 - Full audit logs
+- Stream sources
+- Channel packages
+- Playlist marketplace records
+- Content catalogs
 
 Reseller credit operations must be transaction-based.
 
@@ -173,6 +201,26 @@ Customer users must not access:
 - Other customer payment history
 - System settings
 - Audit logs
+- Payment provider settings
+- App version settings
+- Remote config settings
+
+## Ownership Security
+
+Ownership checks are mandatory.
+
+Required ownership checks:
+
+- Customer can access only own profile.
+- Customer can access only own subscription.
+- Customer can access only own devices.
+- Customer can access only own payments.
+- Customer can create playlist transfer only for own device.
+- Reseller can access only own customers.
+- Reseller can access only own customer subscriptions.
+- Reseller can access only own customer devices.
+- Reseller can access only own credit transactions.
+- Reseller can use credit only for own customers.
 
 ## Device Security
 
@@ -195,7 +243,8 @@ Secondary device signals:
 
 Device activation must validate:
 
-- Authenticated user
+- Authenticated user or valid activation flow
+- User status
 - Device ownership
 - Plan device limit
 - Subscription status
@@ -229,10 +278,14 @@ Possible denial reasons:
 - LICENSE_INVALID
 - FORCE_UPDATE_REQUIRED
 - MAINTENANCE_MODE
+- USER_DISABLED
+- APP_VERSION_UNSUPPORTED
 
 License checks may be logged for debugging and abuse detection.
 
 License logs must not contain playlist credentials.
+
+License responses must not contain stream URLs, channel lists, playlist marketplace data, or content catalogs.
 
 ## Playlist Security
 
@@ -258,6 +311,34 @@ The optional web-to-device playlist transfer bridge must be:
 This feature must not become permanent playlist storage.
 
 This feature must not become a playlist provider.
+
+This feature must not become a playlist marketplace.
+
+## Temporary Playlist Transfer Security
+
+Temporary playlist transfer must follow strict rules.
+
+Required behavior:
+
+- Authenticated customer creates transfer.
+- Customer selects own device.
+- Backend validates device ownership.
+- Backend stores encrypted payload temporarily.
+- Payload has expiration time.
+- App consumes payload once when possible.
+- Payload is marked consumed or deleted.
+- Expired payloads are deleted or ignored.
+- Audit logs are created when needed.
+
+Forbidden behavior:
+
+- Permanent backend playlist storage
+- Shared playlist library
+- Playlist marketplace
+- Public playlist search
+- Backend playlist authority
+- Logging playlist credentials
+- Exposing playlist credentials to other users
 
 ## Payment Security
 
@@ -285,6 +366,8 @@ Payment security rules:
 - Make webhook handling idempotent.
 - Extend subscriptions only after verified payment success.
 - Audit manual payment approvals.
+- Audit manual payment rejections.
+- Do not log payment provider secrets.
 
 ## Webhook Security
 
@@ -298,8 +381,9 @@ Webhook rules:
 - Validate currency.
 - Validate payment status.
 - Prevent duplicate processing.
-- Store webhook event metadata when useful.
+- Store safe event metadata when useful.
 - Never trust unsigned webhook payloads.
+- Never expose webhook secrets in logs.
 
 Webhook endpoints should be protected by:
 
@@ -307,6 +391,7 @@ Webhook endpoints should be protected by:
 - Idempotency checks
 - Logging
 - Safe error handling
+- Rate limiting where appropriate
 
 ## API Security
 
@@ -341,7 +426,7 @@ Rate limiting should protect:
 - Login
 - Register
 - Refresh token
-- Password reset
+- Password reset later
 - Device activation
 - License status
 - Playlist transfer creation
@@ -369,6 +454,8 @@ Validation should cover:
 - UUID or ID format
 - Status transitions
 - Ownership-sensitive IDs
+- Pagination limits
+- Sort field allowlists
 
 Invalid input should return a standard validation error.
 
@@ -377,6 +464,7 @@ Invalid input should return a standard validation error.
 Never log:
 
 - Plain text passwords
+- Password hashes
 - Payment card data
 - Playlist credentials
 - Full access tokens
@@ -384,6 +472,7 @@ Never log:
 - Encryption keys
 - Payment provider secrets
 - Database passwords
+- Raw sensitive provider payloads
 
 Never return from API:
 
@@ -393,6 +482,7 @@ Never return from API:
 - encryption keys
 - payment provider secrets
 - raw playlist credentials
+- full tokens of other sessions
 
 ## Environment Secret Rules
 
@@ -411,6 +501,8 @@ Sensitive environment values include:
 - PLAYLIST_TRANSFER_ENCRYPTION_KEY
 - PAYMENT_WEBHOOK_SECRET
 - ADMIN_SEED_PASSWORD
+- Payment provider keys
+- Payment provider secrets
 
 Production secrets must be strong and unique.
 
@@ -426,8 +518,11 @@ Transaction-required operations:
 - Reseller credit use
 - Reseller credit refund
 - Manual credit adjustment
-- Subscription extension
-- Payment confirmation
+- Subscription creation through reseller credit
+- Subscription extension through reseller credit
+- Manual payment approval
+- Payment webhook confirmation
+- Subscription extension after payment
 - Device activation
 - Playlist transfer consumption
 
@@ -441,6 +536,8 @@ Useful constraints:
 - Non-negative reseller credit balance
 - Unique device identity where appropriate
 - Expiring playlist transfer payloads
+- Valid payment status
+- Valid subscription status
 
 ## Audit Logging
 
@@ -464,6 +561,8 @@ Audit logs should not contain playlist credentials.
 
 Audit logs should not contain payment card data.
 
+Audit logs should not contain full tokens or secrets.
+
 ## Actions To Audit
 
 Audit these actions:
@@ -474,6 +573,7 @@ Audit these actions:
 - Role change
 - Reseller creation
 - Reseller update
+- Reseller disable
 - Reseller credit add
 - Reseller credit use
 - Reseller credit refund
@@ -481,6 +581,7 @@ Audit these actions:
 - Subscription creation
 - Subscription extension
 - Subscription cancellation
+- Subscription suspension
 - Payment approval
 - Payment rejection
 - Device block
@@ -521,34 +622,25 @@ The Android TV or Fire TV app should:
 - Respect subscription expiration
 - Avoid logging sensitive credentials
 - Avoid exposing tokens in logs
+- Avoid exposing playlist credentials in crash reports
 
 The app may cache limited license state for user experience.
 
 The backend remains the authority.
 
-## Temporary Playlist Transfer Security
+## App Token Handling
 
-Temporary playlist transfer must follow strict rules.
+The app should handle tokens securely.
 
-Required behavior:
+Rules:
 
-- Authenticated customer creates transfer.
-- Customer selects own device.
-- Backend validates device ownership.
-- Backend stores encrypted payload temporarily.
-- Payload has expiration time.
-- App consumes payload once.
-- Payload is marked consumed or deleted.
-- Expired payloads are deleted or ignored.
-- Audit logs are created when needed.
-
-Forbidden behavior:
-
-- Permanent backend playlist storage
-- Shared playlist library
-- Playlist marketplace
-- Public playlist search
-- Backend playlist authority
+- Do not log tokens.
+- Store tokens securely.
+- Refresh tokens when needed.
+- Logout should clear tokens.
+- Expired tokens should trigger re-authentication.
+- Do not expose tokens in crash logs.
+- Do not send tokens to third-party services.
 
 ## Error Handling Security
 
@@ -578,6 +670,31 @@ Examples:
 - PAYMENT_NOT_VERIFIED
 - SERVER_ERROR
 
+## Logging Security
+
+Logs should help debugging without exposing secrets.
+
+Safe log metadata may include:
+
+- Request ID
+- User ID
+- Role
+- Endpoint
+- Status code
+- Error code
+- Timestamp
+- IP address where appropriate
+- User agent where appropriate
+
+Logs must not include:
+
+- Passwords
+- Card data
+- Playlist credentials
+- Tokens
+- Secrets
+- Encryption keys
+
 ## Dependency Security
 
 Dependencies should be reviewed before production.
@@ -590,6 +707,7 @@ Recommended practices:
 - Review security advisories.
 - Avoid unnecessary dependencies.
 - Lock dependency versions through pnpm lockfile.
+- Run dependency audit before production.
 
 ## CI Security
 
@@ -604,7 +722,9 @@ Future CI should check:
 
 CI must not print secrets.
 
-CI logs must not expose environment variables.
+CI must not expose environment variables.
+
+CI must not expose production credentials.
 
 ## Backup Security
 
@@ -620,6 +740,39 @@ Backup rules:
 - Rotate backup credentials when needed.
 
 Backups must not contain payment card data because card data must never be stored.
+
+## CORS Security
+
+CORS must be restricted in production.
+
+Allowed origins should include only approved web app domains.
+
+Do not use wildcard CORS in production.
+
+Local development may use local origins only.
+
+## HTTPS Security
+
+Production must use HTTPS.
+
+HTTP should redirect to HTTPS.
+
+API tokens must not be sent over insecure HTTP in production.
+
+Payment webhooks must use secure endpoints.
+
+## Security Headers
+
+Production should use security headers.
+
+Recommended areas:
+
+- Content Security Policy where practical
+- X-Frame-Options or frame ancestors
+- X-Content-Type-Options
+- Referrer-Policy
+- Permissions-Policy
+- Strict-Transport-Security
 
 ## MVP Security Checklist
 
@@ -678,6 +831,20 @@ If a security incident occurs:
 7. Add tests where possible.
 8. Document the incident.
 9. Notify affected users if required.
+10. Add prevention tasks.
+
+## Forbidden Security Assumptions
+
+Do not assume:
+
+- Frontend route hiding is security.
+- User role sent from frontend is trusted.
+- Price sent from frontend is trusted.
+- Credit value sent from frontend is trusted.
+- Device identity alone guarantees authorization.
+- Webhook payload is valid without signature verification.
+- App local license state overrides backend denial.
+- Temporary playlist transfer is permanent storage.
 
 ## Do Not Add Without Approval
 
@@ -692,6 +859,32 @@ Do not add these without explicit approval:
 - Default cloud playlist credential storage
 - Card data storage
 - Plain text password storage
+
+## Stable Project Bible Link
+
+This file is part of the stable project-bible tree:
+
+- 00-project-rules.md
+- 01-product-bible.md
+- 02-user-roles.md
+- 03-feature-list.md
+- 04-database-bible.md
+- 05-api-bible.md
+- 06-security-bible.md
+- 07-payment-bible.md
+- 08-reseller-bible.md
+- 09-ui-ux-bible.md
+- 10-app-integration.md
+- 11-marketing-bible.md
+- 12-devops-bible.md
+- 13-decision-log.md
+- 14-testing-bible.md
+- 15-support-bible.md
+- 16-release-bible.md
+
+Do not rename this file without approval.
+
+Do not create conflicting alternative security files.
 
 ## Final Rule
 
