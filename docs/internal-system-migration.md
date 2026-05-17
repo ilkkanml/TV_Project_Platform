@@ -6,13 +6,13 @@ Future migration plan for moving project memory, validation, deployment, and rol
 
 This is a future migration plan.
 
-Some public-facing/static helper files may be removed before full internal migration if the Director decides they are no longer useful.
+Public/static helper files that are no longer useful may be removed by Director decision.
 
-Core project memory files must stay until their content is either imported, replaced, or intentionally simplified.
+Core project memory files stay until their content is imported, replaced, or intentionally simplified.
 
 ## Migration Goal
 
-The long-term goal is to move project knowledge and operational control from static files into a database-backed management system.
+Move project knowledge and operational control from static files into a database-backed management system.
 
 The future internal system will manage:
 
@@ -56,13 +56,10 @@ Active memory/control files:
 Removed from active use:
 
 - README.md
-
-Temporary / review later:
-
 - CONTRIBUTING.md
 - CHANGELOG.md
 - docs/new-chat-start-message.md
-- external validation workflow files
+- .github/workflows/ci.yml
 
 ## Phase A - Internal Memory Tables
 
@@ -115,7 +112,7 @@ Import sources:
 - docs/environment-variables.md
 - project-bible directory
 
-Removed or inactive files should not be imported unless needed for history.
+Removed files should not be imported unless needed for history.
 
 Completion rule:
 
@@ -170,7 +167,6 @@ Archive candidates:
 - AI_HANDOFF.md
 - PROJECT_STATE.md
 - ROADMAP.md
-- docs/new-chat-start-message.md
 - project-bible directory
 - docs/development-workflow.md
 - docs/department-system.md
