@@ -1,30 +1,16 @@
 # Project State
 
-This file is the current state summary for TV Project Platform.
-
-## Project Identity
-
-Project name:
-
-TV Project Platform
-
-Product type:
-
-Licensed IPTV Player Platform
-
-The platform manages software/player access, accounts, subscriptions, licenses, devices, payments, reseller operations, app version control, remote configuration, audit logs, and optional temporary encrypted web-to-device profile transfer.
-
-The platform is not a media provider, broadcast backend, channel seller, playlist marketplace, CDN, relay, transcoder, or backend source of truth for user playlist/profile data.
+Current state summary for TV Project Platform.
 
 ## Current Phase
 
-Current phase:
-
 Foundation stabilization and controlled implementation preparation.
 
-The project workspace already contains foundation code and foundation documentation.
+The project workspace is not empty.
 
-Do not describe the project as empty or not started.
+Foundation code and foundation documentation exist.
+
+Do not describe the project as not started.
 
 ## Confirmed Foundation
 
@@ -41,14 +27,11 @@ Code foundation:
 
 Documentation and workflow foundation:
 
-- README.md
 - PROJECT_STATE.md
 - AI_HANDOFF.md
 - ROADMAP.md
-- CHANGELOG.md
 - SECURITY.md
 - LEGAL_SCOPE.md
-- CONTRIBUTING.md
 - LICENSE.md
 - docs/development-workflow.md
 - docs/department-system.md
@@ -59,7 +42,20 @@ Documentation and workflow foundation:
 - docs/local-setup.md
 - docs/environment-variables.md
 - docs/new-chat-start-message.md
+- project-bible/00-project-rules.md
+- project-bible/17-ai-operations-bible.md
 - project-bible canonical tree
+
+Removed from active use:
+
+- README.md
+
+Still temporary / review later:
+
+- CONTRIBUTING.md
+- CHANGELOG.md
+- docs/new-chat-start-message.md
+- external validation workflow files
 
 ## Management Model
 
@@ -72,7 +68,7 @@ Core rules:
 - Milestones control scope.
 - AI Gate blocks unnecessary AI calls.
 - Context Builder Engine builds the smallest useful context package.
-- Departments are single-task expert calls, not permanent chat rooms.
+- Departments are single-task expert calls.
 - Departments answer only with structured output.
 - Departments do not acknowledge instructions.
 - Departments do not add filler text.
@@ -109,18 +105,15 @@ Approved system engines:
 
 ## Current Project Structure
 
-Expected root structure:
+Expected active root structure:
 
 ```txt
 TV_Project_Platform/
-├── README.md
 ├── PROJECT_STATE.md
 ├── AI_HANDOFF.md
 ├── ROADMAP.md
-├── CHANGELOG.md
 ├── SECURITY.md
 ├── LEGAL_SCOPE.md
-├── CONTRIBUTING.md
 ├── LICENSE.md
 ├── .env.example
 ├── .gitignore
@@ -140,12 +133,6 @@ TV_Project_Platform/
 
 ## Root Script State
 
-Current API development command:
-
-```txt
-pnpm --filter @tv-platform/api run dev
-```
-
 Common root commands:
 
 ```txt
@@ -160,16 +147,6 @@ pnpm infra:down
 pnpm db:generate
 pnpm db:migrate
 ```
-
-## Documentation State
-
-Critical foundation documentation is present.
-
-Older non-canonical docs may still exist.
-
-Do not delete older docs blindly.
-
-Review and migrate useful content before removal, rename, or archive decisions.
 
 ## Implementation State
 
@@ -187,6 +164,7 @@ Completed foundation areas:
 - department system docs
 - token economy docs
 - context builder docs
+- AI operations bible
 - local setup docs
 - environment variable docs
 
@@ -203,7 +181,7 @@ Not complete yet:
 - payment records
 - app version module
 - remote config module
-- temporary profile transfer bridge
+- temporary transfer bridge
 - audit log module
 - admin panel
 - reseller panel
@@ -213,38 +191,6 @@ Not complete yet:
 - finalized MVP Prisma schema
 - pnpm-lock.yaml after first dependency install
 
-## Product Boundary
-
-Allowed backend areas:
-
-- accounts
-- authentication
-- role-based access control
-- customer subscriptions
-- player licenses
-- device activation
-- payment records
-- reseller accounts
-- reseller credit transactions
-- app version control
-- remote configuration
-- maintenance mode
-- feature flags
-- audit logs
-- optional temporary encrypted web-to-device profile transfer
-
-Forbidden backend areas:
-
-- channel inventory
-- media catalog
-- content distribution
-- media relay
-- transcoding jobs
-- CDN behavior
-- public playlist marketplace
-- provider credential distribution
-- permanent backend playlist/profile authority by default
-
 ## Current Risks
 
 - Prisma schema is early and not MVP-complete.
@@ -252,14 +198,15 @@ Forbidden backend areas:
 - Tests are not complete yet.
 - Production deployment setup is not complete yet.
 - Long documents must not be sent to AI as full context.
-- New assistants must read token economy, context builder, and department response rules.
+- Oversized Bible files should be simplified after cleanup.
 
 ## Current Recommended Next Steps
 
-1. Generate and save pnpm-lock.yaml after first dependency install.
-2. Finalize MVP Prisma schema in controlled smaller patches.
-3. Validate internal build/typecheck workflow after lockfile exists.
-4. Continue milestone-based implementation.
+1. Finish documentation synchronization.
+2. Remove agreed unnecessary files.
+3. Simplify oversized Bible files.
+4. Generate and save pnpm-lock.yaml after first dependency install.
+5. Continue milestone-based implementation.
 
 ## Update Rule
 
