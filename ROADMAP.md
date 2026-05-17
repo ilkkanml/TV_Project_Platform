@@ -1,6 +1,6 @@
 # Roadmap
 
-This file defines the milestone roadmap for TV Project Platform.
+Milestone roadmap for TV Project Platform.
 
 ## Current Project Status
 
@@ -28,21 +28,24 @@ Foundation exists:
 - Department response rules
 - Token economy rules
 - Context Builder Engine rules
+- AI operations bible
 - Internal system migration plan
 - Local setup guide
 - Environment variables guide
-- CONTRIBUTING.md
 - LICENSE.md
 
+Removed from active use:
+
+- README.md
+
+Temporary / review later:
+
+- CONTRIBUTING.md
+- CHANGELOG.md
+- docs/new-chat-start-message.md
+- external validation workflow files
+
 The project is not MVP-ready yet.
-
-## Product Direction
-
-TV Project Platform is a Licensed IPTV Player Platform.
-
-The backend may manage accounts, auth, roles, subscriptions, licenses, devices, payments, resellers, app versions, remote config, audit logs, and optional temporary encrypted web-to-device profile transfer.
-
-The backend must not become a media provider, broadcast backend, CDN, relay, transcoder, catalog seller, public playlist marketplace, or default permanent profile authority.
 
 ## Management Direction
 
@@ -50,12 +53,17 @@ The project is managed by a Director-led milestone system.
 
 Required workflow documents:
 
+- AI_HANDOFF.md
+- PROJECT_STATE.md
+- ROADMAP.md
 - docs/development-workflow.md
 - docs/department-system.md
 - docs/department-response-rules.md
 - docs/token-economy.md
 - docs/context-builder-engine.md
 - docs/internal-system-migration.md
+- project-bible/00-project-rules.md
+- project-bible/17-ai-operations-bible.md
 
 Operating rules:
 
@@ -123,7 +131,6 @@ PASSED
 
 Completed:
 
-- README.md exists and is current.
 - PROJECT_STATE.md exists and is current.
 - AI_HANDOFF.md exists and is current.
 - ROADMAP.md exists and is current.
@@ -135,24 +142,99 @@ Completed:
 - docs/internal-system-migration.md exists.
 - docs/local-setup.md exists.
 - docs/environment-variables.md exists.
-- CONTRIBUTING.md exists.
+- project-bible/00-project-rules.md exists.
+- project-bible/17-ai-operations-bible.md exists.
 - LICENSE.md exists.
 - Product boundary is defined.
 - Director/milestone/department model is approved.
 - Three-fail loop breaker is approved.
 - Token budget guard is approved.
 - Context Builder Engine is approved.
-- No filler department response rule is approved.
+- No-filler department response rule is approved.
 - Checkpoint and rollback rules are approved.
+- README.md removed from active use.
 
 Completion rules:
 
-- All handoff files describe the same current workflow.
+- Active handoff files describe the same current workflow.
 - No foundation file claims the project has no implementation.
-- Product boundary remains intact.
 - Token economy rules are active.
 
-## Milestone 1 - Local Install and Lockfile
+## Milestone 1 - Cleanup and Simplification
+
+Goal:
+
+Remove or archive files that are no longer useful for the private internal workflow, then simplify oversized project documents.
+
+Status:
+
+IN_PROGRESS
+
+Scope:
+
+- Remove confirmed unnecessary public-facing files.
+- Remove or archive old startup/helper files.
+- Remove external-only workflow files after internal validation direction is confirmed.
+- Keep LICENSE.md.
+- Keep technical config and application code.
+- Simplify oversized Bible files after cleanup.
+
+Potential cleanup candidates:
+
+- CONTRIBUTING.md
+- CHANGELOG.md
+- docs/new-chat-start-message.md
+- external validation workflow files
+
+Do not remove yet:
+
+- AI_HANDOFF.md
+- PROJECT_STATE.md
+- ROADMAP.md
+- SECURITY.md
+- LEGAL_SCOPE.md
+- LICENSE.md
+- docs/development-workflow.md
+- docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- docs/internal-system-migration.md
+- project-bible/00-project-rules.md
+- project-bible/17-ai-operations-bible.md
+
+Completion rules:
+
+- Unneeded files are removed only after Director decision.
+- Remaining docs do not reference removed active files.
+- Oversized docs are marked for simplification.
+
+## Milestone 2 - Bible Simplification
+
+Goal:
+
+Reduce oversized project Bible documents into compact authority files.
+
+Status:
+
+NOT_STARTED
+
+Scope:
+
+- Simplify project-bible/00-project-rules.md.
+- Keep only non-negotiable rules in 00.
+- Move AI/token details to 17-ai-operations-bible.md.
+- Leave security/payment/reseller/testing/release details in their own Bible files.
+- Avoid duplicating long rule text.
+
+Completion rules:
+
+- 00-project-rules.md becomes compact.
+- No critical rule is lost.
+- Detailed rules remain in dedicated files.
+- Token burden is reduced.
+
+## Milestone 3 - Local Install and Lockfile
 
 Goal:
 
@@ -177,7 +259,7 @@ Completion rules:
 - Dependency install completes or error package is created.
 - Root scripts are still aligned with package scripts.
 
-## Milestone 2 - Internal Validation Workflow
+## Milestone 4 - Internal Validation Workflow
 
 Goal:
 
@@ -201,7 +283,7 @@ Completion rules:
 - Failures are packaged into compact error packages.
 - No repeated blind retries.
 
-## Milestone 3 - Shared Package Foundation
+## Milestone 5 - Shared Package Foundation
 
 Goal:
 
@@ -236,7 +318,7 @@ Completion rules:
 - Web and API import shared values cleanly.
 - No duplicated enums across layers without reason.
 
-## Milestone 4 - API Foundation
+## Milestone 6 - API Foundation
 
 Goal:
 
@@ -273,7 +355,7 @@ Completion rules:
 - Standard error/response format exists.
 - Environment requirements are documented.
 
-## Milestone 5 - Database Foundation
+## Milestone 7 - Database Foundation
 
 Goal:
 
@@ -287,30 +369,13 @@ Existing:
 
 - apps/api/prisma/schema.prisma early schema
 
-Required MVP models:
-
-- User
-- Session
-- Plan
-- Subscription
-- Device
-- LicenseCheck
-- ResellerProfile
-- ResellerCreditTransaction
-- Payment
-- PaymentEvent
-- AppVersion
-- RemoteConfig
-- ProfileTransferRequest
-- AuditLog
-
 Completion rules:
 
 - Schema contains all MVP models.
 - Relations and indexes support expected access patterns.
 - Migration path is documented.
 
-## Milestone 6 - Authentication and Authorization
+## Milestone 8 - Authentication and Authorization
 
 Goal:
 
@@ -320,241 +385,47 @@ Status:
 
 NOT_STARTED
 
-Scope:
-
-- login
-- logout
-- refresh token
-- password hashing
-- session records
-- role guards
-- current user decorator
-- rate limiting for sensitive endpoints
-- audit logs for sensitive actions
-
 Completion rules:
 
 - Admin, reseller, and customer roles are enforced server-side.
 - Frontend route hiding is not treated as security.
 - Password hash never returns from API.
 
-## Milestone 7 - Subscription, License, and Device Foundation
+## Milestone 9 - Core Product Engines
 
 Goal:
 
-Build core subscription, license validation, and device activation foundations.
+Build subscription, license, device, reseller, payment, app version, remote config, and audit foundations.
 
 Status:
 
 NOT_STARTED
 
-Scope:
-
-- plan management
-- subscription creation and extension
-- expiration logic
-- device activation endpoint
-- device status endpoint
-- license status endpoint
-- license check records
-- blocked device handling
-
 Completion rules:
 
-- App can ask backend whether a device is allowed.
-- Expired subscription blocks access.
-- Blocked device blocks access.
-- app_generated_device_id is primary.
+- License checks are backend-authoritative.
+- Device identity uses app_generated_device_id.
+- Reseller credit operations are transaction-based.
+- Payment records do not store card data.
+- Critical actions are audit logged.
 
-## Milestone 8 - Reseller Credit System
+## Milestone 10 - Panels and Public Pages
 
 Goal:
 
-Build secure reseller credit accounting.
+Build customer, reseller, admin, and required public/legal page foundations.
 
 Status:
 
 NOT_STARTED
-
-Scope:
-
-- reseller profile
-- credit add
-- credit use
-- refund
-- manual adjustment
-- reseller customer creation
-- reseller subscription assignment
-- credit transaction history
-- admin reseller overview
-- audit logs
-
-Completion rules:
-
-- Every credit operation creates a transaction.
-- Frontend credit values are not trusted.
-- Negative balances are prevented.
-- Credit use and subscription change happen safely together.
-
-## Milestone 9 - Payment Records
-
-Goal:
-
-Create payment records and manual payment approval flow.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- manual payment records
-- payment status tracking
-- payment approval
-- payment history
-- admin payment overview
-- webhook-ready structure for future providers
-
-Completion rules:
-
-- Card data is not stored.
-- Payment result is backend-authoritative.
-- Subscription extension happens only after approved payment state.
-
-## Milestone 10 - App Version and Remote Config
-
-Goal:
-
-Allow backend-controlled app rules.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- app version records
-- minimum version code
-- force update flag
-- update URL
-- release notes
-- remote config records
-- maintenance mode
-- feature flags
-- announcement message
-
-Completion rules:
-
-- App can fetch version rules.
-- App can fetch remote configuration.
-- Admin can manage safe config values.
-
-## Milestone 11 - Temporary Profile Transfer Bridge
-
-Goal:
-
-Allow user-owned encrypted temporary profile transfer without changing the product boundary.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- create temporary transfer request
-- encrypted payload storage
-- device scoping
-- app consume endpoint
-- expiration
-- consumed/revoked state
-- audit log
-
-Completion rules:
-
-- Transfer expires.
-- Transfer is scoped to user and device.
-- Transfer does not become permanent default storage.
-
-## Milestone 12 - Web Foundation
-
-Goal:
-
-Create the web application structure.
-
-Status:
-
-PARTIAL
-
-Existing:
-
-- apps/web package skeleton
-- root layout
-- global CSS
-- public landing shell
-
-Pending:
-
-- auth pages
-- dashboard layouts
-- shared UI components
-- API client
-- route constants
-- protected route middleware
-
-Completion rules:
-
-- Web app starts.
-- Landing shell exists.
-- Auth and dashboard shells exist.
-
-## Milestone 13 - Panels
-
-Goal:
-
-Build customer, reseller, and admin dashboard foundations.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- customer overview, subscription, devices, payments
-- reseller overview, customers, credit, sales
-- admin users, resellers, plans, subscriptions, payments, devices, app versions, remote config, audit logs
 
 Completion rules:
 
 - Each role sees only allowed data.
 - Critical actions are server-authorized and audit logged.
+- Public messaging stays within product boundary.
 
-## Milestone 14 - Public Website and Legal Pages
-
-Goal:
-
-Build public-facing pages with clear product positioning.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- home
-- pricing
-- download
-- device selector
-- FAQ
-- privacy policy
-- terms of service
-- refund policy
-
-Completion rules:
-
-- Messaging states software/player access only.
-- No page implies bundled media access.
-
-## Milestone 15 - Testing and Security Hardening
+## Milestone 11 - Testing and Security Hardening
 
 Goal:
 
@@ -564,27 +435,13 @@ Status:
 
 NOT_STARTED
 
-Scope:
-
-- auth tests
-- role permission tests
-- subscription tests
-- license tests
-- device tests
-- reseller credit tests
-- payment tests
-- temporary transfer expiration tests
-- sensitive data review
-- rate limiting
-- security headers
-- input validation
-
 Completion rules:
 
 - Critical flows are tested.
 - QA Security signs off milestone completion.
+- Sensitive data is not exposed.
 
-## Milestone 16 - Deployment Preparation
+## Milestone 12 - Deployment Preparation
 
 Goal:
 
@@ -594,22 +451,13 @@ Status:
 
 NOT_STARTED
 
-Scope:
-
-- deployment notes
-- environment variables
-- database migration flow
-- backup strategy
-- monitoring plan
-- rollback path
-
 Completion rules:
 
 - Staging plan exists.
 - Production plan exists.
 - Backup and rollback plans exist.
 
-## Milestone 17 - MVP Release
+## Milestone 13 - MVP Release
 
 Goal:
 
@@ -635,31 +483,6 @@ MVP must include:
 - reseller credit system
 - manual payment records
 - audit logs
-
-MVP must not include:
-
-- media delivery
-- catalog-selling features
-- relay/transcoding features
-- public playlist marketplace
-- default permanent backend profile authority
-
-## Post-MVP Ideas
-
-These require separate approval:
-
-- real payment provider integration
-- email notifications
-- SMS notifications
-- ticket system
-- referral system
-- encrypted opt-in cloud profile sync
-- advanced app analytics
-- admin 2FA
-- reseller commission models
-- invoice/PDF receipts
-- multi-currency pricing
-- advanced device limits
 
 ## Roadmap Update Rule
 
