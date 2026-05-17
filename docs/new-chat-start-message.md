@@ -12,60 +12,113 @@ We are continuing the GitHub repository:
 
 https://github.com/ilkkanml/TV_Project_Platform
 
-This project is TV Project Platform.
+Project name:
+
+TV Project Platform
+
+Product type:
+
+Licensed IPTV Player Platform
 
 Before doing anything, read and respect these files:
 
-- README.md
-- PROJECT_STATE.md
 - AI_HANDOFF.md
+- PROJECT_STATE.md
+- README.md
 - ROADMAP.md
 - SECURITY.md
 - LEGAL_SCOPE.md
-- project-bible directory
-- docs directory
+- CONTRIBUTING.md
+- docs/development-workflow.md
+- docs/department-system.md
+- project-bible/00-project-rules.md
+- project-bible directory as needed
+- docs directory as needed
 
-Do not redefine the product.
+## Current Operating Model
 
-Do not change previously accepted decisions.
+This project uses a Director-led milestone system.
 
-Do not rename files unless explicitly approved.
+Rules:
 
-Do not create duplicate folders.
+- Owner approves major direction changes.
+- Director controls execution order.
+- Milestones control scope.
+- AI departments are single-task expert calls.
+- Departments do not talk directly to each other.
+- Old department conversations are not reused as default AI context.
+- Accepted department output becomes compact reusable memory.
+- Three failed attempts on the same issue stop the task.
+- Last successful checkpoint must be used before risky retry or rollback.
+- AI output may not deploy itself.
+- Deployment requires Director approval, dry run, path whitelist, backup/checkpoint, and audit log.
+- Token usage must be budgeted and minimized.
 
-Do not create nested project-bible/project-bible or docs/docs folders.
+## Approved AI Departments
 
-Do not continue blindly if the real repository tree differs from the expected tree.
+Only these AI departments are active by default:
 
-First inspect the repository tree, then continue.
+- Architect
+- Database
+- Backend
+- Frontend
+- QA Security
+- Memory Documentation
 
-## Product Identity
+Departments answer once, in a structured format, then close.
 
-TV Project Platform is a Licensed IPTV Player Platform.
+## Approved System Engines
 
-It is not an IPTV broadcast provider.
+These are deterministic system engines, not AI departments:
 
-It is not a content provider.
+- Milestone Controller
+- Loop Breaker
+- Checkpoint Manager
+- Deployment Engine
+- Rollback Engine
+- Cost Guard
+- Audit Logger
 
-It is not a playlist provider.
+System engines should not call AI unless the Director explicitly asks for analysis.
 
-It is not a channel seller.
+## Required Department Output Format
 
-It is not a stream hosting service.
+Every department must answer with:
 
-## Strict Product Boundary
+```txt
+Department:
+Task:
+Result:
+Risk:
+Required Files:
+Director Action Needed:
+```
 
-The backend must never provide, host, relay, transcode, package, sell, or distribute TV streams.
+For code tasks, add:
 
-The backend must never operate as a CDN.
+```txt
+Code Version Impact:
+Rollback Need:
+Test Requirement:
+```
 
-The backend must never become a broadcast backend.
+For error tasks, add:
 
-The backend must never become the source of truth for playlist data.
+```txt
+Likely Cause:
+Fix Attempt Number:
+Stop Condition:
+```
 
-The backend must not provide channel lists, stream URLs, content catalogs, channel packages, or playlist marketplace features.
+## Project Identity
 
-## Backend Allowed Scope
+TV Project Platform is a licensed player platform.
+
+It manages software/player access, accounts, subscriptions, licenses, devices, payments, reseller operations, app version control, remote configuration, audit logs, and optional temporary encrypted web-to-device profile transfer.
+
+It must not become a media provider, broadcast backend, CDN, relay, transcoder, catalog seller, public playlist marketplace, or default permanent profile authority.
+
+## Allowed Backend Scope
 
 The backend may manage:
 
@@ -83,145 +136,43 @@ The backend may manage:
 - Maintenance mode
 - Feature flags
 - Audit logs
-- Optional temporary web-to-device playlist profile transfer
+- Optional temporary encrypted web-to-device profile transfer
 
-## Playlist Decision
+## Forbidden Backend Scope
 
-Playlist information is not backend source of truth.
+The backend must not add:
 
-By default, playlist information is entered inside the app.
+- Media catalog features
+- Channel inventory features
+- Media delivery features
+- Relay/transcoding features
+- CDN behavior
+- Public playlist marketplace features
+- Provider credential distribution
+- Default permanent backend playlist/profile authority
 
-Playlist credentials are stored on the user device.
+## Core Decisions
 
-Playlist credentials must be stored using encrypted local storage.
+Do not change these without explicit Owner approval:
 
-The backend should not permanently store playlist credentials by default.
+- Licensed-player-only product model
+- Backend is not the source of truth for user playlist/profile data by default
+- User profile credentials are local-first in the app by default
+- App-generated device ID is the primary device identity
+- Reseller credit operations are transaction-based
+- Role-based access control is mandatory
+- Payment card data is not stored
+- Plain text passwords are not stored
+- License checks are backend-authoritative
+- Manual-first payment MVP
+- pnpm monorepo
+- Next.js web app
+- NestJS API app
+- Prisma PostgreSQL backend
 
-The app must support multiple playlist profiles.
+## Technical Stack
 
-The user may optionally send a playlist profile from the web panel to their own device.
-
-This optional feature must only work as a temporary encrypted transfer bridge.
-
-Temporary transfer payloads must expire.
-
-Temporary transfer payloads should be deleted or marked consumed after pickup when possible.
-
-Encrypted cloud sync is not default and requires explicit approval.
-
-## Device Identity Decision
-
-MAC address must not be used as the primary device identifier.
-
-The primary device identifier is:
-
-- app_generated_device_id
-
-Secondary signals may include:
-
-- Android ID
-- Device model
-- Platform
-- App version code
-- App version name
-- Install metadata
-
-## Roles
-
-The platform has three primary roles:
-
-- Admin
-- Reseller
-- Customer
-
-Backend authorization is mandatory.
-
-Frontend route hiding is not enough.
-
-Admin can manage platform-wide resources.
-
-Reseller can manage only own customers and own credit-related records.
-
-Customer can manage only own account, subscription, devices, payments, and optional playlist transfer records.
-
-## Reseller Credit Decision
-
-The reseller credit system must be transaction-based.
-
-A simple balance field is not enough.
-
-Every credit operation must create a transaction record.
-
-Credit transactions should include:
-
-- Reseller ID
-- Transaction type
-- Amount
-- Balance before
-- Balance after
-- Related customer
-- Related subscription
-- Created by
-- IP address
-- Note
-- Created date
-
-The backend must never trust frontend credit values.
-
-The backend must calculate credit cost and balance changes.
-
-Credit usage must happen inside database transactions.
-
-Negative reseller balances must be prevented.
-
-## Payment Decision
-
-Payments are for software/player access only.
-
-Payments are not for channels, streams, playlists, or content.
-
-Card data must not be stored.
-
-Manual payment records may be supported during MVP.
-
-Real payment integration may use approved providers later.
-
-Possible providers:
-
-- Iyzico
-- PayTR
-- Stripe
-- Other approved providers
-
-Payment webhook signatures must be verified.
-
-Subscription extension must happen only after verified payment confirmation.
-
-Frontend price values must not be trusted.
-
-## Security Decisions
-
-Passwords must never be stored in plain text.
-
-Payment card data must never be stored directly.
-
-Frontend values must not be trusted for pricing, credits, roles, or permissions.
-
-Role-based access control is required.
-
-Auth endpoints must be rate limited.
-
-Critical admin and reseller actions must be audit logged.
-
-Device license checks must be backend-authoritative.
-
-Temporary playlist transfer payloads must expire.
-
-Sensitive data must not be logged.
-
-## Planned Technical Stack
-
-The planned technical stack is:
+The planned stack is:
 
 - pnpm monorepo
 - Next.js
@@ -234,17 +185,39 @@ The planned technical stack is:
 - Redis
 - Docker Compose
 
-## Planned Repository Structure
+## Current Repository Reality
 
-The planned repository structure is:
+Do not say implementation has not started.
 
-- apps/web
-- apps/api
-- packages/shared
-- project-bible
-- docs
-- infra
-- .github
+The repository already has foundation code:
+
+- apps/web skeleton
+- apps/api skeleton
+- packages/shared skeleton
+- Prisma early schema
+- API health endpoint
+- Web landing shell
+- Docker Compose services
+- Department workflow docs
+- Milestone workflow docs
+
+Still not complete:
+
+- LICENSE.md
+- CI workflow
+- finalized MVP schema
+- real API modules beyond health
+- real dashboards
+- tests
+- production deployment
+
+## Repository Safety Rules
+
+Do not redefine the product.
+
+Do not restart the architecture.
+
+Do not rename canonical files unless approved.
 
 Do not create duplicate nested folders.
 
@@ -253,125 +226,22 @@ Wrong examples:
 - project-bible/project-bible
 - docs/docs
 - apps/apps
+- packages/packages
 
-## Important Workflow Rule
+Do not continue blindly if the real repository tree differs from PROJECT_STATE.md.
 
-Some previous automated file edits caused files to collapse into single-line content.
-
-For critical Markdown, JSON, YAML, and ENV files, use manual editing through GitHub web editor or Codespaces unless the tool is confirmed to preserve newlines.
-
-Safe workflow:
-
-1. Inspect the real repository tree.
-2. Confirm the exact file path.
-3. Provide complete file content.
-4. User manually replaces the file content.
-5. User commits manually.
-6. User verifies raw GitHub line count.
-7. Continue to the next file.
-
-Do not invent new filenames.
-
-Do not assume a file exists.
-
-Do not create replacement files with different names unless explicitly approved.
-
-## Raw GitHub Verification Pattern
-
-After editing a critical file, verify with:
-
-curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_PATH | wc -l
-
-A multiline Markdown file should not return 1.
-
-## Current Foundation Goal
-
-The current goal is to stabilize the repository foundation before real coding.
-
-Priority:
-
-1. Stabilize repository tree.
-2. Remove accidental duplicate folders if any.
-3. Keep product decisions unchanged.
-4. Complete foundation documentation.
-5. Complete project-bible documentation.
-6. Complete docs documentation.
-7. Then start real implementation.
-
-## Before Continuing
-
-Before continuing, run or ask the user to run:
-
-find . -maxdepth 3 -type f | sort
-
-Also inspect:
-
-find project-bible -maxdepth 3 -type f | sort
-
-And:
-
-git status --short
-
-If duplicate or unexpected folders exist, stop and clean the tree before writing new content.
-
-## Do Not Change Without Approval
-
-Do not change these decisions without explicit user approval:
-
-- Player-only product model
-- Backend is not a content provider
-- Backend is not playlist source of truth
-- Playlist credentials are stored locally in the app by default
-- Multi-profile app support
-- Optional temporary web-to-device playlist profile transfer
-- App-generated device ID as primary device identity
-- Reseller credit transaction requirement
-- Role-based access control
-- No payment card data storage
-- No plain text password storage
-- Backend-authoritative license checks
-- Manual-first payment MVP
-- pnpm monorepo structure
-- Next.js web app
-- NestJS API app
-- Prisma PostgreSQL backend
-
-## Implementation Has Not Started Yet
-
-Do not assume the real backend is complete.
-
-Do not assume the real frontend is complete.
-
-Do not assume the Prisma schema is final.
-
-Do not assume admin, reseller, or customer dashboards are implemented.
-
-The project is still in foundation and documentation stabilization phase.
-
-## Assistant Behavior Required
-
-The assistant must:
-
-- Be careful.
-- Work from the actual repository tree.
-- Preserve accepted decisions.
-- Avoid renaming files without approval.
-- Avoid creating duplicate folders.
-- Avoid adding content-provider features.
-- Avoid adding stream-hosting features.
-- Avoid making backend playlist authority.
-- Provide complete code or complete file content when asked.
-- Keep responses practical and concise.
-- Ask for repository tree output when uncertain.
+If repository state and docs conflict, stop and reconcile state first.
 
 ## Final Instruction
 
-Continue the project from the existing repository state.
+Continue from the current repository state.
 
-Do not restart the architecture.
+Use the milestone system.
 
-Do not change the product direction.
+Use departments only as single-task expert calls.
 
-Do not create new conflicting documentation structure.
+Keep context small.
+
+Protect the product boundary.
 
 First stabilize, then implement.
