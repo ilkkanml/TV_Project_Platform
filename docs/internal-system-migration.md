@@ -1,43 +1,68 @@
 # Internal System Migration Plan
 
-This document defines what will happen after TV Project Platform gains its own internal project memory, version control, validation, deployment, and rollback system.
+Future migration plan for moving project memory, validation, deployment, and rollback control into the platform's own internal system.
+
+## Current Decision
 
 This is a future migration plan.
 
-Do not delete current files before the internal system is implemented and verified.
+Some public-facing/static helper files may be removed before full internal migration if the Director decides they are no longer useful.
+
+Core project memory files must stay until their content is either imported, replaced, or intentionally simplified.
 
 ## Migration Goal
 
-The long-term goal is to move project knowledge and operational control from static files into the platform's own database-backed management system.
+The long-term goal is to move project knowledge and operational control from static files into a database-backed management system.
 
 The future internal system will manage:
 
-- Project constitution
-- Product boundary rules
-- Milestones
-- Department definitions
-- Department outputs
+- project constitution
+- product boundary rules
+- milestones
+- department definitions
+- department outputs
 - Director decisions
-- Checkpoints
-- Code versions
-- Deployment records
-- Rollback records
-- Audit logs
+- checkpoints
+- code versions
+- deployment records
+- rollback records
+- audit logs
 - AI usage logs
-- Environment references
-- Internal validation results
+- environment references
+- internal validation results
 
-## Current Rule
+## Current Active Static Memory
 
-Until the internal system is working, all current files remain active.
+Active memory/control files:
 
-No documentation file should be deleted only because it will later move into the database.
+- AI_HANDOFF.md
+- PROJECT_STATE.md
+- ROADMAP.md
+- SECURITY.md
+- LEGAL_SCOPE.md
+- LICENSE.md
+- docs/development-workflow.md
+- docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- docs/internal-system-migration.md
+- docs/local-setup.md
+- docs/environment-variables.md
+- project-bible/00-project-rules.md
+- project-bible/17-ai-operations-bible.md
+- project-bible directory as needed
 
-No workflow file should be removed until the internal validation workflow is ready.
+Removed from active use:
 
-No project memory file should be archived until its content has been imported and verified.
+- README.md
 
-## Migration Phases
+Temporary / review later:
+
+- CONTRIBUTING.md
+- CHANGELOG.md
+- docs/new-chat-start-message.md
+- external validation workflow files
 
 ## Phase A - Internal Memory Tables
 
@@ -45,6 +70,8 @@ Create database tables for:
 
 - project_memory
 - project_rules
+- document_sections
+- memory_summaries
 - milestones
 - milestone_checkpoints
 - departments
@@ -55,31 +82,40 @@ Create database tables for:
 - rollback_records
 - audit_logs
 - ai_usage_logs
+- context_packages
+- context_items
+- accepted_output_cache
+- similar_task_cache
+- ai_gate_logs
+- model_routing_rules
 - system_settings
 
 Completion rule:
 
-The internal system can store and read project rules, milestone state, department outputs, and Director decisions.
+The internal system can store and read project rules, milestone state, department outputs, context packages, and Director decisions.
 
 ## Phase B - Document Import
 
-Import important file content into database-backed memory.
+Import useful static file content into database-backed memory.
 
 Import sources:
 
-- README.md
-- PROJECT_STATE.md
 - AI_HANDOFF.md
+- PROJECT_STATE.md
 - ROADMAP.md
 - SECURITY.md
 - LEGAL_SCOPE.md
-- CONTRIBUTING.md
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- docs/internal-system-migration.md
 - docs/local-setup.md
 - docs/environment-variables.md
-- docs/new-chat-start-message.md
 - project-bible directory
+
+Removed or inactive files should not be imported unless needed for history.
 
 Completion rule:
 
@@ -89,21 +125,21 @@ Imported content must be visible from the internal management panel.
 
 The internal management panel must show:
 
-- Current project identity
-- Current milestone
-- Current risks
-- Approved departments
-- System engines
-- Active rules
-- Recent Director decisions
-- Checkpoints
-- Deployment state
-- Rollback state
+- current project identity
+- current milestone
+- current risks
+- approved departments
+- system engines
+- active rules
+- recent Director decisions
+- checkpoints
+- deployment state
+- rollback state
 - AI usage summary
 
 Completion rule:
 
-The Owner and Director can understand project state without reading static files manually.
+Owner and Director can understand project state without reading static files manually.
 
 ## Phase D - Internal Validation Replacement
 
@@ -127,7 +163,7 @@ The internal validation engine can block unsafe deployment.
 
 ## Phase E - Archive Static Project Memory
 
-After database import and panel verification, static project memory files may be moved to an archive area.
+After database import and panel verification, static project memory files may be archived.
 
 Archive candidates:
 
@@ -138,37 +174,35 @@ Archive candidates:
 - project-bible directory
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
 
-These files should not be deleted immediately.
+Archive first when traceability matters.
 
-They should first be archived for traceability.
+Delete only after Director decision.
 
-## Phase F - Keep Required Project Files
+## Phase F - Keep Required Runtime / Ownership Files
 
-Some files should remain even after internal migration.
-
-Keep:
+Keep unless a later milestone replaces them:
 
 - LICENSE.md
-- README.md or a shortened public-facing replacement
-- SECURITY.md or a shortened security policy replacement
-- LEGAL_SCOPE.md or a shortened legal boundary replacement
+- SECURITY.md or shortened replacement
+- LEGAL_SCOPE.md or shortened replacement
 - .env.example
 - package.json
 - pnpm-workspace.yaml
 - tsconfig.base.json
 - docker-compose.yml when still used
-- apps directory when still used
-- packages directory when still used
-- infra directory when still used
-
-If the technical stack changes later, these files must be reviewed by milestone decision, not deleted casually.
+- apps directory
+- packages directory
+- infra directory
 
 ## Phase G - Legacy Cleanup Decision
 
-After the internal system is stable, the Director may propose a cleanup milestone.
+After the internal system is stable, the Director may propose cleanup.
 
-That cleanup milestone must classify every legacy file as:
+Each legacy file must be classified as:
 
 - KEEP
 - SHORTEN
@@ -176,45 +210,8 @@ That cleanup milestone must classify every legacy file as:
 - REMOVE_AFTER_BACKUP
 - REPLACE_WITH_INTERNAL_SYSTEM_RECORD
 
-No file should be removed without a logged Director decision.
-
-## Files That Will Eventually Lose Active Status
-
-These files are expected to stop being active project-control sources after successful internal migration:
-
-- AI_HANDOFF.md
-- PROJECT_STATE.md
-- ROADMAP.md
-- docs/new-chat-start-message.md
-- project-bible directory
-- docs/development-workflow.md
-- docs/department-system.md
-
-They may remain as archived references.
-
-## Files That Should Stay Longer
-
-These files should remain longer because they support ownership, setup, security, or real application runtime:
-
-- LICENSE.md
-- README.md
-- SECURITY.md
-- LEGAL_SCOPE.md
-- .env.example
-- docs/local-setup.md
-- docs/environment-variables.md
-- package.json
-- pnpm-workspace.yaml
-- tsconfig.base.json
-- docker-compose.yml
-- apps directory
-- packages directory
-- infra directory
-
 ## Final Migration Rule
 
-Do not remove the ladder before the new staircase is built.
+Do not remove project memory before it is replaced, imported, or intentionally simplified.
 
-Static files remain active until the internal database-backed system can fully replace them.
-
-After replacement, archive first, then remove only with Director approval and audit logging.
+After replacement, archive first when useful, then remove only with Director approval and audit logging.
