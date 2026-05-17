@@ -1,6 +1,6 @@
 # Development Workflow
 
-This file defines how TV Project Platform will be managed while the project grows.
+This file defines how TV Project Platform is managed while the project grows.
 
 The project uses a milestone-first workflow.
 
@@ -10,13 +10,24 @@ The goal is to prevent scope drift, repeated failed attempts, unnecessary token 
 
 Final authority belongs to the Director.
 
-The user approves major direction changes.
+The Owner approves major direction changes.
 
 AI departments do not make final product decisions.
 
 AI departments do not talk to each other directly.
 
 All department output returns to the Director first.
+
+## Required Workflow Documents
+
+The workflow is controlled by these documents:
+
+- docs/development-workflow.md
+- docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- docs/internal-system-migration.md
 
 ## Milestone System
 
@@ -54,12 +65,14 @@ A department is a single-use expert call.
 The workflow is:
 
 1. Director creates a task.
-2. The system selects the required department.
-3. The department receives only the required short context.
-4. The department returns one structured answer.
-5. The result is saved as department output.
-6. The conversation is closed.
-7. Old department messages are not reused as future API context.
+2. AI Gate checks whether AI is needed.
+3. Context Builder Engine builds the smallest useful context.
+4. The system selects one required department.
+5. The department receives only the approved task package.
+6. The department returns one structured answer.
+7. The result is saved as department output.
+8. The conversation is closed.
+9. Old department messages are not reused as future AI context.
 
 This protects cost, speed, and focus.
 
@@ -83,6 +96,9 @@ The following are system engines, not AI departments:
 - Milestone Controller
 - Loop Breaker
 - Checkpoint Manager
+- Context Builder Engine
+- AI Gate
+- Similar Task Cache
 - Deployment Engine
 - Rollback Engine
 - Cost Guard
@@ -92,11 +108,54 @@ System engines should use normal application logic whenever possible.
 
 System engines should not call the AI API unless the Director explicitly asks for analysis.
 
+## AI Gate Rule
+
+Every task must pass AI Gate before an AI call.
+
+AI Gate must ask:
+
+```txt
+Does this task require AI?
+```
+
+If deterministic logic can complete the task, no AI call is allowed.
+
+No AI is needed for:
+
+- milestone status changes
+- fail count updates
+- checkpoint creation
+- rollback candidate lookup
+- path whitelist checks
+- dry run validation
+- audit log writes
+- code version activation
+- token cost calculation
+
+## Context Builder Rule
+
+AI context must be built by the Context Builder Engine.
+
+The context package must include only the smallest useful set:
+
+- compact project summary
+- active milestone summary
+- department role
+- task instruction
+- relevant accepted decisions
+- relevant section summaries
+- relevant file excerpts
+- error package when needed
+- required output format
+- stop condition
+
+The Context Builder must not include full long documents, full old conversations, full codebase, or unrelated department outputs by default.
+
 ## Token Budget Guard
 
-Every AI task must have a maximum response budget.
+Every AI task must have input and output limits.
 
-Default limits:
+Default output limits:
 
 - Architect: 800 tokens
 - Database: 1000 tokens
@@ -109,18 +168,11 @@ Large outputs must be split into approved steps.
 
 ## Department Output Template
 
-Every department response must follow this structure:
+Every department response must follow the required structure from docs/department-response-rules.md.
 
-```txt
-Department:
-Task:
-Result:
-Risk:
-Required Files:
-Director Action Needed:
-```
+Departments must not add acknowledgement, filler, greeting, closing, or conversational text.
 
-Free-form long responses should be avoided.
+Receiving the task is implied by the structured answer.
 
 ## Sliding Context Rule
 
@@ -128,13 +180,13 @@ The AI context must stay small.
 
 A task may include:
 
-- Active milestone
-- Project constitution summary
-- Department role
-- Current task
-- Relevant decision records
-- Relevant file or database excerpt
-- Last error package when needed
+- active milestone
+- compact project summary
+- department role
+- current task
+- relevant decision records
+- relevant file or database excerpt
+- last error package when needed
 
 A task must not include full old conversations by default.
 
@@ -144,7 +196,38 @@ Raw task messages may be archived for audit.
 
 Archived messages are not automatically reused as AI context.
 
-The reusable memory is the accepted department output, Director decision, milestone status, and checkpoint state.
+The reusable memory is the accepted compact department output, Director decision, milestone status, and checkpoint state.
+
+## Accepted Output Cache Rule
+
+Every accepted department output must produce:
+
+- raw_output archive
+- compact_output active memory
+
+Future AI calls should use compact_output by default.
+
+Raw output is used only when the Director requests deep review.
+
+## Similar Task Cache Rule
+
+Before calling AI, the system checks whether a similar accepted output already exists.
+
+If a reliable accepted answer exists, return it without an AI call.
+
+## One Question One Department Rule
+
+A task should go to one department at a time.
+
+Do not send the same broad question to multiple departments in parallel.
+
+Preferred sequence:
+
+```txt
+Architect -> Director -> Database -> Director -> Backend -> Director -> QA Security
+```
+
+Only call the next department when needed.
 
 ## Three Fail Loop Breaker
 
@@ -152,12 +235,12 @@ A task may fail at most three times for the same problem.
 
 After the third failure:
 
-- The task is locked.
-- The failure reason is recorded.
-- No blind retry is allowed.
-- The last successful checkpoint is identified.
-- Rollback is prepared if needed.
-- Director approval is required before continuing.
+- the task is locked
+- the failure reason is recorded
+- no blind retry is allowed
+- the last successful checkpoint is identified
+- rollback is prepared if needed
+- Director approval is required before continuing
 
 Rule:
 
@@ -211,12 +294,12 @@ Deployment must use dry run before writing files.
 
 Dry run must verify:
 
-- Target path is allowed.
-- Target path stays inside the project directory.
-- File extension is allowed.
-- Content is not empty.
-- Backup can be created.
-- Write permission exists.
+- target path is allowed
+- target path stays inside the project directory
+- file extension is allowed
+- content is not empty
+- backup can be created
+- write permission exists
 
 Only after dry run passes may the Deployment Engine write real files.
 
@@ -238,6 +321,7 @@ The log should include:
 - Input tokens
 - Output tokens
 - Estimated cost
+- Context items used
 - Created timestamp
 
 ## Model Routing Rule
@@ -260,13 +344,16 @@ Send a small error package:
 - Operation
 - Error message
 - Expected behavior
+- Actual behavior
 - Last successful checkpoint
 - Relevant code excerpt only
+- Fix attempt number
+- Stop condition
 
 ## Director Stop Rule
 
 If the project direction becomes unclear, stop.
 
-If the repository state conflicts with documentation, stop and reconcile the state first.
+If the project state conflicts with documentation, stop and reconcile the state first.
 
 If a change risks the product boundary, stop and request Director review.
