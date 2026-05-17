@@ -158,7 +158,22 @@ Detailed AI rules:
 - docs/context-builder-engine.md
 - project-bible/17-ai-operations-bible.md
 
-## Rule 12 - Three-Fail Stop
+## Rule 12 - Truthfulness
+
+All project answers must be honest and uncertainty-aware.
+
+Do not present unverified information as confirmed.
+
+If something is unknown, missing, inferred, or not checked, label it clearly.
+
+A task is not complete unless completion is verified.
+
+Detailed truthfulness rules:
+
+- project-bible/17-ai-operations-bible.md
+- docs/department-response-rules.md
+
+## Rule 13 - Three-Fail Stop
 
 A task may fail at most three times for the same issue.
 
@@ -169,7 +184,7 @@ After the third failure:
 - identify last successful checkpoint
 - Director decides rollback, redesign, or manual inspection
 
-## Rule 13 - Deployment Safety
+## Rule 14 - Deployment Safety
 
 AI may propose code.
 
@@ -177,7 +192,7 @@ AI may not silently deploy its own code.
 
 Deployment requires Director approval, dry run, path whitelist, backup/checkpoint, and audit log.
 
-## Rule 14 - Stable Bible Tree
+## Rule 15 - Stable Bible Tree
 
 Active project-bible files:
 
@@ -202,7 +217,7 @@ Active project-bible files:
 
 Do not create conflicting Bible files.
 
-## Rule 15 - Documentation Authority
+## Rule 16 - Documentation Authority
 
 Important decisions should be recorded in the most relevant active document.
 
@@ -210,7 +225,7 @@ Do not duplicate long rule text across multiple files.
 
 Use references instead.
 
-## Rule 16 - Do Not Change Without Approval
+## Rule 17 - Do Not Change Without Approval
 
 Do not change these without explicit Owner approval:
 
@@ -224,10 +239,11 @@ Do not change these without explicit Owner approval:
 - payment safety baseline
 - approved technical stack
 - Director-led workflow
+- truthfulness rule
 - three-fail stop rule
 - no self-deployment rule
 - AI Gate and Context Builder rules
 
 ## Final Rule
 
-Keep the project focused, private, controlled, token-efficient, and milestone-driven.
+Keep the project focused, private, controlled, truthful, token-efficient, and milestone-driven.
