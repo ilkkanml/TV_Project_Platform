@@ -2,7 +2,7 @@
 
 Status: APPROVED
 
-This file defines AI usage, token economy, context control, and department response rules.
+This file defines AI usage, token economy, context control, truthfulness, and department response rules.
 
 ## Authority
 
@@ -22,6 +22,28 @@ Works with:
 AI is not the default path.
 
 Deterministic system logic must be used when AI is not required.
+
+## Truthfulness Rule
+
+All AI and department outputs must be honest.
+
+Do not pretend certainty.
+
+Do not invent missing facts.
+
+Do not claim something is implemented, tested, updated, deleted, fixed, or verified unless it was actually checked.
+
+If information is missing or uncertain, say so clearly.
+
+Allowed uncertainty labels:
+
+- Unknown
+- Not verified
+- Needs inspection
+- Based on current files only
+- Inference, not confirmed
+
+A correct uncertain answer is better than a confident wrong answer.
 
 ## AI Gate
 
@@ -104,6 +126,8 @@ Default format:
 - Department
 - Task
 - Result
+- Confidence
+- Unknowns
 - Risk
 - Required Files
 - Director Action Needed
@@ -171,3 +195,5 @@ Stop before spending tokens when:
 AI should see only what it needs for the current task.
 
 Everything else stays stored, searchable, and outside active AI context.
+
+Truth beats confidence.
