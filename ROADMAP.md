@@ -6,7 +6,7 @@ Milestone roadmap for TV Project Platform.
 
 Current phase:
 
-Foundation stabilization and controlled implementation preparation.
+Cleanup and simplification before implementation.
 
 The project workspace is not empty.
 
@@ -37,13 +37,10 @@ Foundation exists:
 Removed from active use:
 
 - README.md
-
-Temporary / review later:
-
 - CONTRIBUTING.md
 - CHANGELOG.md
 - docs/new-chat-start-message.md
-- external validation workflow files
+- .github/workflows/ci.yml
 
 The project is not MVP-ready yet.
 
@@ -152,41 +149,35 @@ Completed:
 - Context Builder Engine is approved.
 - No-filler department response rule is approved.
 - Checkpoint and rollback rules are approved.
-- README.md removed from active use.
-
-Completion rules:
-
-- Active handoff files describe the same current workflow.
-- No foundation file claims the project has no implementation.
-- Token economy rules are active.
 
 ## Milestone 1 - Cleanup and Simplification
 
 Goal:
 
-Remove or archive files that are no longer useful for the private internal workflow, then simplify oversized project documents.
+Remove files no longer useful for private internal workflow and prepare oversized documents for simplification.
 
 Status:
 
 IN_PROGRESS
 
-Scope:
+Completed cleanup:
 
-- Remove confirmed unnecessary public-facing files.
-- Remove or archive old startup/helper files.
-- Remove external-only workflow files after internal validation direction is confirmed.
-- Keep LICENSE.md.
-- Keep technical config and application code.
-- Simplify oversized Bible files after cleanup.
+- README.md removed.
+- CONTRIBUTING.md removed.
+- CHANGELOG.md removed.
+- docs/new-chat-start-message.md removed.
+- external CI workflow removed.
+- AI_HANDOFF.md updated after cleanup.
+- PROJECT_STATE.md updated after cleanup.
 
-Potential cleanup candidates:
+Remaining cleanup:
 
-- CONTRIBUTING.md
-- CHANGELOG.md
-- docs/new-chat-start-message.md
-- external validation workflow files
+- ROADMAP.md cleanup update.
+- docs/internal-system-migration.md cleanup update.
+- project-bible/00-project-rules.md simplification.
+- project-bible/13-decision-log.md revision or compaction.
 
-Do not remove yet:
+Do not remove:
 
 - AI_HANDOFF.md
 - PROJECT_STATE.md
@@ -205,9 +196,9 @@ Do not remove yet:
 
 Completion rules:
 
-- Unneeded files are removed only after Director decision.
-- Remaining docs do not reference removed active files.
-- Oversized docs are marked for simplification.
+- Removed files are not referenced as active files.
+- Remaining docs describe the same workflow.
+- Oversized docs are simplified or explicitly scheduled for simplification.
 
 ## Milestone 2 - Bible Simplification
 
@@ -217,19 +208,21 @@ Reduce oversized project Bible documents into compact authority files.
 
 Status:
 
-NOT_STARTED
+IN_PROGRESS
 
 Scope:
 
 - Simplify project-bible/00-project-rules.md.
 - Keep only non-negotiable rules in 00.
-- Move AI/token details to 17-ai-operations-bible.md.
+- Keep AI/token details in 17-ai-operations-bible.md.
 - Leave security/payment/reseller/testing/release details in their own Bible files.
 - Avoid duplicating long rule text.
+- Update or compact project-bible/13-decision-log.md.
 
 Completion rules:
 
 - 00-project-rules.md becomes compact.
+- 13-decision-log.md no longer points to removed files as active memory.
 - No critical rule is lost.
 - Detailed rules remain in dedicated files.
 - Token burden is reduced.
@@ -269,14 +262,6 @@ Status:
 
 NOT_STARTED
 
-Scope:
-
-- Run typecheck where available.
-- Run build where available.
-- Confirm web, API, and shared package commands.
-- Record validation results.
-- Avoid AI calls unless debugging is needed.
-
 Completion rules:
 
 - Validation output is recorded.
@@ -292,25 +277,6 @@ Finalize shared TypeScript constants, types, and validation strategy.
 Status:
 
 PARTIAL
-
-Existing:
-
-- packages/shared/package.json
-- packages/shared/src/index.ts
-- packages/shared/src/constants.ts
-- packages/shared/src/types.ts
-- packages/shared/src/validators.ts
-
-Pending:
-
-- final role constants
-- API response codes
-- device types
-- subscription statuses
-- payment statuses
-- reseller credit transaction types
-- shared response types
-- validation schema strategy
 
 Completion rules:
 
@@ -328,26 +294,6 @@ Status:
 
 PARTIAL
 
-Existing:
-
-- apps/api package skeleton
-- apps/api/src/main.ts
-- apps/api/src/app.module.ts
-- apps/api/src/health.controller.ts
-
-Pending:
-
-- environment validation
-- global response format
-- global error handling
-- validation pipe
-- Prisma module
-- Redis configuration
-- common guards
-- common decorators
-- common filters
-- common interceptors
-
 Completion rules:
 
 - API starts successfully.
@@ -364,10 +310,6 @@ Create the first MVP-ready Prisma schema.
 Status:
 
 PARTIAL
-
-Existing:
-
-- apps/api/prisma/schema.prisma early schema
 
 Completion rules:
 
