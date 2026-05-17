@@ -4,7 +4,7 @@ Current state summary for TV Project Platform.
 
 ## Current Phase
 
-Foundation stabilization and controlled implementation preparation.
+Cleanup and simplification before implementation.
 
 The project workspace is not empty.
 
@@ -41,7 +41,6 @@ Documentation and workflow foundation:
 - docs/internal-system-migration.md
 - docs/local-setup.md
 - docs/environment-variables.md
-- docs/new-chat-start-message.md
 - project-bible/00-project-rules.md
 - project-bible/17-ai-operations-bible.md
 - project-bible canonical tree
@@ -49,13 +48,10 @@ Documentation and workflow foundation:
 Removed from active use:
 
 - README.md
-
-Still temporary / review later:
-
 - CONTRIBUTING.md
 - CHANGELOG.md
 - docs/new-chat-start-message.md
-- external validation workflow files
+- .github/workflows/ci.yml
 
 ## Management Model
 
@@ -198,15 +194,14 @@ Not complete yet:
 - Tests are not complete yet.
 - Production deployment setup is not complete yet.
 - Long documents must not be sent to AI as full context.
-- Oversized Bible files should be simplified after cleanup.
+- Oversized Bible files should be simplified next.
 
 ## Current Recommended Next Steps
 
-1. Finish documentation synchronization.
-2. Remove agreed unnecessary files.
-3. Simplify oversized Bible files.
-4. Generate and save pnpm-lock.yaml after first dependency install.
-5. Continue milestone-based implementation.
+1. Finish reference cleanup.
+2. Simplify oversized Bible files.
+3. Generate and save pnpm-lock.yaml after first dependency install.
+4. Continue milestone-based implementation.
 
 ## Update Rule
 
