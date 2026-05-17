@@ -8,9 +8,9 @@ Current phase:
 
 Foundation stabilization and controlled implementation preparation.
 
-The repository is not empty.
+The project workspace is not empty.
 
-Confirmed foundation exists:
+Foundation exists:
 
 - pnpm monorepo configuration
 - apps/web Next.js skeleton
@@ -25,7 +25,14 @@ Confirmed foundation exists:
 - Current project state file
 - Development workflow document
 - Department system document
+- Department response rules
+- Token economy rules
+- Context Builder Engine rules
+- Internal system migration plan
+- Local setup guide
+- Environment variables guide
 - CONTRIBUTING.md
+- LICENSE.md
 
 The project is not MVP-ready yet.
 
@@ -33,22 +40,7 @@ The project is not MVP-ready yet.
 
 TV Project Platform is a Licensed IPTV Player Platform.
 
-The backend must focus only on:
-
-- User accounts
-- Authentication
-- Role-based access control
-- Subscriptions
-- Player licensing
-- Device activation
-- Payment records
-- Reseller credit system
-- App version control
-- Remote configuration
-- Maintenance mode
-- Feature flags
-- Audit logs
-- Optional temporary encrypted web-to-device profile transfer
+The backend may manage accounts, auth, roles, subscriptions, licenses, devices, payments, resellers, app versions, remote config, audit logs, and optional temporary encrypted web-to-device profile transfer.
 
 The backend must not become a media provider, broadcast backend, CDN, relay, transcoder, catalog seller, public playlist marketplace, or default permanent profile authority.
 
@@ -60,19 +52,30 @@ Required workflow documents:
 
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- docs/internal-system-migration.md
 
 Operating rules:
 
 - Owner approves major direction changes.
 - Director controls execution order.
 - Milestones define scope.
+- AI Gate blocks unnecessary AI calls.
+- Context Builder Engine builds the smallest useful context.
 - Departments are single-task expert calls.
+- Departments do not acknowledge instructions.
+- Departments do not add filler text.
 - Departments do not talk directly to each other.
+- Accepted compact output becomes reusable memory.
+- Full old conversations and full long documents are not sent as default AI context.
+- Similar accepted answers are reused when reliable.
 - Three failed attempts on the same problem stop the loop.
 - Checkpoints protect known good states.
 - AI output does not deploy itself.
 - Deployment requires Director approval, dry run, path whitelist, backup/checkpoint, and audit log.
-- AI token usage should be budgeted and logged.
+- AI token usage must be budgeted and logged.
 
 Approved AI departments:
 
@@ -86,6 +89,9 @@ Approved AI departments:
 Approved system engines:
 
 - Milestone Controller
+- AI Gate
+- Context Builder Engine
+- Similar Task Cache
 - Loop Breaker
 - Checkpoint Manager
 - Deployment Engine
@@ -99,6 +105,7 @@ Allowed statuses:
 
 - NOT_STARTED
 - IN_PROGRESS
+- PARTIAL
 - WAITING_APPROVAL
 - PASSED
 - FAILED
@@ -108,47 +115,48 @@ Allowed statuses:
 
 Goal:
 
-Lock project identity, operating rules, repository memory, and safety boundaries.
+Lock project identity, operating rules, project memory, token economy, and safety boundaries.
 
 Status:
 
-IN_PROGRESS
+PASSED
 
 Completed:
 
-- README.md exists.
-- PROJECT_STATE.md updated to current state.
-- AI_HANDOFF.md updated to current workflow.
-- docs/development-workflow.md added.
-- docs/department-system.md added.
-- CONTRIBUTING.md added.
-- Product boundary defined.
-- Director/milestone/department model approved.
-- Three-fail loop breaker approved.
-- Token budget guard approved.
-- Checkpoint and rollback rules approved.
-
-Pending:
-
-- LICENSE.md
-- .github/workflows CI
-- project-bible/00-project-rules.md operating model update
-- docs/new-chat-start-message.md workflow update
-- verify older docs for conflicts
+- README.md exists and is current.
+- PROJECT_STATE.md exists and is current.
+- AI_HANDOFF.md exists and is current.
+- ROADMAP.md exists and is current.
+- docs/development-workflow.md exists.
+- docs/department-system.md exists.
+- docs/department-response-rules.md exists.
+- docs/token-economy.md exists.
+- docs/context-builder-engine.md exists.
+- docs/internal-system-migration.md exists.
+- docs/local-setup.md exists.
+- docs/environment-variables.md exists.
+- CONTRIBUTING.md exists.
+- LICENSE.md exists.
+- Product boundary is defined.
+- Director/milestone/department model is approved.
+- Three-fail loop breaker is approved.
+- Token budget guard is approved.
+- Context Builder Engine is approved.
+- No filler department response rule is approved.
+- Checkpoint and rollback rules are approved.
 
 Completion rules:
 
 - All handoff files describe the same current workflow.
-- No root foundation file claims the repository has no implementation.
-- LICENSE.md exists.
-- CI skeleton exists.
+- No foundation file claims the project has no implementation.
 - Product boundary remains intact.
+- Token economy rules are active.
 
-## Milestone 1 - Repository and CI Stabilization
+## Milestone 1 - Local Install and Lockfile
 
 Goal:
 
-Make the repository safe to continue from any browser-based workflow.
+Run first dependency installation and save the generated lockfile.
 
 Status:
 
@@ -156,24 +164,48 @@ NOT_STARTED
 
 Scope:
 
-- Add LICENSE.md.
-- Add GitHub Actions CI skeleton.
-- Validate package scripts.
-- Validate pnpm workspace setup.
-- Confirm web, api, and shared typecheck/build commands.
-- Record known local development commands.
+- Run dependency install.
+- Generate pnpm-lock.yaml.
+- Save pnpm-lock.yaml.
+- Validate root package scripts.
+- Validate workspace package discovery.
+- Record any install issue as an error package.
 
 Completion rules:
 
-- CI runs install, typecheck, and build where possible.
-- Root scripts match package scripts.
-- Missing setup steps are documented.
+- pnpm-lock.yaml exists.
+- Dependency install completes or error package is created.
+- Root scripts are still aligned with package scripts.
 
-## Milestone 2 - Shared Package Foundation
+## Milestone 2 - Internal Validation Workflow
 
 Goal:
 
-Create the shared TypeScript foundation used by web and API.
+Validate build/typecheck workflow after lockfile exists.
+
+Status:
+
+NOT_STARTED
+
+Scope:
+
+- Run typecheck where available.
+- Run build where available.
+- Confirm web, API, and shared package commands.
+- Record validation results.
+- Avoid AI calls unless debugging is needed.
+
+Completion rules:
+
+- Validation output is recorded.
+- Failures are packaged into compact error packages.
+- No repeated blind retries.
+
+## Milestone 3 - Shared Package Foundation
+
+Goal:
+
+Finalize shared TypeScript constants, types, and validation strategy.
 
 Status:
 
@@ -202,9 +234,9 @@ Completion rules:
 
 - Shared exports are stable.
 - Web and API import shared values cleanly.
-- No duplicated enums across layers without a reason.
+- No duplicated enums across layers without reason.
 
-## Milestone 3 - API Foundation
+## Milestone 4 - API Foundation
 
 Goal:
 
@@ -241,7 +273,7 @@ Completion rules:
 - Standard error/response format exists.
 - Environment requirements are documented.
 
-## Milestone 4 - Database Foundation
+## Milestone 5 - Database Foundation
 
 Goal:
 
@@ -269,17 +301,8 @@ Required MVP models:
 - PaymentEvent
 - AppVersion
 - RemoteConfig
-- PlaylistPushRequest
+- ProfileTransferRequest
 - AuditLog
-
-Rules:
-
-- Passwords are hashed.
-- Payment card data is not stored.
-- Reseller credit history is transaction-based.
-- Device identity uses app_generated_device_id.
-- Temporary profile transfer expires and can be consumed or revoked.
-- Backend does not become default permanent profile authority.
 
 Completion rules:
 
@@ -287,7 +310,7 @@ Completion rules:
 - Relations and indexes support expected access patterns.
 - Migration path is documented.
 
-## Milestone 5 - Authentication and Authorization
+## Milestone 6 - Authentication and Authorization
 
 Goal:
 
@@ -315,11 +338,11 @@ Completion rules:
 - Frontend route hiding is not treated as security.
 - Password hash never returns from API.
 
-## Milestone 6 - Subscription and License Engine
+## Milestone 7 - Subscription, License, and Device Foundation
 
 Goal:
 
-Build core subscription and app license validation.
+Build core subscription, license validation, and device activation foundations.
 
 Status:
 
@@ -328,11 +351,11 @@ NOT_STARTED
 Scope:
 
 - plan management
-- subscription creation
-- subscription extension
+- subscription creation and extension
 - expiration logic
-- license status endpoint
+- device activation endpoint
 - device status endpoint
+- license status endpoint
 - license check records
 - blocked device handling
 
@@ -341,33 +364,7 @@ Completion rules:
 - App can ask backend whether a device is allowed.
 - Expired subscription blocks access.
 - Blocked device blocks access.
-- License checks are logged safely.
-
-## Milestone 7 - Device Activation System
-
-Goal:
-
-Support app-generated device identity and device ownership.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- device activation endpoint
-- device status endpoint
-- device heartbeat
-- device naming
-- platform and app version tracking
-- ownership validation
-- admin, reseller, and customer visibility rules
-
-Completion rules:
-
 - app_generated_device_id is primary.
-- MAC address is not primary.
-- Device ownership is enforced server-side.
 
 ## Milestone 8 - Reseller Credit System
 
@@ -456,7 +453,7 @@ Completion rules:
 
 Goal:
 
-Allow user-owned web-to-device encrypted temporary profile transfer without changing the product boundary.
+Allow user-owned encrypted temporary profile transfer without changing the product boundary.
 
 Status:
 
@@ -510,11 +507,11 @@ Completion rules:
 - Landing shell exists.
 - Auth and dashboard shells exist.
 
-## Milestone 13 - Customer Panel
+## Milestone 13 - Panels
 
 Goal:
 
-Build customer dashboard.
+Build customer, reseller, and admin dashboard foundations.
 
 Status:
 
@@ -522,74 +519,16 @@ NOT_STARTED
 
 Scope:
 
-- account overview
-- subscription status
-- devices
-- payment history
-- optional transfer screen
-- settings
+- customer overview, subscription, devices, payments
+- reseller overview, customers, credit, sales
+- admin users, resellers, plans, subscriptions, payments, devices, app versions, remote config, audit logs
 
 Completion rules:
 
-- Customer sees only own data.
-- Customer actions are server-authorized.
+- Each role sees only allowed data.
+- Critical actions are server-authorized and audit logged.
 
-## Milestone 14 - Reseller Panel
-
-Goal:
-
-Build reseller dashboard.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- overview
-- own customers
-- customer creation
-- subscription assignment
-- credit balance
-- credit transactions
-- sales history
-- settings
-
-Completion rules:
-
-- Reseller sees only own customers.
-- Credit actions are backend-authoritative.
-
-## Milestone 15 - Admin Panel
-
-Goal:
-
-Build admin dashboard.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- users
-- customers
-- resellers
-- plans
-- subscriptions
-- payments
-- devices
-- app versions
-- remote config
-- audit logs
-- system settings
-
-Completion rules:
-
-- Admin actions are authorized.
-- Critical actions are audit logged.
-
-## Milestone 16 - Public Website and Legal Pages
+## Milestone 14 - Public Website and Legal Pages
 
 Goal:
 
@@ -615,11 +554,11 @@ Completion rules:
 - Messaging states software/player access only.
 - No page implies bundled media access.
 
-## Milestone 17 - Testing and QA
+## Milestone 15 - Testing and Security Hardening
 
 Goal:
 
-Create test and validation coverage.
+Create validation coverage and staging-level safety.
 
 Status:
 
@@ -635,41 +574,17 @@ Scope:
 - reseller credit tests
 - payment tests
 - temporary transfer expiration tests
-- dashboard permission checks
+- sensitive data review
+- rate limiting
+- security headers
+- input validation
 
 Completion rules:
 
 - Critical flows are tested.
 - QA Security signs off milestone completion.
 
-## Milestone 18 - Security Hardening
-
-Goal:
-
-Prepare for staging-level safety.
-
-Status:
-
-NOT_STARTED
-
-Scope:
-
-- rate limiting
-- security headers
-- CORS rules
-- JWT secret handling
-- refresh token rotation
-- audit log coverage
-- webhook verification pattern
-- input validation
-- sensitive data review
-
-Completion rules:
-
-- Sensitive data is not exposed.
-- Critical endpoints have guards and validation.
-
-## Milestone 19 - Deployment Preparation
+## Milestone 16 - Deployment Preparation
 
 Goal:
 
@@ -681,21 +596,20 @@ NOT_STARTED
 
 Scope:
 
-- Dockerfiles
+- deployment notes
 - environment variables
 - database migration flow
 - backup strategy
-- GitHub Actions CI
-- deployment notes
 - monitoring plan
+- rollback path
 
 Completion rules:
 
 - Staging plan exists.
 - Production plan exists.
-- Backup and migration plans exist.
+- Backup and rollback plans exist.
 
-## Milestone 20 - MVP Release
+## Milestone 17 - MVP Release
 
 Goal:
 
