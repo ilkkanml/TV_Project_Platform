@@ -34,11 +34,11 @@ Licensed IPTV Player Platform
 
 The platform manages software/player access, accounts, subscriptions, licenses, devices, payments, reseller operations, app versions, remote configuration, audit logs, and optional temporary encrypted web-to-device profile transfer.
 
-The platform is not a media provider, broadcast backend, channel seller, playlist marketplace, CDN, relay, transcoder, or backend source of truth for user playlist/profile data.
+The product boundary is defined in README.md, LEGAL_SCOPE.md, SECURITY.md, and project-bible/00-project-rules.md.
 
 ## Current State
 
-The repository is in foundation stabilization and controlled implementation preparation.
+The project workspace is in foundation stabilization and controlled implementation preparation.
 
 Do not describe the project as empty or not started.
 
@@ -52,7 +52,7 @@ Confirmed foundation exists:
 - API health endpoint
 - Web landing page shell
 - Docker Compose local services
-- GitHub Actions CI skeleton
+- Internal validation workflow direction
 - Project Bible canonical tree
 - docs/development-workflow.md
 - docs/department-system.md
@@ -172,38 +172,6 @@ Stop Condition:
 - Low-risk summaries should use low-cost models.
 - Complex architecture, debugging, and code generation may use stronger models.
 
-## Product Boundary
-
-Allowed backend areas:
-
-- accounts
-- authentication
-- role-based access control
-- customer subscriptions
-- player licenses
-- device activation
-- payment records
-- reseller accounts
-- reseller credit transactions
-- app version control
-- remote configuration
-- maintenance mode
-- feature flags
-- audit logs
-- optional temporary encrypted web-to-device profile transfer
-
-Forbidden backend areas:
-
-- media catalog
-- channel inventory
-- media distribution
-- media relay
-- transcoding jobs
-- CDN behavior
-- public playlist marketplace
-- provider credential distribution
-- permanent backend playlist/profile authority by default
-
 ## Core Technical Stack
 
 - pnpm monorepo
@@ -214,7 +182,7 @@ Forbidden backend areas:
 - Redis
 - Docker Compose
 
-## Current Repository Structure
+## Current Project Structure
 
 Expected root structure:
 
@@ -242,14 +210,13 @@ TV_Project_Platform/
 │   └── api/
 ├── packages/
 │   └── shared/
-├── infra/
-└── .github/
+└── infra/
 ```
 
 ## Current Next Steps
 
-1. Run dependency install and commit the generated pnpm-lock.yaml.
-2. Validate CI after lockfile exists.
+1. Run dependency install and save the generated pnpm-lock.yaml.
+2. Validate the internal build/typecheck workflow after lockfile exists.
 3. Finalize MVP Prisma schema in controlled patches.
 4. Continue implementation through milestones only.
 
