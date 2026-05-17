@@ -1,5 +1,4 @@
 import { Controller, Get } from "@nestjs/common";
-import { PLATFORM_SCOPE } from "@tv-platform/shared";
 
 @Controller("health")
 export class HealthController {
@@ -8,7 +7,7 @@ export class HealthController {
     return {
       status: "ok",
       service: "tv-project-platform-api",
-      scope: PLATFORM_SCOPE.productType
+      scope: "Licensed IPTV Player Platform"
     };
   }
 }
