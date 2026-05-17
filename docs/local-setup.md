@@ -1,163 +1,75 @@
 # Local Setup
 
-This file explains how to prepare TV Project Platform for local development.
+Compact local setup guide.
 
-## Current Stack
+## Requirements
 
 - Node.js 20+
 - pnpm 9+
 - Docker Compose
-- PostgreSQL
-- Redis
-- Next.js web app
-- NestJS API app
-- Prisma
 
-## Repository Setup
+## Install
 
-Clone the repository and install dependencies:
+Run dependency install with pnpm.
 
-```bash
-pnpm install
-```
+After first successful install, save `pnpm-lock.yaml`.
 
-After the first successful install, commit the generated `pnpm-lock.yaml` file.
+## Environment
 
-The lockfile is expected to exist after installation.
+Create local environment file from `.env.example`.
 
-## Environment Setup
-
-Copy the example environment file:
-
-```bash
-cp .env.example .env
-```
-
-Then update secrets before using anything beyond local development.
+Use placeholders only for local development.
 
 Never use placeholder secrets in production.
 
-## Start Local Infrastructure
+## Infrastructure
 
-Start PostgreSQL and Redis:
+Use root scripts to start, stop, and inspect local services.
 
-```bash
-pnpm infra:up
-```
+Local services:
 
-Optional pgAdmin tools profile:
+- PostgreSQL
+- Redis
 
-```bash
-pnpm infra:up:tools
-```
+## Database
 
-Stop infrastructure:
+Use root database scripts for:
 
-```bash
-pnpm infra:down
-```
+- Prisma client generation
+- development migrations
+- Prisma Studio when needed
 
-View logs:
+## Applications
 
-```bash
-pnpm infra:logs
-```
+Use root scripts to run:
 
-## Database Setup
+- all development apps
+- web app only
+- API app only
 
-Generate Prisma client:
+## Validation
 
-```bash
-pnpm db:generate
-```
+Use root scripts for:
 
-Run development migration when migrations are ready:
+- typecheck
+- build
 
-```bash
-pnpm db:migrate
-```
+Record failures as compact error packages.
 
-Open Prisma Studio:
+## Current Notes
 
-```bash
-pnpm db:studio
-```
+- Lockfile is pending until first successful install.
+- Real MVP modules are not complete yet.
+- Setup must stay milestone-scoped.
 
-## Run Applications
+## Related Authority Files
 
-Run all development apps:
+- PROJECT_STATE.md
+- ROADMAP.md
+- docs/environment-variables.md
+- docs/development-workflow.md
+- project-bible/12-devops-bible.md
 
-```bash
-pnpm dev
-```
+## Final Rule
 
-Run only the web app:
-
-```bash
-pnpm dev:web
-```
-
-Run only the API app:
-
-```bash
-pnpm dev:api
-```
-
-Expected local URLs:
-
-- Web: http://localhost:3000
-- API: http://localhost:4000
-- API health: http://localhost:4000/health
-- pgAdmin with tools profile: http://localhost:5050
-
-## Validation Commands
-
-Typecheck:
-
-```bash
-pnpm typecheck
-```
-
-Build:
-
-```bash
-pnpm build
-```
-
-Lint:
-
-```bash
-pnpm lint
-```
-
-Tests:
-
-```bash
-pnpm test
-```
-
-Some commands may remain partial until the related milestone is complete.
-
-## Browser-Based Development Note
-
-The project can be managed from a browser-based workflow, but the repository state must remain clean.
-
-Before major edits:
-
-- Check PROJECT_STATE.md.
-- Check AI_HANDOFF.md.
-- Check ROADMAP.md.
-- Check docs/development-workflow.md.
-- Check docs/department-system.md.
-
-Use the milestone system and do not skip foundation checks.
-
-## Safety Rules
-
-Do not commit real secrets.
-
-Do not change the product boundary.
-
-Do not add forbidden provider, delivery, relay, marketplace, catalog, or default permanent profile-authority features.
-
-Do not deploy AI-generated code without Director approval, dry run, backup/checkpoint, and audit logging.
+Keep setup simple, repeatable, and aligned with the current milestone.
