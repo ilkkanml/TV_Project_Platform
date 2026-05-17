@@ -2,7 +2,16 @@
 
 This file defines the department operating model for TV Project Platform.
 
-The goal is to keep the project professional, controlled, low-cost, loop-resistant, and easy to continue in future sessions.
+The goal is a controlled, low-cost, loop-resistant project workflow.
+
+## Required Companion Rules
+
+This file must be used with:
+
+- docs/development-workflow.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
 
 ## Core Principle
 
@@ -10,11 +19,11 @@ Departments are not permanent chat rooms.
 
 Departments are single-task expert calls.
 
-Each department receives a limited context package, produces one structured output, and then closes.
+Each department receives a limited task package, produces one structured output, and closes.
 
 Old department conversations are not reused as future AI context by default.
 
-Accepted outputs, Director decisions, milestone state, checkpoint state, and code version references become the reusable memory.
+Accepted compact outputs, Director decisions, milestone state, checkpoint state, and code version references become reusable memory.
 
 ## Authority Hierarchy
 
@@ -28,13 +37,19 @@ Director
 Milestone Controller
     |
     v
-AI Departments
+AI Gate
+    |
+    v
+Context Builder Engine
+    |
+    v
+AI Department
     |
     v
 Department Output Archive
     |
     v
-Project Memory / Checkpoints / Code Versions
+Compact Project Memory / Checkpoints / Code Versions
 ```
 
 ## Owner / Founder
@@ -45,62 +60,30 @@ The Owner approves major direction decisions.
 
 The Owner can stop, redirect, or override the project direction.
 
-The Owner does not need coding knowledge.
-
-The system must guide the Owner step by step.
-
 ## Director
 
 The Director is the central project manager.
 
 The Director:
 
-- Maintains the big picture.
-- Preserves product boundaries.
-- Selects the next milestone.
-- Chooses the required department.
-- Prepares the task package.
-- Reviews department output.
-- Approves or rejects the result.
-- Decides when to create checkpoints.
-- Decides when to deploy.
-- Stops loops after repeated failures.
+- maintains the big picture
+- preserves product boundaries
+- selects the next milestone
+- chooses the required department
+- approves the task package
+- reviews department output
+- accepts, rejects, or escalates results
+- decides when to checkpoint
+- decides when to deploy
+- stops loops after repeated failures
 
 Only the Director coordinates between departments.
 
 Departments must not talk to each other directly.
 
-## Milestone Controller
-
-The Milestone Controller is a system engine.
-
-It is not an AI department.
-
-It tracks:
-
-- Active milestone
-- Milestone scope
-- Completion rules
-- Status
-- Required departments
-- Fail counts
-- Checkpoints
-- Lock state
-
-Allowed milestone statuses:
-
-- NOT_STARTED
-- IN_PROGRESS
-- WAITING_APPROVAL
-- PASSED
-- FAILED
-- LOCKED
-
-No new milestone starts before the active milestone is closed, locked, or explicitly paused by the Director.
-
 ## Approved AI Departments
 
-Only these departments are approved for the initial system:
+Only these departments are active by default:
 
 1. Architect
 2. Database
@@ -109,241 +92,16 @@ Only these departments are approved for the initial system:
 5. QA Security
 6. Memory Documentation
 
-No other department is active by default.
-
 Future departments require Director approval.
 
-## Architect Department
+## Approved System Engines
 
-Purpose:
-
-The Architect protects structure and scope.
-
-Responsibilities:
-
-- Validate system architecture.
-- Check folder structure.
-- Check module boundaries.
-- Prevent unnecessary complexity.
-- Prevent scope drift.
-- Identify missing foundation pieces.
-- Review cross-module impact.
-
-Allowed context:
-
-- Active milestone
-- Project constitution summary
-- Relevant file tree
-- Relevant architecture docs
-- Current problem statement
-
-Forbidden behavior:
-
-- Writing long implementation code by default
-- Expanding scope without approval
-- Creating new departments without approval
-
-Default token budget:
-
-```txt
-800 output tokens
-```
-
-## Database Department
-
-Purpose:
-
-The Database department designs and protects data structure.
-
-Responsibilities:
-
-- Define tables.
-- Define relationships.
-- Define indexes.
-- Define version records.
-- Define checkpoint records.
-- Define audit records.
-- Define AI usage logs.
-- Protect rollback and history integrity.
-
-Allowed context:
-
-- Active milestone
-- Relevant table list
-- Relevant schema excerpt
-- Required data behavior
-- Current migration or SQL task
-
-Forbidden behavior:
-
-- Changing product direction
-- Designing UI
-- Calling deployment safe without QA
-
-Default token budget:
-
-```txt
-1000 output tokens
-```
-
-## Backend Department
-
-Purpose:
-
-The Backend department builds application logic.
-
-Responsibilities:
-
-- Login and session logic
-- API endpoints
-- OpenAI API connection
-- Streaming response logic
-- Code version vault logic
-- Deployment engine logic
-- Rollback engine logic
-- Server-side authorization
-- Input validation
-
-Allowed context:
-
-- Active milestone
-- Relevant backend file excerpts
-- Database contract
-- Security requirements
-- Specific endpoint or function task
-
-Forbidden behavior:
-
-- Trusting frontend values for sensitive decisions
-- Writing outside approved paths
-- Deploying without Director approval
-- Returning sensitive secrets in output
-
-Default token budget:
-
-```txt
-1500 output tokens
-```
-
-## Frontend Department
-
-Purpose:
-
-The Frontend department builds user-facing screens.
-
-Responsibilities:
-
-- Login screen
-- Dashboard shell
-- Department task screen
-- Milestone screen
-- Code version screen
-- Deployment and rollback controls
-- Streaming answer display
-- Clear non-technical guidance for the Owner
-
-Allowed context:
-
-- Active milestone
-- Relevant UI file excerpts
-- Required screen behavior
-- API contract summary
-- Design constraints
-
-Forbidden behavior:
-
-- Making security decisions in the browser
-- Hiding backend authorization gaps with UI only
-- Adding heavy UI complexity without approval
-
-Default token budget:
-
-```txt
-1500 output tokens
-```
-
-## QA Security Department
-
-Purpose:
-
-The QA Security department checks correctness, safety, and release readiness.
-
-Responsibilities:
-
-- Test milestone completion.
-- Review login protection.
-- Review authorization logic.
-- Review deployment safety.
-- Review rollback safety.
-- Review path whitelist behavior.
-- Review repeated errors.
-- Decide whether a task is safe to pass.
-
-Allowed context:
-
-- Active milestone
-- Completion rules
-- Error package
-- Relevant file excerpts
-- Deployment dry run output
-- Last checkpoint summary
-
-Forbidden behavior:
-
-- Blind retries
-- Expanding implementation scope
-- Approving deployment without required evidence
-
-Default token budget:
-
-```txt
-800 output tokens
-```
-
-## Memory Documentation Department
-
-Purpose:
-
-The Memory Documentation department keeps project knowledge concise and reusable.
-
-Responsibilities:
-
-- Create milestone summaries.
-- Update handoff records.
-- Convert department output into reusable memory.
-- Keep future chat startup instructions short.
-- Prevent context bloat.
-- Record decisions without long conversation history.
-
-Allowed context:
-
-- Active milestone
-- Accepted department outputs
-- Director decisions
-- Checkpoint summaries
-- Changed files
-
-Forbidden behavior:
-
-- Reusing full raw conversation as active AI context
-- Creating duplicate documentation structures
-- Changing product decisions without approval
-
-Default token budget:
-
-```txt
-500 output tokens
-```
-
-## System Engines
-
-System engines perform deterministic application work.
-
-They are not AI agents by default.
-
-Approved system engines:
+These are system engines, not AI departments:
 
 - Milestone Controller
+- AI Gate
+- Context Builder Engine
+- Similar Task Cache
 - Loop Breaker
 - Checkpoint Manager
 - Deployment Engine
@@ -351,27 +109,253 @@ Approved system engines:
 - Cost Guard
 - Audit Logger
 
-System engines should use PHP and MySQL application logic when this system is implemented under the private project folder.
+System engines should use deterministic application logic whenever possible.
+
+System engines should not call AI unless the Director explicitly asks for analysis.
+
+## AI Gate
+
+Every task must pass AI Gate before an AI call.
+
+If deterministic logic can complete the task, no AI call is allowed.
+
+No AI is needed for:
+
+- milestone status updates
+- fail count updates
+- checkpoint creation
+- rollback candidate lookup
+- path whitelist checks
+- dry run validation
+- audit log writes
+- code version activation
+- token cost calculation
+
+## Context Builder Engine
+
+Before any AI department call, Context Builder Engine creates the smallest useful task package.
+
+Default task package:
+
+```txt
+Project Summary:
+Active Milestone:
+Department Role:
+Task:
+Relevant Decisions:
+Relevant Excerpts:
+Required Output Format:
+Stop Condition:
+```
+
+Do not include by default:
+
+- full old chat history
+- full long documents
+- full project-bible directory
+- full codebase
+- unrelated department outputs
+- large logs without filtering
+
+## Architect Department
+
+Purpose:
+
+Protect structure, scope, and long-term architecture.
+
+Responsibilities:
+
+- validate architecture
+- check module boundaries
+- prevent scope drift
+- identify missing foundation pieces
+- review cross-module impact
+
+Allowed context:
+
+- active milestone summary
+- project constitution summary
+- relevant structure excerpt
+- relevant architecture notes
+- current problem statement
+
+Default output budget:
+
+```txt
+800 tokens
+```
+
+## Database Department
+
+Purpose:
+
+Design and protect data structure.
+
+Responsibilities:
+
+- define tables
+- define relationships
+- define indexes
+- define version records
+- define checkpoint records
+- define audit records
+- define AI usage logs
+
+Allowed context:
+
+- active milestone summary
+- relevant schema excerpt
+- required data behavior
+- current migration or SQL task
+
+Default output budget:
+
+```txt
+1000 tokens
+```
+
+## Backend Department
+
+Purpose:
+
+Build application logic.
+
+Responsibilities:
+
+- API endpoints
+- auth/session logic
+- AI API connection
+- streaming response logic
+- code version vault logic
+- deployment engine logic
+- rollback engine logic
+- server-side authorization
+- input validation
+
+Allowed context:
+
+- active milestone summary
+- relevant backend excerpt
+- database contract
+- security requirement summary
+- specific endpoint or function task
+
+Default output budget:
+
+```txt
+1500 tokens
+```
+
+## Frontend Department
+
+Purpose:
+
+Build user-facing screens and workflows.
+
+Responsibilities:
+
+- login screen
+- dashboard shell
+- department task screen
+- milestone screen
+- code version screen
+- deployment and rollback controls
+- streaming answer display
+
+Allowed context:
+
+- active milestone summary
+- relevant UI excerpt
+- required screen behavior
+- API contract summary
+- design constraints
+
+Default output budget:
+
+```txt
+1500 tokens
+```
+
+## QA Security Department
+
+Purpose:
+
+Check correctness, safety, and release readiness.
+
+Responsibilities:
+
+- test milestone completion
+- review auth protection
+- review authorization logic
+- review deployment safety
+- review rollback safety
+- review path whitelist behavior
+- review repeated errors
+
+Allowed context:
+
+- active milestone summary
+- completion rules
+- error package
+- relevant file excerpts
+- dry run output
+- last checkpoint summary
+
+Default output budget:
+
+```txt
+800 tokens
+```
+
+## Memory Documentation Department
+
+Purpose:
+
+Keep project knowledge compact and reusable.
+
+Responsibilities:
+
+- create milestone summaries
+- convert accepted outputs into compact memory
+- prevent context bloat
+- record decisions without long conversation history
+
+Allowed context:
+
+- active milestone summary
+- accepted compact outputs
+- Director decisions
+- checkpoint summaries
+- changed files
+
+Default output budget:
+
+```txt
+500 tokens
+```
 
 ## Department Task Lifecycle
 
-Every department task follows this lifecycle:
-
 1. Director creates task.
 2. Task is linked to active milestone.
-3. Required department is selected.
-4. Context package is built.
-5. Token budget is assigned.
-6. AI response is streamed if using OpenAI API.
-7. Department output is saved.
-8. Director reviews output.
-9. Output is accepted, rejected, or sent for one revision.
-10. Accepted output becomes reusable memory.
-11. Raw task conversation is archived but not reused as context by default.
+3. AI Gate decides whether AI is needed.
+4. Similar Task Cache checks for reusable accepted output.
+5. Context Builder creates minimal task package.
+6. One department is selected.
+7. Token budget is assigned.
+8. Department returns one structured output.
+9. Output is saved.
+10. Director reviews output.
+11. Accepted output becomes compact reusable memory.
+12. Raw task output is archived but not reused by default.
 
-## Required Department Output Format
+## Required Department Output
 
-Every department must answer in this format:
+Departments must follow docs/department-response-rules.md.
+
+Departments must not include acknowledgement, filler, greetings, closings, or conversational transitions.
+
+Default format:
 
 ```txt
 Department:
@@ -382,103 +366,35 @@ Required Files:
 Director Action Needed:
 ```
 
-For code tasks, add:
+## One Question One Department
+
+A task should go to one department at a time.
+
+Do not send the same broad question to multiple departments in parallel.
+
+Preferred sequence:
 
 ```txt
-Code Version Impact:
-Rollback Need:
-Test Requirement:
+Architect -> Director -> Database -> Director -> Backend -> Director -> QA Security
 ```
-
-For error tasks, add:
-
-```txt
-Likely Cause:
-Fix Attempt Number:
-Stop Condition:
-```
-
-## Context Package Standard
-
-A department receives only the smallest useful context.
-
-Default context package:
-
-- Project identity summary
-- Active milestone
-- Department role
-- Task instruction
-- Relevant decision records
-- Relevant file or database excerpt
-- Error package when needed
-
-Context must not include:
-
-- Full old chat history
-- Unrelated department outputs
-- Entire repository by default
-- Long documentation dumps when a short summary is enough
-
-## Knowledge Types
-
-The system separates knowledge into these types:
-
-### Project Constitution
-
-Permanent rules and product boundaries.
-
-### Milestone State
-
-Current phase, scope, completion rules, and status.
-
-### Department Output
-
-One-task result from a department.
-
-### Director Decision
-
-Accepted, rejected, changed, paused, or locked decision.
-
-### Checkpoint
-
-Known good project state.
-
-### Code Version
-
-Versioned text representation of a file.
-
-### Deployment Log
-
-Record of what was written, when, by which version, and why.
-
-### Audit Log
-
-Security and administrative action record.
-
-### AI Usage Log
-
-Cost and token usage record.
 
 ## Interdepartment Communication Rule
 
 Departments do not communicate directly.
 
-Wrong pattern:
+Wrong:
 
 ```txt
 Backend -> Database -> Frontend -> QA
 ```
 
-Correct pattern:
+Correct:
 
 ```txt
-Database -> Director -> Backend
 Backend -> Director -> QA
+Database -> Director -> Backend
 Frontend -> Director -> QA
-QA -> Director -> Checkpoint Manager
 ```
-
-This prevents uncontrolled loops and token waste.
 
 ## Three Fail Rule
 
@@ -486,11 +402,11 @@ A task may fail three times for the same issue.
 
 After the third failure:
 
-- Task status becomes LOCKED_AFTER_3_FAILS.
-- No blind retry is allowed.
-- Last error is saved.
-- Last successful checkpoint is identified.
-- Director must decide rollback, redesign, or manual inspection.
+- task status becomes LOCKED_AFTER_3_FAILS
+- no blind retry is allowed
+- last error is saved
+- last successful checkpoint is identified
+- Director decides rollback, redesign, or manual inspection
 
 Rule:
 
@@ -498,35 +414,19 @@ Rule:
 3 FAIL = STOP
 ```
 
-## Escalation Rules
-
-Escalation path:
-
-```txt
-Department failure 1 -> same department may revise
-Department failure 2 -> QA Security reviews error package
-Department failure 3 -> task locks and Director reviews checkpoint rollback
-Architecture conflict -> Architect review
-Security conflict -> QA Security review
-Database conflict -> Database review
-Deployment conflict -> Deployment Engine dry run only
-```
-
 ## Checkpoint Rules
 
 Create checkpoints after successful important states:
 
-- Database foundation created
-- Login works
-- Dashboard works
-- Department task flow works
-- OpenAI stream works
-- Code version vault works
-- Deployment dry run works
-- Rollback works
-- Milestone passes QA
-
-A checkpoint should know which code versions are active.
+- database foundation created
+- login works
+- dashboard works
+- department task flow works
+- AI stream works
+- code version vault works
+- deployment dry run works
+- rollback works
+- milestone passes QA
 
 ## Deployment Rules
 
@@ -535,11 +435,11 @@ AI-generated code must not deploy itself.
 Deployment requires:
 
 - Director approval
-- Active code version
-- Dry run passed
-- Path whitelist passed
-- Backup or checkpoint available
-- Audit log record
+- active code version
+- dry run passed
+- path whitelist passed
+- backup or checkpoint available
+- audit log record
 
 ## Rollback Rules
 
@@ -547,35 +447,12 @@ Rollback must restore a known good state.
 
 Rollback may use:
 
-- Previous active code version
-- Checkpoint file map
-- Physical backup
-- Database version state
+- previous active code version
+- checkpoint file map
+- physical backup
+- database version state
 
 Rollback must be logged.
-
-## Token Economy Rules
-
-- One task should usually equal one AI call.
-- Old department messages are not reused by default.
-- Accepted output becomes compact memory.
-- Large tasks are split into milestones.
-- Low-risk summaries use low-cost models.
-- High-risk architecture, debugging, and code generation may use stronger models.
-- Every AI call should be logged.
-
-## Default Model Routing
-
-Model routing should be configurable.
-
-Suggested routing:
-
-- Memory Documentation: low-cost model
-- QA Security simple review: low-cost model
-- Architect: stronger model when architecture risk is high
-- Backend code generation: stronger model
-- Database design: stronger model when schema risk is high
-- Frontend simple UI changes: medium or low-cost model
 
 ## Permission Scope Summary
 
@@ -589,19 +466,21 @@ Frontend sees UI files and API summaries.
 
 QA Security sees error packages, test results, and relevant excerpts.
 
-Memory Documentation sees accepted outputs and decisions.
+Memory Documentation sees accepted compact outputs and decisions.
 
 No department sees everything by default.
 
 ## Final Rule
 
-Director controls the workflow.
+Director controls workflow.
 
-Milestones control the scope.
+Milestones control scope.
 
-Departments produce single-use expert outputs.
+AI Gate prevents unnecessary AI calls.
 
-System engines enforce safety.
+Context Builder minimizes context.
+
+Departments produce single-use structured outputs.
 
 Database memory preserves continuity.
 
