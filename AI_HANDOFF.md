@@ -1,17 +1,13 @@
 # AI Handoff
 
-This file is the primary handoff document for any new AI assistant or new ChatGPT conversation working on TV Project Platform.
+Primary handoff document for TV Project Platform.
 
-Read this file first.
-
-Then read:
+## Read First
 
 - PROJECT_STATE.md
-- README.md
 - ROADMAP.md
 - SECURITY.md
 - LEGAL_SCOPE.md
-- CONTRIBUTING.md
 - LICENSE.md
 - docs/development-workflow.md
 - docs/department-system.md
@@ -23,6 +19,7 @@ Then read:
 - docs/environment-variables.md
 - docs/new-chat-start-message.md
 - project-bible/00-project-rules.md
+- project-bible/17-ai-operations-bible.md
 - project-bible directory as needed
 - docs directory as needed
 
@@ -36,9 +33,7 @@ Product type:
 
 Licensed IPTV Player Platform
 
-The platform manages software/player access, accounts, subscriptions, licenses, devices, payments, reseller operations, app versions, remote configuration, audit logs, and optional temporary encrypted web-to-device profile transfer.
-
-The product boundary is defined in README.md, LEGAL_SCOPE.md, SECURITY.md, and project-bible/00-project-rules.md.
+Product boundary is defined in LEGAL_SCOPE.md, SECURITY.md, and project-bible/00-project-rules.md.
 
 ## Current State
 
@@ -46,7 +41,7 @@ The project workspace is in foundation stabilization and controlled implementati
 
 Do not describe the project as empty or not started.
 
-Confirmed foundation exists:
+Foundation exists:
 
 - pnpm monorepo root configuration
 - apps/web Next.js skeleton
@@ -56,18 +51,22 @@ Confirmed foundation exists:
 - API health endpoint
 - Web landing page shell
 - Docker Compose local services
-- Internal validation workflow direction
+- internal validation workflow direction
 - Project Bible canonical tree
 - development workflow rules
 - department system rules
 - department direct-response rules
 - token economy rules
 - context builder engine rules
+- AI operations bible
 - internal migration plan
 - local setup documentation
 - environment variable documentation
-- CONTRIBUTING.md
 - LICENSE.md
+
+Removed from active use:
+
+- README.md
 
 Still pending before full MVP implementation:
 
@@ -81,14 +80,6 @@ Still pending before full MVP implementation:
 ## Operating Model
 
 This project is controlled by a Director-led milestone system.
-
-Required operating documents:
-
-- docs/development-workflow.md
-- docs/department-system.md
-- docs/department-response-rules.md
-- docs/token-economy.md
-- docs/context-builder-engine.md
 
 Rules:
 
@@ -112,8 +103,6 @@ Rules:
 
 ## Approved AI Departments
 
-Only these AI departments are active by default:
-
 - Architect
 - Database
 - Backend
@@ -121,23 +110,7 @@ Only these AI departments are active by default:
 - QA Security
 - Memory Documentation
 
-Departments must not talk to each other directly.
-
-Correct pattern:
-
-```txt
-Department -> Director -> Department
-```
-
-Wrong pattern:
-
-```txt
-Department -> Department
-```
-
-## System Engines
-
-These are deterministic system engines, not AI departments:
+## Approved System Engines
 
 - Milestone Controller
 - AI Gate
@@ -150,11 +123,9 @@ These are deterministic system engines, not AI departments:
 - Cost Guard
 - Audit Logger
 
-System engines should not call AI unless the Director explicitly asks for analysis.
+## Department Output Rule
 
-## Department Output Format
-
-Department output is controlled by docs/department-response-rules.md.
+Controlled by docs/department-response-rules.md.
 
 Default format:
 
@@ -171,26 +142,19 @@ No acknowledgement.
 
 No filler.
 
-No closing sentence.
-
 Only structured result.
 
-## Token Economy Rules
+## Token Economy Rule
 
-Token use is controlled by docs/token-economy.md and docs/context-builder-engine.md.
+Controlled by:
 
-Core rules:
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- project-bible/17-ai-operations-bible.md
 
-- One task usually equals one AI call.
-- AI Gate checks whether AI is needed.
-- Context Builder sends only the smallest useful context.
-- Full long documents are not sent by default.
-- Full old conversations are not sent by default.
-- Full codebase is not sent by default.
-- Similar accepted answers are reused without AI.
-- Large outputs must be split into approved milestones.
-- Low-risk summaries should use low-cost models.
-- Complex architecture, debugging, and code generation may use stronger models.
+Core rule:
+
+AI should see only what it needs for the current task.
 
 ## Core Technical Stack
 
@@ -202,51 +166,19 @@ Core rules:
 - Redis
 - Docker Compose
 
-## Current Project Structure
-
-Expected root structure:
-
-```txt
-TV_Project_Platform/
-├── README.md
-├── PROJECT_STATE.md
-├── AI_HANDOFF.md
-├── ROADMAP.md
-├── CHANGELOG.md
-├── SECURITY.md
-├── LEGAL_SCOPE.md
-├── CONTRIBUTING.md
-├── LICENSE.md
-├── .env.example
-├── .gitignore
-├── package.json
-├── pnpm-workspace.yaml
-├── tsconfig.base.json
-├── docker-compose.yml
-├── project-bible/
-├── docs/
-├── apps/
-│   ├── web/
-│   └── api/
-├── packages/
-│   └── shared/
-└── infra/
-```
-
 ## Current Next Steps
 
-1. Run dependency install and save the generated pnpm-lock.yaml.
-2. Validate the internal build/typecheck workflow after lockfile exists.
-3. Finalize MVP Prisma schema in controlled patches.
-4. Continue implementation through milestones only.
+1. Finish documentation synchronization.
+2. Remove agreed unnecessary files.
+3. Simplify oversized Bible files.
+4. Run dependency install and save pnpm-lock.yaml.
+5. Continue implementation through milestones only.
 
 ## Assistant Rules
 
-- Preserve the licensed-player-only boundary.
 - Follow token economy and context builder rules.
 - Do not assume missing implementation exists.
 - Do not create duplicate folders.
-- Do not recreate deprecated project-bible filenames.
 - Do not allow direct department-to-department loops.
 - Do not retry the same failing task more than three times.
 - Do not deploy AI output without Director approval.
