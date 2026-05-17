@@ -12,8 +12,11 @@ Then read:
 - SECURITY.md
 - LEGAL_SCOPE.md
 - CONTRIBUTING.md
+- LICENSE.md
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/local-setup.md
+- docs/environment-variables.md
 - docs/new-chat-start-message.md
 - project-bible/00-project-rules.md
 - project-bible directory as needed
@@ -49,15 +52,18 @@ Confirmed foundation exists:
 - API health endpoint
 - Web landing page shell
 - Docker Compose local services
+- GitHub Actions CI skeleton
 - Project Bible canonical tree
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/local-setup.md
+- docs/environment-variables.md
 - CONTRIBUTING.md
-
-Still pending:
-
 - LICENSE.md
-- .github/workflows CI
+
+Still pending before full MVP implementation:
+
+- pnpm-lock.yaml after first dependency install
 - finalized MVP Prisma schema
 - real API modules beyond health
 - real dashboard implementation
@@ -66,7 +72,7 @@ Still pending:
 
 ## Operating Model
 
-This project is now controlled by a Director-led milestone system.
+This project is controlled by a Director-led milestone system.
 
 Required operating documents:
 
@@ -242,11 +248,10 @@ TV_Project_Platform/
 
 ## Current Next Steps
 
-1. Keep handoff, state, roadmap, and project rules aligned.
-2. Add LICENSE.md.
-3. Add .github/workflows CI.
-4. Finalize MVP Prisma schema in controlled patches.
-5. Continue implementation through milestones only.
+1. Run dependency install and commit the generated pnpm-lock.yaml.
+2. Validate CI after lockfile exists.
+3. Finalize MVP Prisma schema in controlled patches.
+4. Continue implementation through milestones only.
 
 ## Assistant Rules
 
