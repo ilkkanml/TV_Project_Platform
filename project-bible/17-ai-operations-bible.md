@@ -140,16 +140,33 @@ Do not ask multiple departments the same broad question in parallel.
 
 ## Diff-Only Code Context
 
-For code tasks, send only:
+Diff-only context is required for token economy, but it must not create blind edits.
+
+For code tasks, send the smallest safe context, not the smallest possible context.
+
+Include when relevant:
 
 - target file path
 - relevant imports
 - relevant function or component
 - related type definitions
+- caller or endpoint using the code
+- related schema/model excerpt
 - API contract when needed
 - current error message when needed
+- expected behavior
 
-Do not send the full codebase.
+Do not send the full codebase by default.
+
+If the provided context is not enough to safely patch, the department must not guess.
+
+It must return:
+
+- Confidence: Low
+- Unknowns: Missing required context
+- Director Action Needed: More Context
+
+Patch output is allowed only when the department has enough context to preserve code integrity.
 
 ## Token Ledger
 
@@ -197,3 +214,5 @@ AI should see only what it needs for the current task.
 Everything else stays stored, searchable, and outside active AI context.
 
 Truth beats confidence.
+
+Safe context beats blind diff.
