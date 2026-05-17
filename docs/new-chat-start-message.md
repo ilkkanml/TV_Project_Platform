@@ -8,9 +8,7 @@ Copy the section below and paste it into the new chat.
 
 ## Message To Paste Into New Chat
 
-We are continuing the GitHub repository:
-
-https://github.com/ilkkanml/TV_Project_Platform
+We are continuing TV Project Platform from the current project workspace and saved project memory.
 
 Project name:
 
@@ -29,8 +27,11 @@ Before doing anything, read and respect these files:
 - SECURITY.md
 - LEGAL_SCOPE.md
 - CONTRIBUTING.md
+- LICENSE.md
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/local-setup.md
+- docs/environment-variables.md
 - project-bible/00-project-rules.md
 - project-bible directory as needed
 - docs directory as needed
@@ -169,6 +170,10 @@ Do not change these without explicit Owner approval:
 - Next.js web app
 - NestJS API app
 - Prisma PostgreSQL backend
+- Director-led milestone workflow
+- Single-task department model
+- Three-fail loop breaker
+- No self-deployment rule
 
 ## Technical Stack
 
@@ -185,11 +190,11 @@ The planned stack is:
 - Redis
 - Docker Compose
 
-## Current Repository Reality
+## Current Project Reality
 
 Do not say implementation has not started.
 
-The repository already has foundation code:
+The project already has foundation code:
 
 - apps/web skeleton
 - apps/api skeleton
@@ -198,20 +203,24 @@ The repository already has foundation code:
 - API health endpoint
 - Web landing shell
 - Docker Compose services
+- CI skeleton
+- LICENSE.md
+- CONTRIBUTING.md
+- Local setup docs
+- Environment variable docs
 - Department workflow docs
 - Milestone workflow docs
 
 Still not complete:
 
-- LICENSE.md
-- CI workflow
+- pnpm-lock.yaml after first dependency install
 - finalized MVP schema
 - real API modules beyond health
 - real dashboards
 - tests
 - production deployment
 
-## Repository Safety Rules
+## Project Safety Rules
 
 Do not redefine the product.
 
@@ -228,13 +237,13 @@ Wrong examples:
 - apps/apps
 - packages/packages
 
-Do not continue blindly if the real repository tree differs from PROJECT_STATE.md.
+Do not continue blindly if the real project tree differs from PROJECT_STATE.md.
 
-If repository state and docs conflict, stop and reconcile state first.
+If project state and docs conflict, stop and reconcile state first.
 
 ## Final Instruction
 
-Continue from the current repository state.
+Continue from the current project state.
 
 Use the milestone system.
 
