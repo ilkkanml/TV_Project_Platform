@@ -22,9 +22,13 @@ Current phase:
 
 Foundation stabilization and controlled implementation preparation.
 
-The repository is no longer empty and must not be described as having no implementation.
+The project workspace already contains foundation code and foundation documentation.
 
-The current codebase contains an early working foundation:
+Do not describe the project as empty or not started.
+
+## Confirmed Foundation
+
+Code foundation:
 
 - pnpm monorepo root configuration
 - apps/web Next.js skeleton
@@ -33,39 +37,53 @@ The current codebase contains an early working foundation:
 - apps/api/prisma/schema.prisma early schema
 - API health endpoint
 - Web landing page shell
-- Docker Compose for PostgreSQL, Redis, and pgAdmin
-- GitHub Actions CI skeleton
-- Project Bible canonical tree
-- Core documentation foundation
-- Milestone development workflow
-- Department system constitution
+- Docker Compose local services
+
+Documentation and workflow foundation:
+
+- README.md
+- PROJECT_STATE.md
+- AI_HANDOFF.md
+- ROADMAP.md
+- CHANGELOG.md
+- SECURITY.md
+- LEGAL_SCOPE.md
 - CONTRIBUTING.md
 - LICENSE.md
+- docs/development-workflow.md
+- docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- docs/internal-system-migration.md
 - docs/local-setup.md
 - docs/environment-variables.md
+- docs/new-chat-start-message.md
+- project-bible canonical tree
 
-## Current Management Model
+## Management Model
 
 The project is managed with a Director-led milestone system.
 
-Approved management documents:
+Core rules:
 
-- docs/development-workflow.md
-- docs/department-system.md
-
-Core workflow rules:
-
-- Director controls the project flow.
 - Owner approves major direction decisions.
+- Director controls execution order.
 - Milestones control scope.
+- AI Gate blocks unnecessary AI calls.
+- Context Builder Engine builds the smallest useful context package.
 - Departments are single-task expert calls, not permanent chat rooms.
-- Department outputs are archived.
-- Old department conversations are not reused as default AI context.
+- Departments answer only with structured output.
+- Departments do not acknowledge instructions.
+- Departments do not add filler text.
+- Department raw outputs are archived.
+- Accepted compact outputs become reusable memory.
+- Full old conversations are not reused as default AI context.
 - Three failures on the same task stop the loop.
-- Last successful checkpoint must be used before retrying risky work.
+- Last successful checkpoint must be used before risky retry.
 - AI output does not deploy itself.
 - Deployment requires Director approval, dry run, whitelist, backup/checkpoint, and audit logging.
-- AI usage should be logged and token budgets should be enforced.
+- AI usage must be logged and token budgets must be enforced.
 
 Approved AI departments:
 
@@ -79,6 +97,9 @@ Approved AI departments:
 Approved system engines:
 
 - Milestone Controller
+- AI Gate
+- Context Builder Engine
+- Similar Task Cache
 - Loop Breaker
 - Checkpoint Manager
 - Deployment Engine
@@ -86,7 +107,7 @@ Approved system engines:
 - Cost Guard
 - Audit Logger
 
-## Current Repository Structure
+## Current Project Structure
 
 Expected root structure:
 
@@ -114,60 +135,35 @@ TV_Project_Platform/
 │   └── api/
 ├── packages/
 │   └── shared/
-├── infra/
-└── .github/
+└── infra/
 ```
-
-Confirmed foundation files:
-
-- README.md
-- PROJECT_STATE.md
-- AI_HANDOFF.md
-- ROADMAP.md
-- CHANGELOG.md
-- SECURITY.md
-- LEGAL_SCOPE.md
-- CONTRIBUTING.md
-- LICENSE.md
-- .env.example
-- .gitignore
-- package.json
-- pnpm-workspace.yaml
-- tsconfig.base.json
-- docker-compose.yml
-- .github/workflows/ci.yml
-- apps/web
-- apps/api
-- packages/shared
-- project-bible
-- docs
-- docs/development-workflow.md
-- docs/department-system.md
-- docs/local-setup.md
-- docs/environment-variables.md
 
 ## Root Script State
 
-The root API development script has been fixed.
-
-Current correct command:
+Current API development command:
 
 ```txt
 pnpm --filter @tv-platform/api run dev
 ```
 
+Common root commands:
+
+```txt
+pnpm install
+pnpm dev
+pnpm dev:web
+pnpm dev:api
+pnpm typecheck
+pnpm build
+pnpm infra:up
+pnpm infra:down
+pnpm db:generate
+pnpm db:migrate
+```
+
 ## Documentation State
 
-Critical foundation documentation is now present.
-
-Canonical docs currently include:
-
-- docs/new-chat-start-message.md
-- docs/architecture.md
-- docs/development-workflow.md
-- docs/department-system.md
-- docs/local-setup.md
-- docs/environment-variables.md
+Critical foundation documentation is present.
 
 Older non-canonical docs may still exist.
 
@@ -176,8 +172,6 @@ Do not delete older docs blindly.
 Review and migrate useful content before removal, rename, or archive decisions.
 
 ## Implementation State
-
-Current implementation is foundation-level only.
 
 Completed foundation areas:
 
@@ -188,9 +182,11 @@ Completed foundation areas:
 - public landing shell
 - Prisma early schema
 - local Docker services
-- CI skeleton
-- project management workflow docs
+- internal validation direction
+- project workflow docs
 - department system docs
+- token economy docs
+- context builder docs
 - local setup docs
 - environment variable docs
 
@@ -215,6 +211,7 @@ Not complete yet:
 - tests
 - production deployment
 - finalized MVP Prisma schema
+- pnpm-lock.yaml after first dependency install
 
 ## Product Boundary
 
@@ -250,21 +247,22 @@ Forbidden backend areas:
 
 ## Current Risks
 
-- Prisma schema is early and not yet MVP-complete.
+- Prisma schema is early and not MVP-complete.
 - Real product modules are not implemented yet.
 - Tests are not complete yet.
 - Production deployment setup is not complete yet.
-- New assistants must read the workflow and department-system docs or they may use the wrong operating model.
+- Long documents must not be sent to AI as full context.
+- New assistants must read token economy, context builder, and department response rules.
 
 ## Current Recommended Next Steps
 
-1. Generate and commit pnpm-lock.yaml after first dependency install.
+1. Generate and save pnpm-lock.yaml after first dependency install.
 2. Finalize MVP Prisma schema in controlled smaller patches.
-3. Validate CI after dependency lockfile exists.
+3. Validate internal build/typecheck workflow after lockfile exists.
 4. Continue milestone-based implementation.
 
 ## Update Rule
 
 Update this file whenever project state changes.
 
-Do not claim a feature is complete unless the repository contains it and it has been verified.
+Do not claim a feature is complete unless the project workspace contains it and it has been verified.
