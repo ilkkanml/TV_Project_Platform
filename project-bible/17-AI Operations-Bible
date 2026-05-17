@@ -1,0 +1,181 @@
+# 17 - AI Operations Bible
+
+This file defines AI usage, token economy, context control, and department response rules for TV Project Platform.
+
+## Status
+
+APPROVED
+
+## Authority
+
+This file works with:
+
+- docs/development-workflow.md
+- docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- AI_HANDOFF.md
+- PROJECT_STATE.md
+- ROADMAP.md
+
+## Core Rule
+
+AI is not the default path.
+
+Deterministic system logic must be used when AI is not required.
+
+## AI Gate Rule
+
+Every task must pass AI Gate before an AI call.
+
+AI Gate checks:
+
+- Is AI needed?
+- Can deterministic logic complete this?
+- Is the task inside the active milestone?
+- Is the task assigned to one department?
+- Is the context small enough?
+- Has the three-fail rule been reached?
+
+If AI is not needed, no AI call is allowed.
+
+## Context Builder Rule
+
+Context Builder Engine creates the smallest useful task package.
+
+Default package:
+
+```txt
+Project Summary:
+Active Milestone:
+Department Role:
+Task:
+Relevant Decisions:
+Relevant Excerpts:
+Required Output Format:
+Stop Condition:
+```
+
+Do not include by default:
+
+- full old conversations
+- full long documents
+- full Bible files
+- full codebase
+- unrelated department outputs
+- large logs without filtering
+
+## No Full Document Rule
+
+Long documents must be stored and indexed, not sent fully.
+
+AI receives only:
+
+- compact summary
+- relevant section summary
+- exact excerpt when needed
+
+## Similar Task Cache Rule
+
+Before calling AI, the system checks accepted compact outputs.
+
+If a reliable accepted answer exists, reuse it without AI.
+
+## Accepted Output Rule
+
+Every accepted department output creates two records:
+
+```txt
+raw_output
+compact_output
+```
+
+Future AI calls use compact_output by default.
+
+Raw output is used only when the Director requests deep review.
+
+## Department Direct Output Rule
+
+Departments must not acknowledge tasks.
+
+Departments must not add filler text.
+
+Departments must not write greetings or closing sentences.
+
+Departments answer only with the required structured output.
+
+Default format:
+
+```txt
+Department:
+Task:
+Result:
+Risk:
+Required Files:
+Director Action Needed:
+```
+
+## One Question One Department Rule
+
+Send a task to one department at a time.
+
+Do not ask multiple departments the same broad question in parallel.
+
+## Diff-Only Code Context Rule
+
+For code tasks, send only:
+
+- target file path
+- relevant imports
+- relevant function or component
+- related type definitions
+- API contract when needed
+- current error message when needed
+
+Do not send the full codebase.
+
+## Token Ledger Rule
+
+Every AI call should log:
+
+- task_id
+- milestone_id
+- department_id
+- model
+- input tokens
+- output tokens
+- estimated cost
+- context items used
+- created_at
+
+## Model Routing Rule
+
+Use the cheapest capable model.
+
+Suggested routing:
+
+- deterministic work: no AI
+- simple summary: low-cost model
+- formatting cleanup: low-cost model
+- checklist review: low-cost or medium model
+- architecture decision: stronger model when needed
+- code generation: stronger model when needed
+- repeated failure analysis: stronger model with error package only
+
+## Stop Rule
+
+Stop before spending tokens when:
+
+- the same task failed three times
+- context is too large
+- task is outside active milestone
+- task is not clearly assigned
+- deterministic logic can solve it
+- Director approval is required but missing
+
+## Final Rule
+
+AI should see only what it needs for the current task.
+
+Everything else stays stored, searchable, and outside active AI context.
