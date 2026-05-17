@@ -1,195 +1,261 @@
 # Roadmap
 
-This file defines the planned roadmap for TV Project Platform.
+This file defines the milestone roadmap for TV Project Platform.
 
-The roadmap must be updated as the project evolves.
-
-## Project Status
+## Current Project Status
 
 Current phase:
 
-- Foundation
-- Documentation preparation
-- Project memory setup
+Foundation stabilization and controlled implementation preparation.
 
-The real application implementation has not started yet.
+The repository is not empty.
 
-The repository structure exists.
+Confirmed foundation exists:
 
-Root config files have been fixed.
+- pnpm monorepo configuration
+- apps/web Next.js skeleton
+- apps/api NestJS skeleton
+- packages/shared TypeScript package
+- apps/api/prisma/schema.prisma early schema
+- API health endpoint
+- Web landing page shell
+- Docker Compose services
+- Project Bible canonical tree
+- AI handoff file
+- Current project state file
+- Development workflow document
+- Department system document
+- CONTRIBUTING.md
 
-README.md has been fixed.
-
-PROJECT_STATE.md has been fixed.
-
-AI_HANDOFF.md has been fixed.
+The project is not MVP-ready yet.
 
 ## Product Direction
 
 TV Project Platform is a Licensed IPTV Player Platform.
 
-It is not an IPTV broadcast provider.
-
-It is not a content platform.
-
-It is not a playlist provider.
-
 The backend must focus only on:
 
 - User accounts
 - Authentication
+- Role-based access control
 - Subscriptions
-- Licensing
+- Player licensing
 - Device activation
-- Payments
+- Payment records
 - Reseller credit system
 - App version control
 - Remote configuration
-- Optional temporary web-to-device playlist profile transfer
+- Maintenance mode
+- Feature flags
+- Audit logs
+- Optional temporary encrypted web-to-device profile transfer
 
-The backend must not provide, host, relay, transcode, package, sell, or distribute TV streams.
+The backend must not become a media provider, broadcast backend, CDN, relay, transcoder, catalog seller, public playlist marketplace, or default permanent profile authority.
 
-## Roadmap Principles
+## Management Direction
 
-Every phase must follow these rules:
+The project is managed by a Director-led milestone system.
 
-- Do not turn the backend into a content provider.
-- Do not make the backend the playlist source of truth.
-- Do not store playlist credentials permanently by default.
-- Do not store payment card data.
-- Do not store passwords in plain text.
-- Keep admin, reseller, and customer roles separate.
-- Keep reseller credit operations transaction-based.
-- Keep app device identity based on app_generated_device_id.
-- Keep critical decisions documented.
-- Keep files readable and multiline.
+Required workflow documents:
 
-## Phase 0 - Foundation
+- docs/development-workflow.md
+- docs/department-system.md
 
-Goal:
+Operating rules:
 
-Prepare the repository, project memory, and documentation foundation before application implementation.
+- Owner approves major direction changes.
+- Director controls execution order.
+- Milestones define scope.
+- Departments are single-task expert calls.
+- Departments do not talk directly to each other.
+- Three failed attempts on the same problem stop the loop.
+- Checkpoints protect known good states.
+- AI output does not deploy itself.
+- Deployment requires Director approval, dry run, path whitelist, backup/checkpoint, and audit log.
+- AI token usage should be budgeted and logged.
 
-Status:
+Approved AI departments:
 
-- In progress
+- Architect
+- Database
+- Backend
+- Frontend
+- QA Security
+- Memory Documentation
 
-Tasks:
+Approved system engines:
 
-- Create repository folder structure
-- Fix root configuration files
-- Rewrite README.md
-- Rewrite PROJECT_STATE.md
-- Rewrite AI_HANDOFF.md
-- Rewrite ROADMAP.md
-- Rewrite CHANGELOG.md
-- Rewrite SECURITY.md
-- Rewrite LEGAL_SCOPE.md
-- Complete project-bible files
-- Complete docs files
-- Verify all critical Markdown files are real multiline files
+- Milestone Controller
+- Loop Breaker
+- Checkpoint Manager
+- Deployment Engine
+- Rollback Engine
+- Cost Guard
+- Audit Logger
 
-Deliverables:
+## Roadmap Status Values
 
-- Reliable project memory
-- Clear product boundary
-- Clear technical direction
-- Clear continuation instructions for new chats
-- Safe documentation workflow
+Allowed statuses:
 
-## Phase 1 - Shared Package Foundation
+- NOT_STARTED
+- IN_PROGRESS
+- WAITING_APPROVAL
+- PASSED
+- FAILED
+- LOCKED
 
-Goal:
-
-Create the shared TypeScript package used by both the web app and API app.
-
-Status:
-
-- Not started
-
-Location:
-
-- packages/shared
-
-Tasks:
-
-- Define user roles
-- Define API response codes
-- Define device types
-- Define subscription statuses
-- Define payment statuses
-- Define reseller credit transaction types
-- Define shared API response types
-- Define shared validation schemas
-- Export shared constants and types
-- Add package.json
-- Add tsconfig.json
-
-Deliverables:
-
-- @tv-platform/shared package
-- Shared role constants
-- Shared status constants
-- Shared API codes
-- Shared TypeScript types
-- Shared validation schemas
-
-## Phase 2 - API Foundation
+## Milestone 0 - Foundation Constitution
 
 Goal:
 
-Create the NestJS API foundation.
+Lock project identity, operating rules, repository memory, and safety boundaries.
 
 Status:
 
-- Not started
+IN_PROGRESS
 
-Location:
+Completed:
 
-- apps/api
+- README.md exists.
+- PROJECT_STATE.md updated to current state.
+- AI_HANDOFF.md updated to current workflow.
+- docs/development-workflow.md added.
+- docs/department-system.md added.
+- CONTRIBUTING.md added.
+- Product boundary defined.
+- Director/milestone/department model approved.
+- Three-fail loop breaker approved.
+- Token budget guard approved.
+- Checkpoint and rollback rules approved.
 
-Tasks:
+Pending:
 
-- Configure NestJS project
-- Configure TypeScript
-- Configure environment validation
-- Configure Prisma
-- Configure PostgreSQL connection
-- Configure Redis connection
-- Add global response format
-- Add global error handling
-- Add validation pipe
-- Add health endpoint
-- Add base app module
-- Add common decorators
-- Add common guards
-- Add common interceptors
-- Add common filters
+- LICENSE.md
+- .github/workflows CI
+- project-bible/00-project-rules.md operating model update
+- docs/new-chat-start-message.md workflow update
+- verify older docs for conflicts
 
-Deliverables:
+Completion rules:
 
-- Running API server
-- Health endpoint
-- Prisma connection
-- Standard response format
-- Standard error format
-- Environment configuration
+- All handoff files describe the same current workflow.
+- No root foundation file claims the repository has no implementation.
+- LICENSE.md exists.
+- CI skeleton exists.
+- Product boundary remains intact.
 
-## Phase 3 - Database Foundation
+## Milestone 1 - Repository and CI Stabilization
 
 Goal:
 
-Create the first production-oriented database schema.
+Make the repository safe to continue from any browser-based workflow.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Location:
+Scope:
 
-- apps/api/prisma/schema.prisma
+- Add LICENSE.md.
+- Add GitHub Actions CI skeleton.
+- Validate package scripts.
+- Validate pnpm workspace setup.
+- Confirm web, api, and shared typecheck/build commands.
+- Record known local development commands.
 
-Initial models:
+Completion rules:
+
+- CI runs install, typecheck, and build where possible.
+- Root scripts match package scripts.
+- Missing setup steps are documented.
+
+## Milestone 2 - Shared Package Foundation
+
+Goal:
+
+Create the shared TypeScript foundation used by web and API.
+
+Status:
+
+PARTIAL
+
+Existing:
+
+- packages/shared/package.json
+- packages/shared/src/index.ts
+- packages/shared/src/constants.ts
+- packages/shared/src/types.ts
+- packages/shared/src/validators.ts
+
+Pending:
+
+- final role constants
+- API response codes
+- device types
+- subscription statuses
+- payment statuses
+- reseller credit transaction types
+- shared response types
+- validation schema strategy
+
+Completion rules:
+
+- Shared exports are stable.
+- Web and API import shared values cleanly.
+- No duplicated enums across layers without a reason.
+
+## Milestone 3 - API Foundation
+
+Goal:
+
+Create a stable NestJS API base.
+
+Status:
+
+PARTIAL
+
+Existing:
+
+- apps/api package skeleton
+- apps/api/src/main.ts
+- apps/api/src/app.module.ts
+- apps/api/src/health.controller.ts
+
+Pending:
+
+- environment validation
+- global response format
+- global error handling
+- validation pipe
+- Prisma module
+- Redis configuration
+- common guards
+- common decorators
+- common filters
+- common interceptors
+
+Completion rules:
+
+- API starts successfully.
+- Health endpoint works.
+- Standard error/response format exists.
+- Environment requirements are documented.
+
+## Milestone 4 - Database Foundation
+
+Goal:
+
+Create the first MVP-ready Prisma schema.
+
+Status:
+
+PARTIAL
+
+Existing:
+
+- apps/api/prisma/schema.prisma early schema
+
+Required MVP models:
 
 - User
 - Session
@@ -197,583 +263,413 @@ Initial models:
 - Subscription
 - Device
 - LicenseCheck
-- Reseller
+- ResellerProfile
 - ResellerCreditTransaction
 - Payment
+- PaymentEvent
 - AppVersion
 - RemoteConfig
 - PlaylistPushRequest
 - AuditLog
 
-Important rules:
-
-- Passwords must be hashed.
-- Payment card data must not be stored.
-- Reseller credit history must be transaction-based.
-- Device identity must use app_generated_device_id as primary app identity.
-- PlaylistPushRequest must be temporary and expirable.
-- Backend must not become playlist source of truth.
-
-Deliverables:
-
-- Prisma schema
-- Database migrations
-- Seed script
-- Initial admin seed
-- Database documentation
-
-## Phase 4 - Authentication and Authorization
-
-Goal:
-
-Build secure authentication and role-based access control.
-
-Status:
-
-- Not started
-
-Tasks:
-
-- Register
-- Login
-- Refresh token
-- Logout
-- Password hashing
-- JWT access token
-- Refresh token storage
-- Role-based guards
-- Current user decorator
-- Admin route protection
-- Reseller route protection
-- Customer route protection
-- Basic rate limiting
-- Audit logging for sensitive actions
-
-Roles:
-
-- Admin
-- Reseller
-- Customer
-
-Deliverables:
-
-- Auth module
-- User module
-- Role guards
-- Secure token flow
-- Protected route foundation
-
-## Phase 5 - Subscription and License Engine
-
-Goal:
-
-Build the core subscription and licensing system.
-
-Status:
-
-- Not started
-
-Tasks:
-
-- Plan management
-- Customer subscription creation
-- Subscription extension
-- Subscription expiration logic
-- License status endpoint
-- Device license validation
-- Subscription status endpoint
-- License check audit records
-- Expired subscription handling
-- Blocked device handling
-
-App-facing endpoints may include:
-
-- GET /license/status
-- POST /device/activate
-- GET /device/status
-
-Deliverables:
-
-- Subscription module
-- License module
-- Device module
-- App license status API
-- Customer subscription status API
-
-## Phase 6 - Device Activation System
-
-Goal:
-
-Support app-generated device identity and backend license validation.
-
-Status:
-
-- Not started
-
-Device identity decision:
-
-- MAC address is not primary.
-- app_generated_device_id is primary.
-- Android ID is only a secondary signal.
-- Device model and app metadata are secondary signals.
-
-Tasks:
-
-- Device activation endpoint
-- Device status endpoint
-- Device blocking
-- Device naming
-- Device platform tracking
-- App version tracking per device
-- Device ownership validation
-- Reseller/customer device visibility rules
-
-Deliverables:
-
-- Device activation API
-- Device management API
-- Admin device view
-- Customer device view
-- Reseller device view
-
-## Phase 7 - Reseller Credit System
-
-Goal:
-
-Build a secure reseller system with transaction-based credit management.
-
-Status:
-
-- Not started
-
-Core rules:
-
-- A simple balance field is not enough.
-- Every credit operation must create a transaction.
-- Frontend credit values must not be trusted.
-- Negative reseller balances must be prevented.
-- Credit usage must be handled inside database transactions.
-- Resellers can only access their own customers.
-
-Tasks:
-
-- Create reseller accounts
-- Add reseller credit
-- Use reseller credit
-- Refund reseller credit
-- Manual adjustment
-- Reseller customer creation
-- Reseller subscription assignment
-- Reseller credit history
-- Reseller sales history
-- Admin reseller overview
-- Audit logs for credit operations
-
-Deliverables:
-
-- Reseller module
-- Credit transaction module
-- Reseller dashboard APIs
-- Admin reseller APIs
-- Abuse prevention rules
-
-## Phase 8 - Payment System
-
-Goal:
-
-Create payment records and prepare for secure payment provider integration.
-
-Status:
-
-- Not started
-
-MVP payment mode:
-
-- Manual payment records
-
-Later payment providers may include:
-
-- Iyzico
-- PayTR
-- Stripe
-- Other approved providers
-
 Rules:
 
-- Do not store card data.
-- Do not trust frontend price values.
-- Verify payment provider webhooks.
-- Extend subscriptions only after verified payment confirmation.
-- Store payment status and transaction references.
+- Passwords are hashed.
+- Payment card data is not stored.
+- Reseller credit history is transaction-based.
+- Device identity uses app_generated_device_id.
+- Temporary profile transfer expires and can be consumed or revoked.
+- Backend does not become default permanent profile authority.
 
-Tasks:
+Completion rules:
 
-- Plan selection
-- Checkout creation
-- Payment status tracking
-- Manual payment approval
-- Payment webhook structure
-- Subscription extension after payment success
-- Payment history for customers
-- Payment overview for admin
+- Schema contains all MVP models.
+- Relations and indexes support expected access patterns.
+- Migration path is documented.
 
-Deliverables:
-
-- Payment module
-- Checkout API
-- Payment records
-- Manual payment flow
-- Webhook-ready architecture
-
-## Phase 9 - App Version and Remote Config
+## Milestone 5 - Authentication and Authorization
 
 Goal:
 
-Allow the backend to control app version rules, maintenance mode, and feature flags.
+Build secure user identity and role access.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Tasks:
+Scope:
 
-- App version model
-- App version endpoint
-- Minimum version code
-- Force update setting
-- APK URL field
-- Changelog field
-- Remote config model
-- Maintenance mode
-- Maintenance message
-- Feature flags
-- Announcement message
+- login
+- logout
+- refresh token
+- password hashing
+- session records
+- role guards
+- current user decorator
+- rate limiting for sensitive endpoints
+- audit logs for sensitive actions
 
-App-facing endpoints may include:
+Completion rules:
 
-- GET /app/version
-- GET /remote-config
+- Admin, reseller, and customer roles are enforced server-side.
+- Frontend route hiding is not treated as security.
+- Password hash never returns from API.
 
-Deliverables:
-
-- App version module
-- Remote config module
-- Admin management APIs
-- App-facing config APIs
-
-## Phase 10 - Optional Playlist Push Bridge
+## Milestone 6 - Subscription and License Engine
 
 Goal:
 
-Allow a user to send a playlist profile from the web panel to their own device without making the backend the playlist source of truth.
+Build core subscription and app license validation.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Core rule:
+Scope:
 
-The backend is only a temporary encrypted transfer bridge.
+- plan management
+- subscription creation
+- subscription extension
+- expiration logic
+- license status endpoint
+- device status endpoint
+- license check records
+- blocked device handling
 
-The backend is not playlist source of truth.
+Completion rules:
 
-Default playlist storage remains inside the app using encrypted local storage.
+- App can ask backend whether a device is allowed.
+- Expired subscription blocks access.
+- Blocked device blocks access.
+- License checks are logged safely.
 
-Tasks:
-
-- Create temporary playlist profile transfer request
-- Encrypt temporary payload
-- Assign transfer to user-owned device
-- Allow app to consume transfer payload
-- Expire payload after pickup
-- Delete expired payloads
-- Add audit log
-- Add customer UI
-- Add app-facing consume endpoint
-
-Deliverables:
-
-- Playlist push module
-- Temporary encrypted payload flow
-- Customer playlist push screen
-- App consume endpoint
-
-## Phase 11 - Web Foundation
+## Milestone 7 - Device Activation System
 
 Goal:
 
-Create the Next.js web app foundation.
+Support app-generated device identity and device ownership.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Location:
+Scope:
 
-- apps/web
+- device activation endpoint
+- device status endpoint
+- device heartbeat
+- device naming
+- platform and app version tracking
+- ownership validation
+- admin, reseller, and customer visibility rules
 
-Tasks:
+Completion rules:
 
-- Configure Next.js
-- Configure TypeScript
-- Configure Tailwind CSS
-- Create root layout
-- Create global styles
-- Create public landing page
-- Create auth pages
-- Create dashboard layouts
-- Create shared UI components
-- Create API client
-- Create route constants
-- Create auth helpers
-- Create protected route middleware
+- app_generated_device_id is primary.
+- MAC address is not primary.
+- Device ownership is enforced server-side.
 
-Deliverables:
-
-- Running web app
-- Landing page shell
-- Login page
-- Register page
-- Customer dashboard shell
-- Reseller dashboard shell
-- Admin dashboard shell
-
-## Phase 12 - Customer Panel
+## Milestone 8 - Reseller Credit System
 
 Goal:
 
-Build the customer dashboard.
+Build secure reseller credit accounting.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Customer features:
+Scope:
 
-- Account overview
-- Subscription status
-- Device list
-- Payment history
-- Optional playlist profile push
-- Settings
-- Logout
+- reseller profile
+- credit add
+- credit use
+- refund
+- manual adjustment
+- reseller customer creation
+- reseller subscription assignment
+- credit transaction history
+- admin reseller overview
+- audit logs
 
-Deliverables:
+Completion rules:
 
-- Customer dashboard
-- Subscription page
-- Devices page
-- Payments page
-- Playlist push page
-- Settings page
+- Every credit operation creates a transaction.
+- Frontend credit values are not trusted.
+- Negative balances are prevented.
+- Credit use and subscription change happen safely together.
 
-## Phase 13 - Reseller Panel
+## Milestone 9 - Payment Records
 
 Goal:
 
-Build the reseller dashboard.
+Create payment records and manual payment approval flow.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Reseller features:
+Scope:
 
-- Overview
-- Own customers
-- Customer creation
-- Customer subscriptions
-- Credit balance
-- Credit transactions
-- Sales history
-- Settings
+- manual payment records
+- payment status tracking
+- payment approval
+- payment history
+- admin payment overview
+- webhook-ready structure for future providers
 
-Deliverables:
+Completion rules:
 
-- Reseller dashboard
-- Customer management page
-- Credit page
-- Sales page
-- Reseller settings page
+- Card data is not stored.
+- Payment result is backend-authoritative.
+- Subscription extension happens only after approved payment state.
 
-## Phase 14 - Admin Panel
+## Milestone 10 - App Version and Remote Config
 
 Goal:
 
-Build the admin dashboard.
+Allow backend-controlled app rules.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Admin features:
+Scope:
 
-- Overview
-- User management
-- Customer management
-- Reseller management
-- Plan management
-- Subscription management
-- Payment management
-- Device management
-- App version management
-- Remote config management
-- Audit logs
-- System settings
+- app version records
+- minimum version code
+- force update flag
+- update URL
+- release notes
+- remote config records
+- maintenance mode
+- feature flags
+- announcement message
 
-Deliverables:
+Completion rules:
 
-- Admin dashboard
-- Users page
-- Resellers page
-- Plans page
-- Subscriptions page
-- Payments page
-- Devices page
-- App versions page
-- Remote config page
-- Audit logs page
+- App can fetch version rules.
+- App can fetch remote configuration.
+- Admin can manage safe config values.
 
-## Phase 15 - Marketing Website
+## Milestone 11 - Temporary Profile Transfer Bridge
 
 Goal:
 
-Build the public-facing marketing website.
+Allow user-owned web-to-device encrypted temporary profile transfer without changing the product boundary.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Pages:
+Scope:
 
-- Home
-- Pricing
-- Download
-- Device selector
+- create temporary transfer request
+- encrypted payload storage
+- device scoping
+- app consume endpoint
+- expiration
+- consumed/revoked state
+- audit log
+
+Completion rules:
+
+- Transfer expires.
+- Transfer is scoped to user and device.
+- Transfer does not become permanent default storage.
+
+## Milestone 12 - Web Foundation
+
+Goal:
+
+Create the web application structure.
+
+Status:
+
+PARTIAL
+
+Existing:
+
+- apps/web package skeleton
+- root layout
+- global CSS
+- public landing shell
+
+Pending:
+
+- auth pages
+- dashboard layouts
+- shared UI components
+- API client
+- route constants
+- protected route middleware
+
+Completion rules:
+
+- Web app starts.
+- Landing shell exists.
+- Auth and dashboard shells exist.
+
+## Milestone 13 - Customer Panel
+
+Goal:
+
+Build customer dashboard.
+
+Status:
+
+NOT_STARTED
+
+Scope:
+
+- account overview
+- subscription status
+- devices
+- payment history
+- optional transfer screen
+- settings
+
+Completion rules:
+
+- Customer sees only own data.
+- Customer actions are server-authorized.
+
+## Milestone 14 - Reseller Panel
+
+Goal:
+
+Build reseller dashboard.
+
+Status:
+
+NOT_STARTED
+
+Scope:
+
+- overview
+- own customers
+- customer creation
+- subscription assignment
+- credit balance
+- credit transactions
+- sales history
+- settings
+
+Completion rules:
+
+- Reseller sees only own customers.
+- Credit actions are backend-authoritative.
+
+## Milestone 15 - Admin Panel
+
+Goal:
+
+Build admin dashboard.
+
+Status:
+
+NOT_STARTED
+
+Scope:
+
+- users
+- customers
+- resellers
+- plans
+- subscriptions
+- payments
+- devices
+- app versions
+- remote config
+- audit logs
+- system settings
+
+Completion rules:
+
+- Admin actions are authorized.
+- Critical actions are audit logged.
+
+## Milestone 16 - Public Website and Legal Pages
+
+Goal:
+
+Build public-facing pages with clear product positioning.
+
+Status:
+
+NOT_STARTED
+
+Scope:
+
+- home
+- pricing
+- download
+- device selector
 - FAQ
-- Privacy policy
-- Terms of service
-- Refund policy
+- privacy policy
+- terms of service
+- refund policy
 
-Messaging rules:
+Completion rules:
 
-- Position as a licensed IPTV player platform.
-- Do not market as IPTV provider.
-- Do not imply that the platform provides channels.
-- Do not imply that the platform provides streams.
-- Clearly state that users use their own legal playlist/provider information.
+- Messaging states software/player access only.
+- No page implies bundled media access.
 
-Deliverables:
-
-- Landing page
-- Pricing page
-- Download page
-- Device selector
-- FAQ page
-- Legal pages
-
-## Phase 16 - Documentation Completion
+## Milestone 17 - Testing and QA
 
 Goal:
 
-Complete all project documentation.
+Create test and validation coverage.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Files to complete:
+Scope:
 
-- docs/new-chat-start-message.md
-- docs/architecture.md
-- docs/development-workflow.md
-- docs/local-setup.md
-- docs/deployment.md
-- docs/environment-variables.md
-- docs/api-error-codes.md
-- docs/app-team-handoff.md
-- docs/admin-guide.md
-- docs/reseller-guide.md
-- docs/customer-guide.md
-- docs/payment-provider-notes.md
+- auth tests
+- role permission tests
+- subscription tests
+- license tests
+- device tests
+- reseller credit tests
+- payment tests
+- temporary transfer expiration tests
+- dashboard permission checks
 
-Deliverables:
+Completion rules:
 
-- Developer setup guide
-- Deployment guide
-- API error guide
-- App team handoff
-- Admin guide
-- Reseller guide
-- Customer guide
-- Payment notes
+- Critical flows are tested.
+- QA Security signs off milestone completion.
 
-## Phase 17 - Testing and QA
+## Milestone 18 - Security Hardening
 
 Goal:
 
-Create testing and validation processes.
+Prepare for staging-level safety.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Testing areas:
+Scope:
 
-- Auth tests
-- Role permission tests
-- Subscription tests
-- License validation tests
-- Device activation tests
-- Reseller credit transaction tests
-- Payment webhook tests
-- Playlist push expiration tests
-- Admin panel tests
-- Reseller panel tests
-- Customer panel tests
-
-Deliverables:
-
-- Unit tests
-- Integration tests
-- API tests
-- Role access tests
-- QA checklist
-
-## Phase 18 - Security Hardening
-
-Goal:
-
-Prepare the platform for safe staging and production deployment.
-
-Status:
-
-- Not started
-
-Tasks:
-
-- Rate limiting
-- Helmet/security headers
+- rate limiting
+- security headers
 - CORS rules
-- Password hashing
 - JWT secret handling
-- Refresh token rotation
-- Audit logging
-- Webhook verification
-- Input validation
-- Database transaction protection
-- Admin action logging
-- Sensitive data review
+- refresh token rotation
+- audit log coverage
+- webhook verification pattern
+- input validation
+- sensitive data review
 
-Deliverables:
+Completion rules:
 
-- Security checklist
-- Hardened API
-- Hardened web app
-- Audit log coverage
-- Staging readiness
+- Sensitive data is not exposed.
+- Critical endpoints have guards and validation.
 
-## Phase 19 - Deployment Preparation
+## Milestone 19 - Deployment Preparation
 
 Goal:
 
@@ -781,29 +677,25 @@ Prepare staging and production deployment.
 
 Status:
 
-- Not started
+NOT_STARTED
 
-Tasks:
+Scope:
 
-- Dockerfile for API
-- Dockerfile for web
-- Nginx config
-- Environment variables
-- Database migration flow
-- Backup strategy
+- Dockerfiles
+- environment variables
+- database migration flow
+- backup strategy
 - GitHub Actions CI
-- Deployment notes
-- Monitoring plan
+- deployment notes
+- monitoring plan
 
-Deliverables:
+Completion rules:
 
-- Staging deployment plan
-- Production deployment plan
-- Backup plan
-- CI workflow
-- Deployment documentation
+- Staging plan exists.
+- Production plan exists.
+- Backup and migration plans exist.
 
-## Phase 20 - MVP Release
+## Milestone 20 - MVP Release
 
 Goal:
 
@@ -811,103 +703,52 @@ Release the first usable MVP.
 
 Status:
 
-- Not started
+NOT_STARTED
 
 MVP must include:
 
-- Auth
-- Roles
-- Customer panel
-- Reseller panel
-- Admin panel
-- Plans
-- Subscriptions
-- Device activation
-- License status API
-- App version API
-- Remote config API
-- Reseller credit system
-- Manual payment records
-- Audit logs
+- auth
+- roles
+- customer panel
+- reseller panel
+- admin panel
+- plans
+- subscriptions
+- device activation
+- license status API
+- app version API
+- remote config API
+- reseller credit system
+- manual payment records
+- audit logs
 
 MVP must not include:
 
-- Stream hosting
-- Channel selling
-- CDN relay
-- Playlist provider service
-- Backend playlist source of truth
-
-Deliverables:
-
-- MVP web app
-- MVP API
-- MVP database
-- MVP admin panel
-- MVP reseller panel
-- MVP customer panel
-- App integration endpoints
+- media delivery
+- catalog-selling features
+- relay/transcoding features
+- public playlist marketplace
+- default permanent backend profile authority
 
 ## Post-MVP Ideas
 
-These are optional future ideas.
+These require separate approval:
 
-They require separate approval.
-
-Possible future features:
-
-- Real payment provider integration
-- Email notifications
+- real payment provider integration
+- email notifications
 - SMS notifications
-- Ticket system
-- Affiliate/referral system
-- Encrypted cloud playlist sync with explicit user consent
-- Advanced app analytics
-- Admin 2FA
-- Reseller commission models
-- Invoice/PDF receipts
-- Multi-currency pricing
-- Advanced device limits
-
-## Do Not Add Without Approval
-
-Do not add these without explicit approval:
-
-- Stream hosting
-- Stream relay
-- Channel packages
-- Playlist marketplace
-- Content provider features
-- Permanent backend playlist authority
-- User playlist credential cloud sync by default
-- Card data storage
-- Plain text password storage
-
-## Current Next Step
-
-After ROADMAP.md is committed, the next files should be updated in this order:
-
-1. CHANGELOG.md
-2. SECURITY.md
-3. LEGAL_SCOPE.md
-4. project-bible/00-project-rules.md
-5. project-bible/01-product-bible.md
-6. project-bible/02-user-roles.md
-7. project-bible/03-feature-list.md
-8. project-bible/04-database-bible.md
-9. project-bible/05-api-bible.md
-10. project-bible/06-security-bible.md
-11. project-bible/07-payment-bible.md
-12. project-bible/08-reseller-bible.md
-13. project-bible/09-ui-ux-bible.md
-14. project-bible/10-app-integration.md
-15. Remaining project-bible files
-16. docs files
+- ticket system
+- referral system
+- encrypted opt-in cloud profile sync
+- advanced app analytics
+- admin 2FA
+- reseller commission models
+- invoice/PDF receipts
+- multi-currency pricing
+- advanced device limits
 
 ## Roadmap Update Rule
 
-This roadmap must be updated whenever a major phase changes.
+Update this roadmap whenever a milestone status changes.
 
-When implementation begins, mark completed items clearly.
-
-Do not remove historical roadmap decisions without recording the reason in the decision log.
+Do not remove historical decisions without recording the reason in project-bible/13-decision-log.md.
