@@ -1,6 +1,6 @@
 # New Chat Start Message
 
-Use this short startup note for future project sessions.
+Short startup note for future project sessions.
 
 Read first:
 
@@ -13,6 +13,7 @@ Read first:
 - docs/token-economy.md
 - docs/context-builder-engine.md
 - project-bible/00-project-rules.md
+- project-bible/17-ai-operations-bible.md
 
 Continue from current project state.
 
@@ -28,4 +29,4 @@ Departments must return structured output only.
 
 Do not restart architecture.
 
-Do not bypass product boundary documents.
+Do not bypass active boundary documents.
