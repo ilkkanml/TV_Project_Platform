@@ -15,6 +15,10 @@ Then read:
 - LICENSE.md
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
+- docs/internal-system-migration.md
 - docs/local-setup.md
 - docs/environment-variables.md
 - docs/new-chat-start-message.md
@@ -54,10 +58,14 @@ Confirmed foundation exists:
 - Docker Compose local services
 - Internal validation workflow direction
 - Project Bible canonical tree
-- docs/development-workflow.md
-- docs/department-system.md
-- docs/local-setup.md
-- docs/environment-variables.md
+- development workflow rules
+- department system rules
+- department direct-response rules
+- token economy rules
+- context builder engine rules
+- internal migration plan
+- local setup documentation
+- environment variable documentation
 - CONTRIBUTING.md
 - LICENSE.md
 
@@ -78,16 +86,24 @@ Required operating documents:
 
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/department-response-rules.md
+- docs/token-economy.md
+- docs/context-builder-engine.md
 
 Rules:
 
 - Owner approves major direction decisions.
 - Director controls workflow and final execution order.
 - Milestones control scope.
+- AI Gate blocks unnecessary AI calls.
+- Context Builder Engine builds the smallest useful context package.
 - Departments are single-task expert calls, not permanent chat rooms.
+- Departments answer only with structured output.
+- Departments do not acknowledge instructions.
+- Departments do not add filler text.
 - Department outputs are archived.
+- Accepted compact outputs become reusable memory.
 - Old department conversations are not reused as default AI context.
-- Accepted outputs, Director decisions, milestones, checkpoints, and code versions become reusable memory.
 - Three failures on the same problem stop the loop.
 - Rollback must use the last successful checkpoint when needed.
 - AI output may not deploy itself.
@@ -124,6 +140,9 @@ Department -> Department
 These are deterministic system engines, not AI departments:
 
 - Milestone Controller
+- AI Gate
+- Context Builder Engine
+- Similar Task Cache
 - Loop Breaker
 - Checkpoint Manager
 - Deployment Engine
@@ -135,7 +154,9 @@ System engines should not call AI unless the Director explicitly asks for analys
 
 ## Department Output Format
 
-Every department output must use:
+Department output is controlled by docs/department-response-rules.md.
+
+Default format:
 
 ```txt
 Department:
@@ -146,28 +167,27 @@ Required Files:
 Director Action Needed:
 ```
 
-For code tasks, also include:
+No acknowledgement.
 
-```txt
-Code Version Impact:
-Rollback Need:
-Test Requirement:
-```
+No filler.
 
-For error tasks, also include:
+No closing sentence.
 
-```txt
-Likely Cause:
-Fix Attempt Number:
-Stop Condition:
-```
+Only structured result.
 
 ## Token Economy Rules
 
+Token use is controlled by docs/token-economy.md and docs/context-builder-engine.md.
+
+Core rules:
+
 - One task usually equals one AI call.
-- Use the smallest useful context package.
-- Do not include full old conversations by default.
-- Use active milestone, project summary, department role, task, relevant decision records, and relevant file excerpts only.
+- AI Gate checks whether AI is needed.
+- Context Builder sends only the smallest useful context.
+- Full long documents are not sent by default.
+- Full old conversations are not sent by default.
+- Full codebase is not sent by default.
+- Similar accepted answers are reused without AI.
 - Large outputs must be split into approved milestones.
 - Low-risk summaries should use low-cost models.
 - Complex architecture, debugging, and code generation may use stronger models.
@@ -223,6 +243,7 @@ TV_Project_Platform/
 ## Assistant Rules
 
 - Preserve the licensed-player-only boundary.
+- Follow token economy and context builder rules.
 - Do not assume missing implementation exists.
 - Do not create duplicate folders.
 - Do not recreate deprecated project-bible filenames.
