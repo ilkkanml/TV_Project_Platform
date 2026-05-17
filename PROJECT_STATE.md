@@ -22,7 +22,7 @@ Current phase:
 
 Foundation stabilization and controlled implementation preparation.
 
-The repository is no longer empty and should not be described as having no implementation.
+The repository is no longer empty and must not be described as having no implementation.
 
 The current codebase contains an early working foundation:
 
@@ -34,15 +34,19 @@ The current codebase contains an early working foundation:
 - API health endpoint
 - Web landing page shell
 - Docker Compose for PostgreSQL, Redis, and pgAdmin
+- GitHub Actions CI skeleton
 - Project Bible canonical tree
 - Core documentation foundation
 - Milestone development workflow
 - Department system constitution
 - CONTRIBUTING.md
+- LICENSE.md
+- docs/local-setup.md
+- docs/environment-variables.md
 
 ## Current Management Model
 
-The project is now managed with a milestone-first system.
+The project is managed with a Director-led milestone system.
 
 Approved management documents:
 
@@ -114,7 +118,7 @@ TV_Project_Platform/
 └── .github/
 ```
 
-Confirmed present or created:
+Confirmed foundation files:
 
 - README.md
 - PROJECT_STATE.md
@@ -124,12 +128,14 @@ Confirmed present or created:
 - SECURITY.md
 - LEGAL_SCOPE.md
 - CONTRIBUTING.md
+- LICENSE.md
 - .env.example
 - .gitignore
 - package.json
 - pnpm-workspace.yaml
 - tsconfig.base.json
 - docker-compose.yml
+- .github/workflows/ci.yml
 - apps/web
 - apps/api
 - packages/shared
@@ -137,17 +143,8 @@ Confirmed present or created:
 - docs
 - docs/development-workflow.md
 - docs/department-system.md
-
-Still pending:
-
-- LICENSE.md
-- .github/workflows CI
-- production deployment configuration
-- complete docs coverage
-- finalized MVP Prisma schema
-- real API modules beyond health
-- real web dashboards beyond landing shell
-- tests
+- docs/local-setup.md
+- docs/environment-variables.md
 
 ## Root Script State
 
@@ -161,12 +158,16 @@ pnpm --filter @tv-platform/api run dev
 
 ## Documentation State
 
-Canonical docs now include at least:
+Critical foundation documentation is now present.
+
+Canonical docs currently include:
 
 - docs/new-chat-start-message.md
 - docs/architecture.md
 - docs/development-workflow.md
 - docs/department-system.md
+- docs/local-setup.md
+- docs/environment-variables.md
 
 Older non-canonical docs may still exist.
 
@@ -187,8 +188,11 @@ Completed foundation areas:
 - public landing shell
 - Prisma early schema
 - local Docker services
+- CI skeleton
 - project management workflow docs
 - department system docs
+- local setup docs
+- environment variable docs
 
 Not complete yet:
 
@@ -203,14 +207,14 @@ Not complete yet:
 - payment records
 - app version module
 - remote config module
-- playlist/profile transfer bridge
+- temporary profile transfer bridge
 - audit log module
 - admin panel
 - reseller panel
 - customer panel
-- CI workflow
 - tests
 - production deployment
+- finalized MVP Prisma schema
 
 ## Product Boundary
 
@@ -246,22 +250,18 @@ Forbidden backend areas:
 
 ## Current Risks
 
-- Some older documents may still describe the project as pre-implementation.
 - Prisma schema is early and not yet MVP-complete.
-- CI is not yet present.
-- LICENSE.md is still pending.
+- Real product modules are not implemented yet.
+- Tests are not complete yet.
+- Production deployment setup is not complete yet.
 - New assistants must read the workflow and department-system docs or they may use the wrong operating model.
 
 ## Current Recommended Next Steps
 
-1. Update AI_HANDOFF.md to include the new workflow and department documents.
-2. Update ROADMAP.md to reflect foundation implementation already exists.
-3. Update docs/new-chat-start-message.md to include the Director/milestone/department rules.
-4. Update project-bible/00-project-rules.md with the new operating model reference.
-5. Add LICENSE.md.
-6. Add .github/workflows CI.
-7. Finalize MVP Prisma schema in a controlled smaller patch.
-8. Continue milestone-based implementation.
+1. Generate and commit pnpm-lock.yaml after first dependency install.
+2. Finalize MVP Prisma schema in controlled smaller patches.
+3. Validate CI after dependency lockfile exists.
+4. Continue milestone-based implementation.
 
 ## Update Rule
 
