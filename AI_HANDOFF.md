@@ -17,7 +17,6 @@ Primary handoff document for TV Project Platform.
 - docs/internal-system-migration.md
 - docs/local-setup.md
 - docs/environment-variables.md
-- docs/new-chat-start-message.md
 - project-bible/00-project-rules.md
 - project-bible/17-ai-operations-bible.md
 - project-bible directory as needed
@@ -31,13 +30,13 @@ TV Project Platform
 
 Product type:
 
-Licensed IPTV Player Platform
+Licensed player platform.
 
 Product boundary is defined in LEGAL_SCOPE.md, SECURITY.md, and project-bible/00-project-rules.md.
 
 ## Current State
 
-The project workspace is in foundation stabilization and controlled implementation preparation.
+The project workspace is in cleanup and simplification before implementation.
 
 Do not describe the project as empty or not started.
 
@@ -51,7 +50,6 @@ Foundation exists:
 - API health endpoint
 - Web landing page shell
 - Docker Compose local services
-- internal validation workflow direction
 - Project Bible canonical tree
 - development workflow rules
 - department system rules
@@ -67,6 +65,10 @@ Foundation exists:
 Removed from active use:
 
 - README.md
+- CONTRIBUTING.md
+- CHANGELOG.md
+- docs/new-chat-start-message.md
+- .github/workflows/ci.yml
 
 Still pending before full MVP implementation:
 
@@ -168,11 +170,10 @@ AI should see only what it needs for the current task.
 
 ## Current Next Steps
 
-1. Finish documentation synchronization.
-2. Remove agreed unnecessary files.
-3. Simplify oversized Bible files.
-4. Run dependency install and save pnpm-lock.yaml.
-5. Continue implementation through milestones only.
+1. Finish cleanup reference synchronization.
+2. Simplify oversized Bible files.
+3. Run dependency install and save pnpm-lock.yaml.
+4. Continue implementation through milestones only.
 
 ## Assistant Rules
 
