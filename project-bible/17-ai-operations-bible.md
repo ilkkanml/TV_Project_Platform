@@ -2,7 +2,7 @@
 
 Status: APPROVED
 
-This file defines AI usage, token economy, context control, truthfulness, and department response rules.
+This file defines AI usage, token economy, context control, truthfulness, safe code generation, and department response rules.
 
 ## Authority
 
@@ -44,6 +44,52 @@ Allowed uncertainty labels:
 - Inference, not confirmed
 
 A correct uncertain answer is better than a confident wrong answer.
+
+## Safe Code Engine
+
+All code work must pass through Safe Code Engine.
+
+Required flow:
+
+1. Milestone Gate
+2. Scope Gate
+3. Context Sufficiency Gate
+4. Patch Contract
+5. Validation Gate
+6. Error Package when failed
+7. Three-Fail Stop when repeated
+8. Checkpoint after success
+9. Rollback review when needed
+
+Code generation is allowed only for small, scoped, verifiable changes.
+
+A code task is not complete until validation path, risk, and rollback need are stated.
+
+## Safe Code Engine Gates
+
+Milestone Gate:
+
+- task must belong to active milestone
+
+Scope Gate:
+
+- one task must have one clear purpose
+
+Context Sufficiency Gate:
+
+- required code context must be enough to preserve integrity
+
+Patch Contract:
+
+- department must state file, purpose, change, patch, risk, test, rollback
+
+Validation Gate:
+
+- typecheck, build, test, or manual validation path must be defined
+
+Checkpoint Gate:
+
+- successful meaningful state should be checkpointed
 
 ## AI Gate
 
@@ -168,6 +214,21 @@ It must return:
 
 Patch output is allowed only when the department has enough context to preserve code integrity.
 
+## Error Package
+
+Failed code work must produce a compact error package:
+
+- task
+- changed files
+- error message
+- expected behavior
+- actual behavior
+- last successful checkpoint
+- attempt number
+- relevant excerpt
+
+Do not use full old conversation history as debugging context.
+
 ## Token Ledger
 
 Every AI call should log:
@@ -216,3 +277,5 @@ Everything else stays stored, searchable, and outside active AI context.
 Truth beats confidence.
 
 Safe context beats blind diff.
+
+Small verified patches beat large risky rewrites.
