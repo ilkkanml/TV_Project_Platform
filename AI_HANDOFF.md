@@ -1,163 +1,146 @@
 # AI Handoff
 
-This file explains how future assistants and coding agents should continue the TV Project Platform.
+This file is the primary handoff document for any new AI assistant or new ChatGPT conversation working on TV Project Platform.
 
-It must be read before making architectural or implementation decisions.
+Read this file first.
 
-## Repository
+Then read:
 
-GitHub repository:
-
-- https://github.com/ilkkanml/TV_Project_Platform
-
-Main branch:
-
-- main
-
-## Current Phase
-
-The project is in the foundation and documentation preparation phase.
-
-The real application implementation has not started yet.
-
-Do not assume that the backend is complete.
-
-Do not assume that the frontend is complete.
-
-Do not assume that the database schema is final.
-
-Do not assume that the admin, reseller, or customer panels are implemented.
-
-## Reliable Project Memory
-
-At this stage, the most reliable project memory files are:
-
-- README.md
 - PROJECT_STATE.md
-- AI_HANDOFF.md
+- README.md
+- ROADMAP.md
+- SECURITY.md
+- LEGAL_SCOPE.md
+- docs/new-chat-start-message.md
+- project-bible/00-project-rules.md
+- project-bible/01-product-bible.md
+- project-bible/02-user-roles.md
+- project-bible/03-feature-list.md
+- project-bible/04-database-bible.md
+- project-bible/05-api-bible.md
+- project-bible/06-security-bible.md
+- project-bible/07-payment-bible.md
+- project-bible/08-reseller-bible.md
+- project-bible/09-ui-ux-bible.md
+- project-bible/10-app-integration.md
+- project-bible/11-marketing-bible.md
+- project-bible/12-devops-bible.md
+- project-bible/13-decision-log.md
+- project-bible/14-testing-bible.md
+- project-bible/15-support-bible.md
+- project-bible/16-release-bible.md
 
-Some other files may still be empty, placeholder-only, incomplete, or incorrectly formatted.
+## Project Identity
 
-Future assistants must not treat every existing file as final.
+Project name:
 
-## Product Identity
+TV Project Platform
 
-TV Project Platform is a Licensed IPTV Player Platform.
+Product type:
 
-It is not an IPTV broadcast provider.
+Licensed IPTV Player Platform
 
-It is not a media provider.
+The platform is a software/player licensing, subscription, reseller, device activation, payment, app version, remote config, and admin/customer/reseller management system.
 
-It is not a content platform.
+The platform is not an IPTV provider.
 
-It is not a playlist provider.
+The platform is not a content provider.
 
-It is not a channel seller.
+The platform is not a stream provider.
 
-It is not a stream hosting service.
+The platform is not a channel seller.
 
-## Strict Product Boundary
+The platform is not a playlist marketplace.
 
-The backend must never provide TV streams.
+The platform is not a broadcast backend.
 
-The backend must never host TV streams.
+## Absolute Product Boundary
 
-The backend must never relay TV streams.
+TV Project Platform must never become:
 
-The backend must never transcode TV streams.
+- IPTV provider
+- Content provider
+- Stream provider
+- Channel seller
+- Playlist seller
+- Playlist marketplace
+- CDN stream delivery system
+- Stream relay system
+- Stream transcoding system
+- Broadcast backend
+- Backend playlist source of truth
 
-The backend must never operate CDN services.
-
-The backend must never sell channel lists.
-
-The backend must never act as a playlist provider.
-
-The backend must never become the source of truth for playlist data.
-
-Users are responsible for their own legal playlist or provider information.
-
-## Backend Responsibilities
-
-The backend is allowed to manage:
-
-- User accounts
-- Authentication
-- Role-based access control
-- Customer subscription status
-- License validation
-- Device activation
-- Payment records
-- Reseller accounts
-- Reseller credit system
-- App version control
-- Remote configuration
-- Maintenance mode
-- Feature flags
-- Audit logs
-- Optional temporary web-to-device playlist profile transfer
-
-## Backend Must Not Manage
-
-The backend must not manage or provide:
+The platform must not provide:
 
 - TV channels
 - Live streams
 - VOD streams
-- Stream relay
-- Stream hosting
-- Stream transcoding
-- CDN delivery
+- Stream URLs
+- IPTV playlists
 - Channel packages
-- Playlist provider services
-- Content ownership
-- Broadcast infrastructure
-- Permanent playlist credential authority
+- Content catalogs
+- Broadcast schedules
+- Provider credentials
+- Public playlist search
+- Shared playlist library
 
-## Playlist Decision
+The platform may manage:
 
-Playlist information is not backend source of truth.
+- User accounts
+- Authentication
+- Role-based access control
+- Customer subscriptions
+- Player licenses
+- Device activation
+- Device status
+- Payments
+- Resellers
+- Reseller credit transactions
+- App versions
+- Remote config
+- Maintenance mode
+- Feature flags
+- Audit logs
+- Optional temporary encrypted playlist profile transfer bridge
 
-By default, playlist information is entered inside the app.
+## Playlist Rule
 
-Playlist credentials are stored on the device.
+Playlist handling is local-first.
 
-Playlist credentials must be stored using encrypted local storage.
+Default behavior:
 
-The backend should not permanently store playlist credentials by default.
+- Playlist information is entered inside the app.
+- Playlist profiles are stored on the user's device.
+- Credentials are stored using encrypted local storage where supported.
+- The app may support multiple local playlist profiles.
+- Users may switch between local profiles.
 
-The user may optionally send a playlist profile from the web panel to their own device.
+Backend behavior:
 
-This optional feature must only work as a temporary encrypted transfer bridge.
+- Backend is not the playlist source of truth.
+- Backend must not permanently store playlist credentials by default.
+- Backend must not provide playlists.
+- Backend must not provide stream URLs.
+- Backend must not provide channel lists.
+- Backend may optionally support a temporary encrypted web-to-device playlist profile transfer bridge.
+- Temporary transfer payloads must expire.
+- Temporary transfer payloads should be deleted or marked consumed after pickup.
+- Temporary transfer must be scoped to the correct user and device.
+- Temporary transfer must not turn into permanent cloud playlist storage.
 
-After the app receives the transferred profile, the backend should expire or delete the temporary payload.
+Encrypted cloud playlist sync is not enabled by default.
 
-Encrypted cloud sync may be considered later only with explicit user consent.
+Encrypted cloud playlist sync requires explicit product approval.
 
-## App Responsibilities
+## Device Identity Rule
 
-The Android TV or Fire TV app should:
+MAC address is not the primary identity.
 
-- Generate an app device ID
-- Register or activate the device
-- Check license status
-- Check subscription status
-- Check app version
-- Fetch remote config
-- Manage local playlist profiles
-- Store playlist credentials securely on the device
-- Support multiple playlist profiles
-- Switch between profiles
-- Open the player only when license rules allow it
-
-## Device Identity
-
-MAC address must not be used as the primary device identifier.
-
-The primary device identifier should be:
+Primary device identity:
 
 - app_generated_device_id
 
-Secondary device signals may include:
+Secondary signals may include:
 
 - Android ID
 - Device model
@@ -165,256 +148,556 @@ Secondary device signals may include:
 - App version code
 - App version name
 - Install metadata
+- Last seen timestamp
+
+The backend should use app-generated identity as the primary activation and license identifier.
 
 ## User Roles
 
-The platform has three primary roles:
+The platform has three core roles:
 
 - Admin
 - Reseller
 - Customer
 
-## Admin Role
+Admin:
 
-Admin users can manage:
+- Can manage users
+- Can manage resellers
+- Can manage plans
+- Can manage subscriptions
+- Can manage payments
+- Can manage devices
+- Can manage app versions
+- Can manage remote config
+- Can manage reseller credit
+- Can view audit logs
 
-- Users
-- Customers
-- Resellers
-- Plans
-- Subscriptions
-- Payments
-- Devices
-- App versions
-- Remote config
-- Audit logs
-- System settings
+Reseller:
 
-## Reseller Role
+- Can manage own customers
+- Can create own customer accounts
+- Can assign or extend subscriptions for own customers using reseller credit
+- Can view own credit balance
+- Can view own credit transactions
+- Can view own sales/customer history
+- Cannot access another reseller's customers
+- Cannot manage global platform settings
+- Cannot add credit to themselves
+- Cannot directly modify credit balance
 
-Reseller users can manage:
+Customer:
 
-- Own customers
-- Own credit balance
-- Own sales
-- Own customer subscriptions
-- Own device and license records
+- Can manage own account
+- Can view own subscription
+- Can view own devices
+- Can view own payment history
+- Can use the licensed player app
+- Can optionally use temporary playlist profile transfer for own devices when enabled
+- Cannot access other customers' data
 
-A reseller must not access customers owned by another reseller.
+## Reseller Credit Rule
 
-A reseller must not modify system-wide settings unless explicitly permitted by an admin.
+Reseller credit must be transaction-based.
 
-## Customer Role
-
-Customer users can manage:
-
-- Own account
-- Own subscription
-- Own devices
-- Own payment history
-- Optional web-to-device playlist profile transfer
-
-Customer users must not access admin or reseller features.
-
-## Reseller Credit System
-
-The reseller credit system must be transaction-based.
-
-A simple balance field is not enough.
+A balance field alone is not enough.
 
 Every credit operation must create a transaction record.
 
-Credit transactions should include:
+A reseller credit transaction should include:
 
-- Reseller ID
-- Transaction type
-- Amount
-- Balance before
-- Balance after
-- Related customer
-- Related subscription
-- Created by
-- IP address
-- Note
-- Created date
+- reseller_id
+- type
+- amount
+- balance_before
+- balance_after
+- related_customer_id when applicable
+- related_subscription_id when applicable
+- created_by_user_id
+- IP address where practical
+- note
+- created_at
 
-The backend must never trust credit values sent from the frontend.
+Credit operations must be backend-authoritative.
 
-Credit usage must be validated and committed inside database transactions.
+The frontend must not decide:
 
-Negative reseller balances must be prevented.
+- final credit cost
+- reseller balance
+- subscription duration
+- plan price
+- discount result
+- balance_after
 
-## Payment Principles
+Credit deduction and subscription creation or extension must happen in one safe database transaction.
 
-Card data must not be stored in this system.
+Negative balances must be prevented.
 
-Manual payment records may be supported during MVP.
+Credit transactions must not be silently deleted.
 
-Real payment integration should use a secure payment provider.
+## Payment Rule
 
-Possible providers may include:
+The platform must not store card data.
+
+The platform must not store:
+
+- Full card number
+- CVV
+- Card PIN
+- Raw sensitive payment credentials
+
+MVP may use manual payment approval.
+
+Future payment providers may include:
 
 - Iyzico
 - PayTR
 - Stripe
-- Other approved payment processors
+- Other approved providers
 
-Subscription extension should happen only after verified payment confirmation.
+Provider webhook signatures must be validated.
 
-Payment webhook signatures must be verified.
+Subscription extension must happen only after verified payment confirmation.
 
-## Security Principles
+Frontend payment success screens must not extend subscriptions directly.
 
-Passwords must never be stored in plain text.
+Payment amount, duration, plan result, and subscription result must be calculated by the backend.
 
-Payment card data must never be stored directly.
+## Security Rules
 
-Frontend values must not be trusted for pricing, credits, roles, or permissions.
+Security-sensitive decisions must be enforced by the backend.
 
-Role-based access control is required.
+Required security principles:
 
-Auth endpoints must be rate limited.
+- No plaintext passwords
+- Passwords must be hashed
+- Password hashes must not be returned by API
+- Role-based access control is mandatory
+- Ownership checks are mandatory
+- Rate limits are required for sensitive endpoints
+- Audit logs are required for critical actions
+- Payment webhook validation is required when providers are enabled
+- Backend license checks are authoritative
+- Sensitive data must not be logged
+- Temporary playlist payloads must expire
+- Feature flags must not replace backend authorization
 
-Critical admin and reseller actions must be audit logged.
+Sensitive data must not be exposed in API responses, UI, logs, support notes, or audit logs.
 
-Device license checks must be backend authoritative.
-
-Temporary playlist transfer payloads must expire.
-
-## Planned Technical Stack
+## Tech Stack
 
 The planned technical stack is:
 
 - pnpm monorepo
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- NestJS
-- Prisma
+- apps/web: Next.js, React, TypeScript, Tailwind CSS
+- apps/api: NestJS, TypeScript, Prisma
+- packages/shared: shared types, constants, schemas, utilities
 - PostgreSQL
 - Redis
 - Docker Compose
 
-## Repository Structure
+## Canonical Repository Structure
 
-The planned monorepo structure is:
+The intended repository structure is:
 
-- apps/web
-- apps/api
-- packages/shared
-- project-bible
-- docs
-- infra
+```txt
+TV_Project_Platform/
+├── README.md
+├── PROJECT_STATE.md
+├── AI_HANDOFF.md
+├── ROADMAP.md
+├── CHANGELOG.md
+├── SECURITY.md
+├── LEGAL_SCOPE.md
+├── CONTRIBUTING.md
+├── LICENSE.md
+├── .env.example
+├── .gitignore
+├── package.json
+├── pnpm-workspace.yaml
+├── tsconfig.base.json
+├── docker-compose.yml
+├── project-bible/
+├── docs/
+├── apps/
+│   ├── web/
+│   └── api/
+├── packages/
+│   └── shared/
+├── infra/
+└── .github/
+```
 
-## Current Verified Files
+## Current Known Project State
 
-The following files have been manually fixed and verified as real multiline files:
+The project is in foundation and documentation stabilization phase.
 
+The product boundary has been defined.
+
+The canonical project-bible tree has been defined.
+
+The project-bible tree should contain exactly these files:
+
+- project-bible/00-project-rules.md
+- project-bible/01-product-bible.md
+- project-bible/02-user-roles.md
+- project-bible/03-feature-list.md
+- project-bible/04-database-bible.md
+- project-bible/05-api-bible.md
+- project-bible/06-security-bible.md
+- project-bible/07-payment-bible.md
+- project-bible/08-reseller-bible.md
+- project-bible/09-ui-ux-bible.md
+- project-bible/10-app-integration.md
+- project-bible/11-marketing-bible.md
+- project-bible/12-devops-bible.md
+- project-bible/13-decision-log.md
+- project-bible/14-testing-bible.md
+- project-bible/15-support-bible.md
+- project-bible/16-release-bible.md
+
+The latest known validation confirmed:
+
+- project-bible/14-testing-bible.md exists and has 1225 lines
+- project-bible/15-support-bible.md exists and has 1472 lines
+- project-bible/16-release-bible.md exists and has 1618 lines
+- No old or nested project-bible files were found after cleanup validation
+
+## Deprecated Project Bible Names
+
+The following older or conflicting project-bible names should not be used as active canonical files:
+
+- project-bible/02-legal-boundaries.md
+- project-bible/03-playlist-philosophy.md
+- project-bible/04-architecture-principles.md
+- project-bible/05-reseller-credit-system.md
+- project-bible/06-device-activation.md
+- project-bible/07-payment-subscriptions.md
+- project-bible/08-remote-config-versioning.md
+- project-bible/09-security-privacy.md
+- project-bible/10-ops-and-deployment.md
+- project-bible/11-ui-product-guidelines.md
+- project-bible/12-testing-strategy.md
+- project-bible/project-bible/
+
+Useful content from older documents should be migrated into the canonical project-bible tree before removal.
+
+Do not recreate old or conflicting Bible filenames.
+
+## Current Known Root Files
+
+The latest known root-level files include:
+
+- README.md
+- PROJECT_STATE.md
+- AI_HANDOFF.md
+- ROADMAP.md
+- CHANGELOG.md
+- SECURITY.md
+- LEGAL_SCOPE.md
+- .env.example
+- .gitignore
 - package.json
 - pnpm-workspace.yaml
 - tsconfig.base.json
 - docker-compose.yml
-- .env.example
-- README.md
-- PROJECT_STATE.md
 
-Known verified line counts:
+The following root files were still missing at the latest known audit:
 
-- package.json: 36 lines
-- docker-compose.yml: 54 lines
-- .env.example: 25 lines
-- tsconfig.base.json: 22 lines
-- pnpm-workspace.yaml: 2 lines
-- README.md: 395 lines
+- CONTRIBUTING.md
+- LICENSE.md
 
-## Known Workflow Issue
+These should be added before moving too far into implementation.
 
-Automated GitHub connector updates previously caused files to collapse into very long single-line content.
+## Current Known Docs Files
 
-This affected JSON, YAML, ENV, and Markdown files.
+The latest known docs files include:
 
-For critical multiline files, use manual editing through GitHub web editor or Codespaces unless the writing tool proves it can preserve real newlines.
+- docs/api-scope.md
+- docs/architecture.md
+- docs/database-model-outline.md
+- docs/local-development.md
+- docs/new-chat-start-message.md
+- docs/playlist-transfer-bridge.md
 
-## Safe Working Method
+The intended canonical docs tree is:
 
-Use this method for critical files:
+- docs/new-chat-start-message.md
+- docs/architecture.md
+- docs/development-workflow.md
+- docs/local-setup.md
+- docs/deployment.md
+- docs/environment-variables.md
+- docs/api-error-codes.md
+- docs/app-team-handoff.md
+- docs/admin-guide.md
+- docs/reseller-guide.md
+- docs/customer-guide.md
+- docs/payment-provider-notes.md
 
-1. Assistant provides full file content.
-2. User opens the file manually.
-3. User replaces the entire file content.
-4. User commits the change manually.
-5. User verifies the raw GitHub file line count.
-6. Assistant continues with the next file.
+The following canonical docs were still missing at the latest known audit:
 
-## Raw GitHub Verification
+- docs/development-workflow.md
+- docs/local-setup.md
+- docs/deployment.md
+- docs/environment-variables.md
+- docs/api-error-codes.md
+- docs/app-team-handoff.md
+- docs/admin-guide.md
+- docs/reseller-guide.md
+- docs/customer-guide.md
+- docs/payment-provider-notes.md
 
-After changing a critical file, verify it with this pattern:
+Existing non-canonical docs should not be deleted immediately.
 
-curl -L https://raw.githubusercontent.com/ilkkanml/TV_Project_Platform/main/FILE_NAME | wc -l
+First review and migrate useful content into canonical docs.
 
-The result must not be 1 for multiline files.
+Then decide whether to remove, rename, or archive old docs.
 
-Markdown documentation files should generally have many readable lines.
+## Existing Non-Canonical Docs
 
-## New Chat Start Procedure
+The following docs existed at the latest known audit but are not part of the canonical docs tree:
 
-When a new chat starts, the assistant should:
+- docs/api-scope.md
+- docs/database-model-outline.md
+- docs/local-development.md
+- docs/playlist-transfer-bridge.md
 
-1. Read README.md.
-2. Read PROJECT_STATE.md.
-3. Read AI_HANDOFF.md.
-4. Check ROADMAP.md.
-5. Check project-bible directory.
-6. Check docs directory.
-7. Continue from the current repository state.
+These may contain useful content.
 
-The assistant should not ask the same foundational questions again.
+Do not delete them before reviewing whether their contents should be migrated.
 
-The assistant should not redefine the product as an IPTV content provider.
+## Implementation Status
 
-The assistant should not change the playlist storage decision without user approval.
+Do not assume that the full web app, API app, database schema, or shared package implementation exists.
 
-## Current Immediate Task List
+Do not claim implementation is complete unless confirmed by actual repository files.
 
-The current documentation priority is:
+The project is still in setup and documentation foundation phase.
 
-1. Complete PROJECT_STATE.md.
-2. Complete AI_HANDOFF.md.
-3. Complete ROADMAP.md.
-4. Complete CHANGELOG.md.
-5. Complete SECURITY.md.
-6. Complete LEGAL_SCOPE.md.
-7. Complete project-bible files.
-8. Complete docs files.
-9. Start packages/shared foundation.
-10. Start apps/api foundation.
-11. Start apps/web foundation.
+Known completed/stabilized areas:
 
-## Do Not Change Without Approval
+- Product scope
+- Legal/product boundary
+- Project Bible structure
+- Core architecture decisions
+- Security principles
+- Payment principles
+- Reseller principles
+- App integration principles
+- Testing/support/release principles
 
-Do not change these decisions without user approval:
+Known pending areas:
 
-- Player-only product model
-- Backend is not a content provider
-- Backend is not playlist source of truth
-- Playlist credentials are stored locally in the app by default
-- Multi-profile app support
-- Optional temporary web-to-device playlist profile transfer
-- App-generated device ID as primary device identity
-- Reseller credit transactions
-- Role-based access control
-- No card data storage
-- No plain text passwords
+- CONTRIBUTING.md
+- LICENSE.md
+- Canonical docs completion
+- apps/web implementation
+- apps/api implementation
+- packages/shared implementation
+- Prisma schema implementation
+- Docker-based local development validation
+- CI workflow implementation
+- Deployment configuration
+
+## Recommended Next Steps
+
+The safest next steps are:
+
+1. Update AI_HANDOFF.md with current project state.
+2. Update PROJECT_STATE.md with current project state.
+3. Update docs/new-chat-start-message.md with current handoff instructions.
+4. Add CONTRIBUTING.md.
+5. Add LICENSE.md.
+6. Complete canonical docs files.
+7. Review existing non-canonical docs and migrate useful content.
+8. Stabilize apps/web, apps/api, and packages/shared structure.
+9. Add shared constants, types, and schemas.
+10. Add API foundation.
+11. Add web foundation.
+12. Add database schema.
+13. Add tests.
+14. Add CI checks.
+15. Move toward MVP implementation.
+
+## Assistant Behavior Rules
+
+When working on this project:
+
+- Preserve the licensed player platform boundary.
+- Do not invent completed implementation.
+- Do not assume a file exists unless it is visible in the current project context.
+- Do not create old conflicting project-bible filenames.
+- Do not create nested duplicate folders.
+- Do not rename canonical files without approval.
+- Do not introduce stream-provider features.
+- Do not introduce channel-provider features.
+- Do not introduce playlist-marketplace features.
+- Do not introduce content-provider features.
+- Do not introduce broadcast-backend features.
+- Do not make backend playlist authority.
+- Prefer clear, complete, copy-paste-ready file content.
+- For important files, provide complete replacement content.
+- Keep project decisions consistent across files.
+- Update documentation when project state changes.
+
+## Coding Rules
+
+When generating code:
+
+- Use TypeScript.
+- Prefer strict typing.
+- Avoid placeholder logic.
+- Avoid empty classes.
+- Avoid empty functions.
+- Avoid commented-out unfinished functionality.
+- Provide complete runnable examples when creating files.
+- Keep backend authorization authoritative.
+- Keep role and ownership checks server-side.
+- Never trust frontend price, duration, role, credit, or ownership values.
+- Validate input.
+- Return safe error responses.
+- Avoid logging sensitive data.
+- Keep shared constants in packages/shared where appropriate.
+
+## API Rules
+
+The API should eventually include modules for:
+
+- Health
+- Auth
+- Users
+- Plans
+- Subscriptions
+- Devices
+- Licenses
+- Resellers
+- Payments
+- App versions
+- Remote config
+- Playlist push
+- Audit logs
+
+The API must not include modules for:
+
+- Channels
+- Streams
+- Stream sources
+- Channel packages
+- Playlist marketplace
+- Content catalog
+- CDN stream delivery
+- Transcoding jobs
+- Broadcast schedules
+
+## Web Rules
+
+The web app should eventually include:
+
+- Public home page
+- Pricing/software plans page
+- Login page
+- Register page when enabled
+- Customer dashboard
+- Reseller dashboard
+- Admin dashboard
+- Payment pages
+- Support pages
+- Legal pages
+- App download page
+- FAQ page
+
+The web app must not include:
+
+- Channel marketplace
+- Stream marketplace
+- Playlist marketplace
+- Content catalog
+- Channel package builder
+- Stream source manager
+- Provider recommendation page
+
+Marketing and checkout copy must clearly state that the platform provides software/player access only and does not provide channels, streams, playlists, or content.
+
+## App Integration Rules
+
+The backend should support app integration for:
+
+- Device activation
+- Device status
+- Device heartbeat
+- License status
+- App version
+- Remote config
+- Optional temporary playlist transfer consumption
+
+App-facing responses must not include:
+
+- Channel lists
+- Stream URLs
+- Playlist marketplace data
+- Content catalogs
+- Broadcast schedules
+
+## Support Rules
+
+Support must help users with the software platform only.
+
+Support may help with:
+
+- Accounts
+- Subscriptions
+- Devices
+- License status
+- App updates
+- Payments
+- Reseller credit
+- Dashboard usage
+- Optional temporary playlist transfer
+
+Support must not provide:
+
+- Channels
+- Streams
+- Playlists
+- Provider credentials
+- Content recommendations
+- Channel packages
+- Illegal content access guidance
+
+## Release Rules
+
+No release should weaken the licensed player platform boundary.
+
+Before release, verify:
+
+- Product boundary remains intact
+- Security rules remain intact
+- Payment rules remain intact
+- Reseller credit rules remain intact
+- Device/license rules remain intact
+- Documentation is updated
+- Sensitive data is protected
+- No forbidden content-provider features were introduced
 
 ## Final Instruction
 
-Keep the project focused on licensed player access, subscriptions, devices, payments, resellers, and app configuration.
+This project is a Licensed IPTV Player Platform.
 
-Do not add content-provider features.
+Always protect that boundary.
 
-Do not add stream-hosting features.
+Build account, subscription, license, device, payment, reseller, app version, remote config, audit log, and optional temporary encrypted playlist transfer functionality.
 
-Do not add channel-selling features.
+Do not build IPTV provider functionality.
 
-Do not make the backend the playlist authority.
+Do not build content provider functionality.
+
+Do not build stream provider functionality.
+
+Do not build channel seller functionality.
+
+Do not build playlist marketplace functionality.
+
+Do not build broadcast backend functionality.
+
+Do not make the backend playlist source of truth.
