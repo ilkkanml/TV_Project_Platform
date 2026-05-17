@@ -1,156 +1,57 @@
 # Environment Variables
 
-This file documents the environment variables used by TV Project Platform.
+Compact environment variable guide for TV Project Platform.
 
-Use `.env.example` as the starting point for local development.
+## Core Rule
+
+Use `.env.example` as the local starting point.
 
 Never commit real secrets.
 
+Production secrets must live in runtime or hosting secret storage.
+
 ## Application
 
-### NODE_ENV
+Required application variables should cover:
 
-Runtime environment.
-
-Example:
-
-```txt
-NODE_ENV=development
-```
-
-### APP_NAME
-
-Human-readable application name.
-
-Example:
-
-```txt
-APP_NAME="TV Project Platform"
-```
-
-### APP_WEB_URL
-
-Public web application URL.
-
-Local example:
-
-```txt
-APP_WEB_URL="http://localhost:3000"
-```
-
-### APP_API_URL
-
-Public API URL.
-
-Local example:
-
-```txt
-APP_API_URL="http://localhost:4000"
-```
-
-### API_PORT
-
-Optional API port override.
-
-Default used by the API app:
-
-```txt
-API_PORT=4000
-```
-
-### CORS_ORIGIN
-
-Allowed browser origin for API requests.
-
-Local example:
-
-```txt
-CORS_ORIGIN="http://localhost:3000"
-```
+- runtime environment
+- app name
+- web URL
+- API URL
+- API port
+- CORS origin
 
 ## Database
 
-### DATABASE_URL
+Required database variable:
 
-PostgreSQL connection string used by Prisma.
+- DATABASE_URL
 
-Local example:
-
-```txt
-DATABASE_URL="postgresql://tv_platform:tv_platform_password@localhost:5432/tv_project_platform?schema=public"
-```
+Local values may use local PostgreSQL credentials.
 
 Production values must use secure credentials.
 
 ## Redis
 
-### REDIS_URL
+Required Redis variable when Redis is enabled:
 
-Redis connection string.
+- REDIS_URL
 
-Local example:
+Redis may be used for cache, rate limiting, queues, temporary state, and short-lived transfer data.
 
-```txt
-REDIS_URL="redis://localhost:6379"
-```
-
-Redis may be used for cache, temporary transfer state, rate limiting, and short-lived operational data.
+Redis must not become permanent profile/provider storage.
 
 ## Authentication
 
-### JWT_ACCESS_SECRET
+Required auth variables should cover:
 
-Secret for signing access tokens.
+- access token secret
+- refresh token secret
+- access token lifetime
+- refresh token lifetime
+- password hashing cost
 
-Local placeholder:
-
-```txt
-JWT_ACCESS_SECRET="change_this_access_secret"
-```
-
-Use a strong random value outside local development.
-
-### JWT_REFRESH_SECRET
-
-Secret for signing refresh tokens.
-
-Local placeholder:
-
-```txt
-JWT_REFRESH_SECRET="change_this_refresh_secret"
-```
-
-Use a strong random value outside local development.
-
-### JWT_ACCESS_EXPIRES_IN
-
-Access token lifetime.
-
-Example:
-
-```txt
-JWT_ACCESS_EXPIRES_IN="15m"
-```
-
-### JWT_REFRESH_EXPIRES_IN
-
-Refresh token lifetime.
-
-Example:
-
-```txt
-JWT_REFRESH_EXPIRES_IN="30d"
-```
-
-### PASSWORD_HASH_ROUNDS
-
-Password hashing cost setting.
-
-Example:
-
-```txt
-PASSWORD_HASH_ROUNDS=12
-```
+Secrets must be strong outside local development.
 
 Passwords must never be stored in plain text.
 
@@ -158,111 +59,42 @@ Password hashes must never be returned by API responses.
 
 ## Payments
 
-### PAYMENT_PROVIDER
+Payment provider variables are not final until provider approval.
 
-Active payment mode or provider.
+Manual payment MVP may avoid real provider secrets.
 
-MVP example:
+When providers are added, webhook secrets must be protected.
 
-```txt
-PAYMENT_PROVIDER="manual"
-```
+## Temporary Transfer
 
-Manual payment mode means admin approval controls payment status.
+Temporary transfer variables may cover:
 
-### PAYMENT_WEBHOOK_SECRET
+- encryption secret
+- expiration duration
+- maximum payload size
 
-Secret used to verify payment provider webhook requests when real payment providers are enabled.
+Transfer configuration must preserve expiring, scoped, user-owned behavior.
 
-Local placeholder:
+## App Version / Files
 
-```txt
-PAYMENT_WEBHOOK_SECRET="change_this_payment_webhook_secret"
-```
+App distribution variables may cover APK/file storage when needed.
 
-Provider webhook signatures must be verified before payment state changes.
+File storage must not be used for provider, content, catalog, or distribution behavior.
 
-## Temporary Profile Transfer
+## Local vs Production
 
-### PLAYLIST_PUSH_ENCRYPTION_KEY
+Local placeholders are allowed only for local development.
 
-Temporary encrypted web-to-device transfer encryption key.
+Production must replace every placeholder secret.
 
-Current legacy variable name:
+## Related Authority Files
 
-```txt
-PLAYLIST_PUSH_ENCRYPTION_KEY="change_this_32_byte_secret_key"
-```
+- .env.example
+- docs/local-setup.md
+- project-bible/06-security-bible.md
+- project-bible/10-app-integration.md
+- project-bible/12-devops-bible.md
 
-This key is for temporary encrypted transfer payloads only.
+## Final Rule
 
-The backend must not become default permanent storage for user profile credentials.
-
-Payloads must expire and should be marked consumed or deleted after pickup.
-
-Future cleanup may rename this variable to a more neutral profile-transfer name.
-
-## pgAdmin Local Tools
-
-### PGADMIN_DEFAULT_EMAIL
-
-Local pgAdmin login email.
-
-Example:
-
-```txt
-PGADMIN_DEFAULT_EMAIL="admin@tvplatform.local"
-```
-
-### PGADMIN_DEFAULT_PASSWORD
-
-Local pgAdmin password.
-
-Example:
-
-```txt
-PGADMIN_DEFAULT_PASSWORD="admin_password"
-```
-
-Do not use default values in production.
-
-## Admin Seed
-
-### ADMIN_SEED_EMAIL
-
-Initial admin account email for seed scripts.
-
-Example:
-
-```txt
-ADMIN_SEED_EMAIL="admin@tvplatform.local"
-```
-
-### ADMIN_SEED_PASSWORD
-
-Initial admin account password for seed scripts.
-
-Example:
-
-```txt
-ADMIN_SEED_PASSWORD="ChangeMe123!"
-```
-
-Change this before any non-local use.
-
-## Security Rules
-
-- Do not commit real secrets.
-- Do not reuse local placeholder secrets in production.
-- Do not log secrets.
-- Do not expose secrets to the frontend.
-- Do not store payment card data.
-- Do not store passwords in plain text.
-- Do not store user profile credentials permanently by default.
-- Rotate secrets if they are exposed.
-
-## Production Rule
-
-Production environment values must be managed outside the repository.
-
-The repository may include placeholders only.
+Environment variables configure platform runtime only; they must not store real secrets in project files.
