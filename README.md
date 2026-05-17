@@ -8,7 +8,7 @@ This project is not a media provider, broadcast backend, CDN, relay, transcoder,
 
 ## Product Decision
 
-This repository is for a licensed player platform.
+This project workspace is for a licensed player platform.
 
 The backend is responsible for licensing and platform management.
 
@@ -55,7 +55,7 @@ The platform must not manage or provide:
 
 ## Current Project State
 
-The repository already contains a foundation implementation.
+The project workspace already contains a foundation implementation.
 
 Existing foundation:
 
@@ -70,12 +70,15 @@ Existing foundation:
 - Project Bible canonical tree
 - Development workflow document
 - Department system document
+- Local setup document
+- Environment variables document
 - CONTRIBUTING.md
+- LICENSE.md
+- Internal validation workflow direction
 
 Still pending:
 
-- LICENSE.md
-- GitHub Actions CI workflow
+- pnpm-lock.yaml after first dependency install
 - finalized MVP Prisma schema
 - API modules beyond health
 - real admin, reseller, and customer dashboards
@@ -298,9 +301,9 @@ Approved stack:
 - Redis
 - Docker Compose
 
-## Monorepo Structure
+## Project Structure
 
-The repository is organized as:
+The project workspace is organized as:
 
 - apps/web
 - apps/api
@@ -308,7 +311,6 @@ The repository is organized as:
 - project-bible
 - docs
 - infra
-- .github
 
 Do not create duplicate nested folders.
 
@@ -390,7 +392,7 @@ When continuing this project in a new chat, inspect:
 - project-bible directory
 - docs directory
 
-The assistant should continue from the current repository state and should not restart the architecture.
+The assistant should continue from the current project state and should not restart the architecture.
 
 ## License and Legal Position
 
