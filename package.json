@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "pnpm -r --parallel --if-present run dev",
     "dev:web": "pnpm --filter @tv-platform/web run dev",
-    "dev:api": "pnpm --filter @tv-platform/api run start:dev",
+    "dev:api": "pnpm --filter @tv-platform/api run dev",
     "build": "pnpm -r --if-present run build",
     "start": "pnpm -r --if-present run start",
     "lint": "pnpm -r --if-present run lint",
