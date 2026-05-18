@@ -231,7 +231,61 @@ Admin must not manage:
 - Source scraping rules.
 - Raw profile transfer payloads.
 
-## 12. App Version Admin Scope
+## 12. Owner/Admin Full Control Principle
+
+The project owner/admin should have full control over the legal platform layer.
+
+This means owner/admin may control:
+
+- User account status.
+- User roles.
+- Device activation state.
+- Device revoke/block state.
+- License/access state.
+- Free launch access state.
+- App version policy.
+- Force update policy.
+- Maintenance mode.
+- Feature flags.
+- Remote config.
+- Profile transfer availability.
+- Safe support diagnostics.
+- Audit log visibility.
+- Abuse response controls.
+- Platform-wide notices.
+- Emergency feature disable switches.
+
+Owner/admin may control the user application through safe platform controls:
+
+- Enable or disable platform features.
+- Require supported app versions.
+- Show maintenance messages.
+- Adjust polling intervals.
+- Disable profile transfer if needed.
+- Revoke or block abusive devices.
+- Suspend or restore platform access.
+
+Owner/admin full control does not mean unrestricted access to private local user data.
+
+Owner/admin must not:
+
+- Read user local playlist/source contents from backend.
+- Read provider usernames or passwords.
+- Force the app to upload stream URLs.
+- Use remote config to deliver channel packages.
+- Inspect decrypted profile payloads.
+- View raw encrypted profile payloads in normal dashboard UI.
+- Turn diagnostics into stream/source validation.
+- Use admin tools to operate as a content provider.
+
+Rule:
+
+- Full control applies to platform operation, access, safety, configuration, and legal compliance.
+- Full control does not convert the backend into owner of user media sources, provider accounts, or private local profiles.
+
+Destructive owner/admin actions should be audited and should require clear confirmation.
+
+## 13. App Version Admin Scope
 
 Admin may manage:
 
@@ -249,7 +303,7 @@ Rules:
 - Force update must be conservative.
 - App version records must not include media source data.
 
-## 13. Remote Config Admin Scope
+## 14. Remote Config Admin Scope
 
 Admin may manage safe config:
 
@@ -271,7 +325,7 @@ Admin must not configure:
 
 Remote config changes should be audited.
 
-## 14. Audit Log Scope
+## 15. Audit Log Scope
 
 Admin may see basic audit events:
 
@@ -294,7 +348,7 @@ Audit view must not show:
 - Playlist contents.
 - Raw profile payloads.
 
-## 15. UI Tone Direction
+## 16. UI Tone Direction
 
 Dashboard should feel:
 
@@ -312,7 +366,7 @@ Avoid:
 - Reseller-first UI.
 - Media-provider look and feel.
 
-## 16. Payment and Reseller Deferral
+## 17. Payment and Reseller Deferral
 
 Payment UI is deferred because:
 
@@ -326,7 +380,7 @@ Reseller UI is deferred because:
 - Reseller logic can add scope pressure too early.
 - Credit ledger and reseller operations need separate contract later.
 
-## 17. Dashboard MVP Page List
+## 18. Dashboard MVP Page List
 
 Customer pages:
 
@@ -355,7 +409,7 @@ Deferred pages:
 - Support tickets.
 - Channel/source management.
 
-## 18. Stop Conditions
+## 19. Stop Conditions
 
 Stop and escalate if:
 
@@ -367,19 +421,20 @@ Stop and escalate if:
 - Dashboard expands into reseller/analytics before core stability.
 - Admin UI shows secrets or unsafe logs.
 
-## 19. Acceptance Criteria
+## 20. Acceptance Criteria
 
 Dashboard scope is acceptable when:
 
 - Customer dashboard supports account, devices, license, activation, and transfer only.
 - Admin dashboard supports platform operation records only.
+- Owner/admin has full legal platform control without private local content/provider drift.
 - Free launch is respected.
 - Payment/reseller remain deferred.
 - No content/provider/source management exists.
 - Profile transfer privacy is protected.
 - Dashboard remains simple and operational.
 
-## 20. Next Step
+## 21. Next Step
 
 After M18:
 
