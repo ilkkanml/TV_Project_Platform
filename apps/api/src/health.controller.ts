@@ -7,7 +7,7 @@ export class HealthController {
     return {
       status: "ok",
       service: "tv-project-platform-api",
-      scope: "Licensed IPTV Player Platform"
+      scope: "Core Media Player Ecosystem"
     };
   }
 }
