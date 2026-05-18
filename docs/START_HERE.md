@@ -14,9 +14,13 @@ Chat history is not source of truth.
 
 Active external milestone:
 
-`M11 Platform Source-of-Truth Audit`
+`M12 Platform Database Baseline & Migration Foundation`
 
-M11 is audit/documentation only.
+M12 status:
+
+OPEN / DIRECTOR SCOPING
+
+M12 is database baseline and migration foundation scoping only.
 
 ## Read First
 
@@ -25,8 +29,9 @@ M11 is audit/documentation only.
 3. `docs/PLATFORM_SOURCE_OF_TRUTH.md`
 4. `docs/API_CONTRACT_ALIGNMENT.md`
 5. `docs/DATABASE_BASELINE.md`
-6. `docs/SECURITY_SESSION_POLICY.md`
-7. `docs/LEGAL_BOUNDARY.md`
+6. `docs/M12_DATABASE_BASELINE_SCOPE.md`
+7. `docs/SECURITY_SESSION_POLICY.md`
+8. `docs/LEGAL_BOUNDARY.md`
 
 ## Current Stack
 
@@ -50,13 +55,15 @@ M11 is audit/documentation only.
 - Auth/session/token implementation is not finalized
 - Payment enforcement is not active
 - Provider integration is not approved
+- M12 is open for database baseline/migration scoping only
 
-## M11 Guardrails
+## M12 Guardrails
 
-M11 does not approve:
+M12 does not approve:
 
-- Backend implementation beyond existing audit state
+- Backend implementation beyond future approved scope
 - Database migration execution
+- Production database deployment
 - Android bridge implementation
 - Payment enforcement
 - Provider integration
@@ -70,4 +77,4 @@ M11 does not approve:
 
 ## Required Next Step
 
-Align platform docs and contracts before implementation milestones.
+Database Architect should provide M12 baseline/migration risk report before Builder implementation.
