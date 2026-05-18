@@ -1,89 +1,149 @@
 # TV Project Platform — START HERE
 
-## Source of Truth
+## 1. Source of Truth
 
-This repository is the Platform source-of-truth for the Nexora TV ecosystem.
+This repository is the Platform source-of-truth for the Nexora / TV_Project ecosystem.
 
-Chat history is not source of truth.
+Chat history is not source-of-truth. Approved project direction must be recorded in docs.
 
-## Current Role
+## 2. Current Work Mode
 
-`TV_Project_Platform` supports the Android TV / Fire TV client through platform-side account, device, license, app version, remote config, and temporary profile transfer foundations.
+Current mode:
 
-## Current Milestone Context
+- ChatGPT web is the main coordination workspace.
+- Planning, documentation, project memory, and department coordination are active.
+- Hosting, Railway, live database setup, production deploy, and heavy implementation are paused.
 
-Active external milestone:
+This pause remains active until explicitly re-approved.
 
-`M12 Platform Database Baseline & Migration Foundation`
+## 3. Current Product Identity
 
-M12 status:
+Nexora is a Core Media Player Ecosystem.
 
-OPEN / ADVISORY REVIEWS RECORDED
+Project roles:
 
-M12 is database baseline and migration foundation planning only.
+- `TV_Project_Platform`: platform layer for account, device, license, app version, remote config, temporary encrypted profile transfer, and basic dashboard operations.
+- `TV_Project`: first Android TV / Fire TV client.
 
-## Read First
+Future clients may exist later, but Android TV / Fire TV remains first-client priority.
 
-1. `README.md`
-2. `docs/START_HERE.md`
-3. `docs/PLATFORM_SOURCE_OF_TRUTH.md`
-4. `docs/API_CONTRACT_ALIGNMENT.md`
-5. `docs/DATABASE_BASELINE.md`
-6. `docs/M12_DATABASE_BASELINE_SCOPE.md`
-7. `docs/M12_DATABASE_ARCHITECT_REPORT.md`
-8. `docs/M12_DATABASE_POLICY_DRAFT.md`
-9. `docs/M12_SYSTEMS_ARCHITECT_REVIEW.md`
-10. `docs/M12_SECURITY_PRIVACY_REVIEW.md`
-11. `docs/SECURITY_SESSION_POLICY.md`
-12. `docs/LEGAL_BOUNDARY.md`
+## 4. Non-Negotiable Boundary
 
-## Current Stack
+The platform must not become a content provider.
 
-- pnpm workspace
-- Next.js web app in `apps/web`
-- NestJS API app in `apps/api`
-- Prisma schema in `apps/api/prisma/schema.prisma`
-- Shared TypeScript package in `packages/shared`
-- PostgreSQL and Redis through `docker-compose.yml`
+Forbidden:
 
-## Current Runtime Truth
+- Content hosting.
+- Broadcasting.
+- Channel package selling.
+- Stream relay/proxy.
+- Stream transcoding.
+- Provider scraping.
+- Provider credential collection.
+- DRM bypass.
+- Unauthorized playlist/source collection.
+- Backend source/channel catalog management.
 
-- Platform repo exists
-- Web app exists
-- API app exists
-- Shared package exists
-- Prisma schema exists
-- Local infra compose exists
-- API endpoints are early/static foundation endpoints
-- Database schema exists but migration execution is not approved
-- Auth/session/token implementation is not finalized
-- Payment enforcement is not active
-- Provider integration is not approved
-- M12-TASK-001 Database Architect report is recorded
-- M12-TASK-002 Database policy draft is recorded
-- Systems Architect review is recorded
-- Security Privacy review is recorded
+Allowed:
 
-## M12 Guardrails
+- Account/device/license platform behavior.
+- App version policy.
+- Safe remote config.
+- Temporary encrypted profile transfer without backend inspection.
+- User-owned or legally authorized local source usage on the client side.
 
-M12 does not approve:
+## 5. Free Launch Rule
 
-- Backend implementation beyond future approved scope
-- Database migration execution
-- Production database deployment
-- Android bridge implementation
-- Payment enforcement
-- Provider integration
-- Content hosting
-- Broadcasting
-- Channel selling
-- Bundled streams
-- Unauthorized source extraction
-- Credential sharing
-- Protected-system rewrite
+The first Android TV / Fire TV app remains free until final release level.
 
-## Required Next Step
+During free launch:
 
-Director should decide whether to open a local-only implementation planning task or keep M12 in policy review.
+- Payment enforcement is deferred.
+- Payment absence must not block eligible early usage.
+- Account/device/license infrastructure may exist.
+- Billing/reseller behavior must not become first-run blocker.
 
-No Builder implementation is approved yet.
+## 6. Read First
+
+Read in this order:
+
+1. `docs/START_HERE.md`
+2. `docs/master-project-checkpoint.md`
+3. `docs/m24-compact-project-checkpoint-refresh.md`
+4. `docs/m19-documentation-index-project-map.md`
+5. `docs/m21-decision-gate-system.md`
+6. Relevant milestone or specialist document.
+
+## 7. Active Control Documents
+
+Core control:
+
+- `docs/master-project-checkpoint.md`
+- `docs/m10-ecosystem-alignment-client-integration-contract.md`
+- `docs/ecosystem-integration-role.md`
+- `docs/m19-documentation-index-project-map.md`
+- `docs/m20-department-operating-protocol.md`
+- `docs/m21-decision-gate-system.md`
+- `docs/m22-project-memory-update-template.md`
+- `docs/m23-specialist-prompt-library.md`
+- `docs/m24-compact-project-checkpoint-refresh.md`
+
+Milestone/specialist records:
+
+- `docs/m11-platform-database-mvp-design-review.md`
+- `docs/m12-core-api-mvp-contract-v1.md`
+- `docs/m13-android-first-client-integration-checklist.md`
+- `docs/m14-backend-specialist-task-pack.md`
+- `docs/m15-android-specialist-task-pack.md`
+- `docs/m16-security-specialist-task-pack.md`
+- `docs/m17-auth-specialist-task-pack.md`
+- `docs/m18-basic-dashboard-scope-pack.md`
+
+## 8. Current Runtime Truth
+
+Current runtime/implementation truth:
+
+- Platform repo exists.
+- Web app exists.
+- API app exists.
+- Shared package exists.
+- Prisma schema exists.
+- Local infra compose exists.
+- API endpoints are early/static foundation endpoints.
+- Railway/API mock test experiment succeeded earlier but host/deploy work is now paused.
+- Database schema exists but migration execution is not approved.
+- Auth/session/token implementation is not finalized.
+- Payment enforcement is not active.
+- Provider integration is not approved.
+
+## 9. Current Planning Chain
+
+Completed planning chain:
+
+- M10 Ecosystem Alignment and Client Integration Contract.
+- M11 Platform Database MVP Design Review.
+- M12 Core API MVP Contract v1.
+- M13 Android First Client Integration Checklist.
+- M14 Backend Specialist Task Pack.
+- M15 Android Specialist Task Pack.
+- M16 Security Specialist Task Pack.
+- M17 Auth Specialist Task Pack.
+- M18 Basic Dashboard Scope Pack.
+- M19 Documentation Index / Project Map.
+- M20 Department Operating Protocol.
+- M21 Decision Gate System.
+- M22 Project Memory Update Template.
+- M23 Specialist Prompt Library.
+- M24 Compact Project Checkpoint Refresh.
+
+## 10. Required Next Step
+
+Do not create more planning documents unless a real decision requires it.
+
+Next safe action:
+
+- Use M21 gates to evaluate the next concrete product decision.
+- Use M23 only when a specialist department is actually needed.
+- Keep updates short using M22.
+
+No Builder implementation, hosting, database migration, or deploy work is approved yet.
