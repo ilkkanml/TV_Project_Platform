@@ -285,7 +285,57 @@ Rule:
 
 Destructive owner/admin actions should be audited and should require clear confirmation.
 
-## 13. App Version Admin Scope
+## 13. Future Reseller Full Control Principle
+
+Reseller functionality is deferred, but when it is introduced the project owner/admin must have full legal control over reseller operations.
+
+Owner/admin may control:
+
+- Reseller account status.
+- Reseller approval/rejection.
+- Reseller suspension.
+- Reseller role and permission level.
+- Reseller customer limits.
+- Reseller device/license limits.
+- Reseller credit balance and credit adjustments.
+- Reseller commission rules if approved later.
+- Reseller pricing boundaries if approved later.
+- Reseller access to dashboard features.
+- Reseller-created customer/device/license records.
+- Reseller audit logs.
+- Abuse and fraud response actions.
+- Emergency reseller disable switches.
+
+Owner/admin may also:
+
+- View reseller activity summaries.
+- Reassign reseller customers if needed.
+- Freeze reseller operations.
+- Revoke reseller-created licenses/devices if abusive or invalid.
+- Require reseller compliance with platform rules.
+
+Resellers must remain below owner/admin authority.
+
+Reseller tools must not allow:
+
+- Channel package selling through the platform.
+- Provider credential collection.
+- Stream URL storage.
+- Backend playlist/source management.
+- IPTV/content bundle sales.
+- Source scraping.
+- DRM bypass.
+- Payment or credit behavior that violates the free launch rule.
+
+Rule:
+
+- Reseller control applies to legal platform distribution, account/device/license administration, credits, limits, audit, and abuse controls.
+- Reseller control does not create content/provider/source ownership.
+- Reseller panel remains deferred until core platform and Android first-client flows are stable.
+
+Destructive reseller actions should be audited and should require clear confirmation.
+
+## 14. App Version Admin Scope
 
 Admin may manage:
 
@@ -303,7 +353,7 @@ Rules:
 - Force update must be conservative.
 - App version records must not include media source data.
 
-## 14. Remote Config Admin Scope
+## 15. Remote Config Admin Scope
 
 Admin may manage safe config:
 
@@ -325,7 +375,7 @@ Admin must not configure:
 
 Remote config changes should be audited.
 
-## 15. Audit Log Scope
+## 16. Audit Log Scope
 
 Admin may see basic audit events:
 
@@ -348,7 +398,7 @@ Audit view must not show:
 - Playlist contents.
 - Raw profile payloads.
 
-## 16. UI Tone Direction
+## 17. UI Tone Direction
 
 Dashboard should feel:
 
@@ -366,7 +416,7 @@ Avoid:
 - Reseller-first UI.
 - Media-provider look and feel.
 
-## 17. Payment and Reseller Deferral
+## 18. Payment and Reseller Deferral
 
 Payment UI is deferred because:
 
@@ -380,7 +430,9 @@ Reseller UI is deferred because:
 - Reseller logic can add scope pressure too early.
 - Credit ledger and reseller operations need separate contract later.
 
-## 18. Dashboard MVP Page List
+When reseller UI is later approved, it must follow the Future Reseller Full Control Principle.
+
+## 19. Dashboard MVP Page List
 
 Customer pages:
 
@@ -409,7 +461,7 @@ Deferred pages:
 - Support tickets.
 - Channel/source management.
 
-## 19. Stop Conditions
+## 20. Stop Conditions
 
 Stop and escalate if:
 
@@ -419,22 +471,24 @@ Stop and escalate if:
 - Dashboard becomes payment-first during free launch.
 - Dashboard exposes profile payload contents.
 - Dashboard expands into reseller/analytics before core stability.
+- Reseller tools attempt channel/source/provider/content sales.
 - Admin UI shows secrets or unsafe logs.
 
-## 20. Acceptance Criteria
+## 21. Acceptance Criteria
 
 Dashboard scope is acceptable when:
 
 - Customer dashboard supports account, devices, license, activation, and transfer only.
 - Admin dashboard supports platform operation records only.
 - Owner/admin has full legal platform control without private local content/provider drift.
+- Future reseller control keeps all reseller authority under owner/admin control.
 - Free launch is respected.
-- Payment/reseller remain deferred.
+- Payment/reseller remain deferred until explicitly approved.
 - No content/provider/source management exists.
 - Profile transfer privacy is protected.
 - Dashboard remains simple and operational.
 
-## 21. Next Step
+## 22. Next Step
 
 After M18:
 
