@@ -13,6 +13,17 @@ enum UserRole {
   ADMIN
 }
 
+enum ClientPlatform {
+  ANDROID_TV
+  FIRE_TV
+  ANDROID_MOBILE
+  IOS
+  APPLE_TV
+  SAMSUNG_TIZEN
+  LG_WEBOS
+  WEB_PLAYER
+}
+
 enum SubscriptionStatus {
   TRIALING
   ACTIVE
@@ -29,6 +40,24 @@ enum DeviceStatus {
   BLOCKED
 }
 
+enum ActivationSessionStatus {
+  PENDING
+  APPROVED
+  EXPIRED
+  CONSUMED
+  REJECTED
+}
+
+enum LicenseState {
+  FREE_LAUNCH_ACTIVE
+  ACTIVE
+  TRIALING
+  EXPIRED
+  SUSPENDED
+  DEVICE_REVOKED
+  BLOCKED
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -37,23 +66,82 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  devices       Device[]
-  subscriptions Subscription[]
-  reseller      ResellerProfile?
+  devices             Device[]
+  subscriptions       Subscription[]
+  licenseGrants       LicenseGrant[]
+  activationSessions  ActivationSession[]
+  transferSessions    PlaylistTransferSession[]
+  reseller            ResellerProfile?
 }
 
 model Device {
-  id          String       @id @default(cuid())
+  id          String         @id @default(cuid())
   userId      String
   name        String
-  deviceKey   String       @unique
-  status      DeviceStatus @default(PENDING)
+  deviceKey   String         @unique
+  platform    ClientPlatform @default(ANDROID_TV)
+  appVersion  String?
+  status      DeviceStatus   @default(PENDING)
   activatedAt DateTime?
   revokedAt   DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  lastSeenAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user               User                      @relation(fields: [userId], references: [id])
+  licenseGrants      LicenseGrant[]
+  activationSessions ActivationSession[]
+  transferSessions   PlaylistTransferSession[]
+
+  @@index([userId])
+  @@index([platform, status])
+}
+
+model ActivationSession {
+  id          String                  @id @default(cuid())
+  code        String                  @unique
+  status      ActivationSessionStatus @default(PENDING)
+  platform    ClientPlatform          @default(ANDROID_TV)
+  deviceName  String?
+  deviceKey   String?
+  appVersion  String?
+  userId      String?
+  deviceId    String?
+  expiresAt   DateTime
+  approvedAt  DateTime?
+  consumedAt  DateTime?
+  rejectedAt  DateTime?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  user   User?   @relation(fields: [userId], references: [id])
+  device Device? @relation(fields: [deviceId], references: [id])
+
+  @@index([code, status])
+  @@index([userId])
+  @@index([deviceId])
+  @@index([expiresAt])
+}
+
+model LicenseGrant {
+  id              String       @id @default(cuid())
+  userId          String
+  deviceId        String?
+  state           LicenseState @default(FREE_LAUNCH_ACTIVE)
+  freeLaunch      Boolean      @default(true)
+  validFrom       DateTime     @default(now())
+  validUntil      DateTime?
+  lastCheckedAt   DateTime?
+  message         String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id])
+  device Device? @relation(fields: [deviceId], references: [id])
+
+  @@index([userId, state])
+  @@index([deviceId, state])
+  @@index([freeLaunch])
 }
 
 model Subscription {
@@ -66,6 +154,8 @@ model Subscription {
   updatedAt DateTime           @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, status])
 }
 
 model ResellerProfile {
@@ -88,49 +178,66 @@ model CreditLedgerEntry {
   createdAt   DateTime @default(now())
 
   reseller ResellerProfile @relation(fields: [resellerId], references: [id])
+
+  @@index([resellerId])
 }
 
 model RemoteConfig {
-  id        String   @id @default(cuid())
-  key       String   @unique
+  id        String          @id @default(cuid())
+  scope     String          @default("global")
+  key       String
+  platform  ClientPlatform?
   valueJson Json
-  enabled   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  enabled   Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@unique([scope, key])
+  @@index([platform, enabled])
 }
 
 model AppVersion {
-  id                  String   @id @default(cuid())
-  platform            String
+  id                  String         @id @default(cuid())
+  platform            ClientPlatform
   version             String
+  channel             String         @default("stable")
   minimumSupported    String?
   updateUrl           String?
-  forceUpdate         Boolean  @default(false)
+  forceUpdate         Boolean        @default(false)
+  enabled             Boolean        @default(true)
   releaseNotes        String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@unique([platform, version, channel])
+  @@index([platform, enabled])
 }
 
 model PlaylistTransferSession {
-  id                String   @id @default(cuid())
+  id                String    @id @default(cuid())
   userId            String
   deviceId          String
   encryptedPayload  String
+  payloadVersion    String    @default("v1")
   expiresAt         DateTime
   consumedAt        DateTime?
-  createdAt         DateTime @default(now())
+  createdAt         DateTime  @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  device Device @relation(fields: [deviceId], references: [id])
 
   @@index([userId, deviceId])
   @@index([expiresAt])
+  @@index([consumedAt])
 }
 
 model PaymentEvent {
-  id             String   @id @default(cuid())
-  provider       String
-  providerEventId String  @unique
-  eventType      String
-  payloadJson    Json
-  createdAt      DateTime @default(now())
+  id              String   @id @default(cuid())
+  provider        String
+  providerEventId String   @unique
+  eventType       String
+  payloadJson     Json
+  createdAt       DateTime @default(now())
 }
 
 model AuditLog {
@@ -140,4 +247,8 @@ model AuditLog {
   target    String?
   metadata  Json?
   createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
 }
