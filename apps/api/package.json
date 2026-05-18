@@ -26,6 +26,7 @@
     "@nestjs/cli": "latest",
     "@nestjs/schematics": "latest",
     "@nestjs/testing": "latest",
+    "@types/node": "latest",
     "prisma": "latest",
     "typescript": "latest"
   }
