@@ -18,7 +18,7 @@ Active external milestone:
 
 M12 status:
 
-OPEN / POLICY DRAFTING
+OPEN / ADVISORY REVIEWS RECORDED
 
 M12 is database baseline and migration foundation planning only.
 
@@ -32,8 +32,10 @@ M12 is database baseline and migration foundation planning only.
 6. `docs/M12_DATABASE_BASELINE_SCOPE.md`
 7. `docs/M12_DATABASE_ARCHITECT_REPORT.md`
 8. `docs/M12_DATABASE_POLICY_DRAFT.md`
-9. `docs/SECURITY_SESSION_POLICY.md`
-10. `docs/LEGAL_BOUNDARY.md`
+9. `docs/M12_SYSTEMS_ARCHITECT_REVIEW.md`
+10. `docs/M12_SECURITY_PRIVACY_REVIEW.md`
+11. `docs/SECURITY_SESSION_POLICY.md`
+12. `docs/LEGAL_BOUNDARY.md`
 
 ## Current Stack
 
@@ -58,7 +60,9 @@ M12 is database baseline and migration foundation planning only.
 - Payment enforcement is not active
 - Provider integration is not approved
 - M12-TASK-001 Database Architect report is recorded
-- M12-TASK-002 Database policy draft is active
+- M12-TASK-002 Database policy draft is recorded
+- Systems Architect review is recorded
+- Security Privacy review is recorded
 
 ## M12 Guardrails
 
@@ -80,4 +84,6 @@ M12 does not approve:
 
 ## Required Next Step
 
-Director should review M12 policy draft and decide whether Systems Architect / Security Privacy review is needed before any implementation task.
+Director should decide whether to open a local-only implementation planning task or keep M12 in policy review.
+
+No Builder implementation is approved yet.
