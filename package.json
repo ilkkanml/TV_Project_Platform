@@ -5,7 +5,7 @@
   "description": "Licensed IPTV Player Platform - Web, API, Admin, Reseller and Customer management system.",
   "packageManager": "pnpm@9.15.0",
   "engines": {
-    "node": ">=20.11.0",
+    "node": ">=20.11.0 <23",
     "pnpm": ">=9.0.0"
   },
   "scripts": {
@@ -28,10 +28,10 @@
     "infra:ps": "docker compose ps"
   },
   "devDependencies": {
-    "@types/node": "latest",
+    "@types/node": "^22.10.2",
     "prettier": "^3.4.2",
-    "prisma": "latest",
+    "prisma": "^6.1.0",
     "turbo": "^2.3.3",
-    "typescript": "latest"
+    "typescript": "^5.7.3"
   }
 }
