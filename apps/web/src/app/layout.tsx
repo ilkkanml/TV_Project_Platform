@@ -1,9 +1,8 @@
-import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "TV Project Platform",
-  description: "Licensed IPTV Player Platform management dashboard."
+  description: "Core Media Player Ecosystem platform dashboard."
 };
 
 export default function RootLayout({
