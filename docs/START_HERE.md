@@ -18,9 +18,9 @@ Active external milestone:
 
 M12 status:
 
-OPEN / DIRECTOR SCOPING
+OPEN / POLICY DRAFTING
 
-M12 is database baseline and migration foundation scoping only.
+M12 is database baseline and migration foundation planning only.
 
 ## Read First
 
@@ -30,8 +30,10 @@ M12 is database baseline and migration foundation scoping only.
 4. `docs/API_CONTRACT_ALIGNMENT.md`
 5. `docs/DATABASE_BASELINE.md`
 6. `docs/M12_DATABASE_BASELINE_SCOPE.md`
-7. `docs/SECURITY_SESSION_POLICY.md`
-8. `docs/LEGAL_BOUNDARY.md`
+7. `docs/M12_DATABASE_ARCHITECT_REPORT.md`
+8. `docs/M12_DATABASE_POLICY_DRAFT.md`
+9. `docs/SECURITY_SESSION_POLICY.md`
+10. `docs/LEGAL_BOUNDARY.md`
 
 ## Current Stack
 
@@ -51,11 +53,12 @@ M12 is database baseline and migration foundation scoping only.
 - Prisma schema exists
 - Local infra compose exists
 - API endpoints are early/static foundation endpoints
-- Database schema exists but migration baseline is not finalized
+- Database schema exists but migration execution is not approved
 - Auth/session/token implementation is not finalized
 - Payment enforcement is not active
 - Provider integration is not approved
-- M12 is open for database baseline/migration scoping only
+- M12-TASK-001 Database Architect report is recorded
+- M12-TASK-002 Database policy draft is active
 
 ## M12 Guardrails
 
@@ -77,4 +80,4 @@ M12 does not approve:
 
 ## Required Next Step
 
-Database Architect should provide M12 baseline/migration risk report before Builder implementation.
+Director should review M12 policy draft and decide whether Systems Architect / Security Privacy review is needed before any implementation task.
