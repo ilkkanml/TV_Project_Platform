@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  poweredByHeader: false,
-  transpilePackages: ["@tv-platform/shared"]
+  poweredByHeader: false
 };
 
 export default nextConfig;
