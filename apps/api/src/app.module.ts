@@ -3,6 +3,7 @@ import { AppVersionController } from "./app-version.controller";
 import { DeviceActivationController } from "./device-activation.controller";
 import { HealthController } from "./health.controller";
 import { LicenseController } from "./license.controller";
+import { ProfileTransferController } from "./profile-transfer.controller";
 import { RemoteConfigController } from "./remote-config.controller";
 
 @Module({
@@ -12,7 +13,8 @@ import { RemoteConfigController } from "./remote-config.controller";
     AppVersionController,
     RemoteConfigController,
     DeviceActivationController,
-    LicenseController
+    LicenseController,
+    ProfileTransferController
   ],
   providers: []
 })
