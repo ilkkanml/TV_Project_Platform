@@ -5,77 +5,142 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M17 defines the authentication and authorization direction for the Core Media Player Ecosystem.
+M17 defines the authentication and authorization direction for `TV_Project_Platform`.
 
 Auth must support:
 
+- The single site owner/admin.
 - Customer accounts.
-- Admin accounts.
-- Device activation approval.
-- License ownership.
-- Temporary encrypted profile transfer ownership.
-- Basic dashboard access.
+- Customer login.
+- Customer dashboard access.
+- Device registration / activation ownership.
+- License/access ownership.
+- Future reseller accounts, after launch MVP.
 
-Auth must not create media-provider behavior.
+Auth must not create a staff/task/department role system for the website.
 
-## 2. Governing Documents
+## 2. Corrected Role Model
 
-Auth work must follow:
+The website/platform role model is intentionally simple.
 
-- Master Project Checkpoint.
-- M10 Ecosystem Alignment and Client Integration Contract.
-- M11 Platform Database MVP Design Review.
-- M12 Core API MVP Contract v1.
-- M13 Android First Client Integration Checklist.
-- M14 Backend Specialist Task Pack.
-- M15 Android Specialist Task Pack.
-- M16 Security Specialist Task Pack.
+Active launch MVP roles:
 
-## 3. Auth Mission
-
-Auth exists to prove who owns an account, who may approve a device, and who may manage platform records.
-
-Auth does not prove ownership of media content, streams, providers, channels, or third-party sources.
-
-## 4. Non-Negotiable Boundary
-
-Auth must not be used to manage or validate:
-
-- Stream URLs.
-- Channel packages.
-- Provider accounts.
-- Provider credentials.
-- Backend playlist contents.
-- Scraped source data.
-- DRM bypass flows.
-
-If an auth requirement depends on media-provider behavior, stop and escalate to the Ecosystem Integration Director.
-
-## 5. MVP Roles
-
-Initial roles:
-
+- OWNER
 - CUSTOMER
-- ADMIN
 
-Deferred role:
+Deferred future role:
 
 - RESELLER
 
-Rules:
+Not needed for current product:
 
-- CUSTOMER owns their account, devices, license state, and temporary transfer sessions.
-- ADMIN manages platform operation records.
-- RESELLER exists later and must not drive MVP behavior.
-- Roles must remain simple until the core flow is stable.
+- Extra ADMIN role.
+- SUPPORT role.
+- Staff/task role system.
+- Department permission system.
+- Complex organization/team permission matrix.
 
-## 6. Account Registration Direction
+Rule:
 
-Registration should eventually support:
+- The project owner is the only site owner/admin.
+- Customers only manage their own account, devices, activation, and access status.
+- Resellers will exist later, but are not part of the immediate launch MVP.
+
+## 3. Owner Role
+
+OWNER means the single site owner/operator.
+
+OWNER may control:
+
+- Website/admin dashboard.
+- Customer records.
+- Customer account status.
+- Device registration and activation records.
+- Device revoke/block state.
+- License/access records.
+- Free launch access.
+- App version policy.
+- Update metadata.
+- Remote config.
+- Download metadata.
+- Legal/Terms/Privacy versions.
+- Audit logs.
+- Future reseller records and credit controls after reseller phase is approved.
+
+OWNER must not use platform authority to manage private media/source/provider data.
+
+OWNER must not:
+
+- Read user local playlist/source contents from backend.
+- Store provider usernames/passwords.
+- Force stream URLs to be uploaded.
+- Use remote config to distribute channel packages.
+- Turn platform tools into content-provider tools.
+
+## 4. Customer Role
+
+CUSTOMER may control only their own platform account area.
+
+CUSTOMER may:
+
+- Register.
+- Log in.
+- View account status.
+- View own devices.
+- Approve/link own device activation.
+- View own license/access status.
+- Use customer dashboard basics.
+
+CUSTOMER must not:
+
+- See other customers.
+- See other devices.
+- Manage global license/access states.
+- Access admin dashboard.
+- Access reseller functions unless later assigned through reseller model.
+
+## 5. Future Reseller Role
+
+RESELLER is deferred until after launch MVP is stable.
+
+When approved later, RESELLER may manage only reseller-scoped platform records:
+
+- Own customers.
+- Own customer devices.
+- Own customer access/license actions within limits.
+- Own credit balance and usage.
+- Own activity history.
+
+RESELLER remains below OWNER authority.
+
+RESELLER must not:
+
+- Become an admin.
+- Manage global config.
+- Manage app version policy.
+- Use emergency controls.
+- See all customers.
+- Sell channels/IPTV/content/provider access.
+- Store stream URLs or provider credentials.
+
+## 6. Auth Mission
+
+Auth exists to prove:
+
+- Who the OWNER is.
+- Who the CUSTOMER is.
+- Which customer owns which account/device/license record.
+- Which future reseller owns which reseller-scoped customer/device/license records.
+
+Auth does not prove ownership of media content, streams, providers, channels, or third-party sources.
+
+## 7. Registration Direction
+
+Customer registration should support:
 
 - Email.
 - Password.
-- Basic profile creation.
+- Basic customer account record.
 - Email normalization.
 - Duplicate email protection.
 
@@ -87,15 +152,14 @@ Rules:
 - Registration must not ask for playlist/source ownership proof.
 - Registration must not require payment during free launch.
 
-## 7. Login Direction
+## 8. Login Direction
 
-Login should eventually support:
+Login should support:
 
 - Email and password.
 - Safe error messages.
 - Session/token creation.
 - Rate limiting.
-- Optional email verification later.
 
 Rules:
 
@@ -104,20 +168,18 @@ Rules:
 - Do not expose tokens in logs.
 - Do not allow unlimited login attempts.
 
-## 8. Password Security Direction
+## 9. Password Security Direction
 
 Password handling must include:
 
 - Modern password hashing.
 - Unique salt behavior from the hashing algorithm.
 - Minimum password policy.
-- Password reset flow later.
+- Password reset flow later if needed.
 - No plaintext storage.
 - No password logging.
 
-Password reset is deferred until account MVP requires it.
-
-## 9. Session / Token Direction
+## 10. Session / Token Direction
 
 Auth may use secure sessions or signed tokens depending on future implementation choice.
 
@@ -126,7 +188,7 @@ Minimum requirements:
 - Tokens/sessions must expire.
 - Secrets must be stored only in secure environment variables.
 - Refresh behavior must be explicit if added.
-- Admin sessions should be more sensitive than customer sessions.
+- OWNER session is more sensitive than customer session.
 - Logout should invalidate or abandon client session state safely.
 
 Rules:
@@ -135,7 +197,7 @@ Rules:
 - Tokens must never be sent to unrelated clients.
 - Tokens must never be included in public endpoint responses.
 
-## 10. Public Endpoint Direction
+## 11. Public Endpoint Direction
 
 Public lightweight endpoints:
 
@@ -150,19 +212,19 @@ Rules:
 - They must not expose media source data.
 - Remote config must remain safe and narrow.
 
-## 11. Activation Auth Direction
+## 12. Activation Auth Direction
 
 Activation creation:
 
 - TV client may create activation session without login.
 - Must be rate-limited.
 - Must expire.
-- Must not create a final Device before approval.
+- Must not create a final Device before approval/linking.
 
-Activation approval:
+Activation approval/linking:
 
-- Requires authenticated CUSTOMER or ADMIN context.
-- Binds activation session to a user.
+- Requires authenticated CUSTOMER or OWNER context.
+- Binds activation session to a customer.
 - Creates or updates Device.
 - May create free-launch LicenseGrant.
 - Writes AuditLog.
@@ -173,73 +235,34 @@ Rules:
 - Consumed sessions cannot be reused.
 - Payment must not be required during free launch activation.
 
-## 12. Device Auth Direction
-
-Device identity should be app-level and privacy-safe.
-
-Device-authenticated operations later may include:
-
-- License check.
-- Activation status polling.
-- Profile transfer receive flow.
-
-Rules:
-
-- Do not rely on invasive hardware fingerprinting.
-- Do not send unnecessary personal device data.
-- Device tokens, if added later, must be revocable.
-- Revoked devices must not pass license checks.
-
 ## 13. License Auth Direction
 
-License check should verify account/device permission.
+License/access check should verify account/device platform permission.
 
 It should not verify media permission.
 
 Rules:
 
 - License check may require device identity.
-- License check may require device token later.
 - Free launch eligible devices receive access without payment blocking.
 - Suspended, revoked, or blocked devices receive clear blocked states.
 - License check must not inspect playlists, provider credentials, or source URLs.
 
-## 14. Profile Transfer Auth Direction
+## 14. Owner/Admin Auth Direction
 
-Profile transfer is sensitive and must require ownership context.
+OWNER dashboard access should protect:
 
-Create transfer session:
-
-- Requires authenticated user.
-- Requires user-owned device or approved target flow.
-- Accepts encrypted payload only.
-
-Read/consume transfer session:
-
-- Requires valid receiving context.
-- Must reject expired sessions.
-- Must reject consumed sessions.
-- Must not expose payload to unrelated users/devices.
-
-Rules:
-
-- Backend must not decrypt payload.
-- Backend must not parse payload.
-- Backend must not log payload.
-- Backend is temporary bridge only.
-
-## 15. Admin Auth Direction
-
-Admin access should eventually protect:
-
-- User management.
+- Customer management.
 - Device management.
-- License state management.
+- License/access state management.
 - App version management.
 - Remote config management.
+- Download metadata management.
+- Legal/Terms/Privacy version management.
 - Audit log visibility.
+- Future reseller/credit management after approval.
 
-Admin must not manage:
+OWNER must not manage:
 
 - Channel packages.
 - Stream catalogs.
@@ -249,12 +272,11 @@ Admin must not manage:
 
 Rules:
 
-- Admin role required for admin mutations.
-- Admin actions must be audited.
-- Admin UI must not expose secrets.
-- Admin UI must not show encrypted profile payloads.
+- OWNER actions must be audited.
+- OWNER UI must not expose secrets.
+- OWNER UI must not show encrypted profile payloads as normal dashboard data.
 
-## 16. Free Launch Auth Behavior
+## 15. Free Launch Auth Behavior
 
 During free launch:
 
@@ -266,7 +288,7 @@ During free launch:
 
 Auth exists to protect ownership and abuse boundaries, not to force payment early.
 
-## 17. Rate Limit Direction
+## 16. Rate Limit Direction
 
 Auth-related rate limits should apply to:
 
@@ -276,23 +298,24 @@ Auth-related rate limits should apply to:
 - Activation creation.
 - Activation approval attempts.
 - License check.
-- Profile transfer create/read/consume.
 
 Error response should be calm and not reveal internal thresholds.
 
-## 18. Audit Direction
+## 17. Audit Direction
 
 Auth-related audit events:
 
-- user.registered
-- user.login.success
-- user.login.failed_limited
-- user.logout
-- user.password_reset_requested
+- customer.registered
+- customer.login.success
+- customer.login.failed_limited
+- customer.logout
+- customer.password_reset_requested
 - device.activation.approved
-- admin.user.updated
-- admin.device.revoked
-- admin.license.updated
+- owner.customer.updated
+- owner.device.revoked
+- owner.license.updated
+- owner.download.updated
+- owner.remote_config.updated
 
 Audit metadata must not include:
 
@@ -303,7 +326,7 @@ Audit metadata must not include:
 - Provider credentials.
 - Profile payloads.
 
-## 19. Error Direction
+## 18. Error Direction
 
 Auth errors should be typed and safe.
 
@@ -316,7 +339,6 @@ Examples:
 - forbidden
 - activation_auth_required
 - device_revoked
-- profile_transfer_unauthorized
 
 Errors must not expose:
 
@@ -326,46 +348,44 @@ Errors must not expose:
 - Secret names/values.
 - Provider/source details.
 
-## 20. Deferred Auth Work
+## 19. Deferred Auth Work
 
-Deferred until core MVP needs it:
+Deferred until needed:
 
 - Social login.
 - Multi-factor authentication.
 - Advanced account recovery.
 - Reseller role enforcement.
-- Organization/team accounts.
-- Complex permission matrix.
 - Payment-provider customer portal auth.
 
-## 21. Stop Conditions
+Explicitly not planned:
+
+- Separate staff admin system.
+- Support role system.
+- Complex department/task permissions inside the website.
+- Organization/team accounts.
+
+## 20. Stop Conditions
 
 Stop and escalate if:
 
 - Auth requires provider credential storage.
 - Auth requires playlist/source inspection.
 - Auth becomes payment-first blocking during free launch.
-- Admin scope expands into channel/source management.
+- Owner/admin scope expands into channel/source/content management.
+- Extra staff/task roles are added without explicit approval.
 - Device identity requires invasive hardware fingerprinting.
-- Profile transfer cannot stay encrypted and temporary.
 - Token/session storage rules are unclear.
 
-## 22. Acceptance Criteria
+## 21. Acceptance Criteria
 
 Auth direction is acceptable when:
 
-- CUSTOMER and ADMIN roles are clear.
+- OWNER and CUSTOMER roles support launch MVP.
+- RESELLER remains deferred until later.
+- No extra website staff/task role system exists.
 - Activation approval ownership is clear.
-- License ownership is clear without media-provider drift.
-- Profile transfer ownership is protected.
+- License/access ownership is clear without media-provider drift.
 - Free launch remains non-payment-blocking.
 - Secrets, tokens, and passwords are protected.
-- Admin scope remains narrow.
-
-## 23. Next Specialist Pack
-
-After M17:
-
-- M18 Basic Dashboard Scope Pack.
-- M19 Documentation Index / Project Map.
-- M20 Department Operating Protocol.
+- Owner control remains platform/legal, not content/provider/source control.
