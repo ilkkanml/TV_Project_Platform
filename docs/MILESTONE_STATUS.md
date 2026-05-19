@@ -1,56 +1,90 @@
 # MILESTONE_STATUS
 
-Status: Active compatibility entrypoint
+## Current Active Milestone
 
-## Current Milestone State
+None — next milestone pending Director scoping.
 
-The M10-M24 planning and coordination chain is complete.
+## Last Locked Implementation Milestone
 
-Current result:
+`M13 Platform API Service Foundation & Environment Contract`
 
-- Planning/documentation system: APPROVED WITH LIMITS
-- ChatGPT-led project coordination: ACTIVE
-- Host/deploy/live database work: PAUSED
-- Heavy backend implementation: PAUSED
-- Heavy Android implementation: PAUSED
+## M13 Status
 
-## Completed Planning Chain
+LOCKED
 
-- M10 Ecosystem Alignment and Client Integration Contract
-- M11 Platform Database MVP Design Review
-- M12 Core API MVP Contract v1
-- M13 Android First Client Integration Checklist
-- M14 Backend Specialist Task Pack
-- M15 Android Specialist Task Pack
-- M16 Security Specialist Task Pack
-- M17 Auth Specialist Task Pack
-- M18 Basic Dashboard Scope Pack
-- M19 Documentation Index / Project Map
-- M20 Department Operating Protocol
-- M21 Decision Gate System
-- M22 Project Memory Update Template
-- M23 Specialist Prompt Library
-- M24 Compact Project Checkpoint Refresh
+## M13 Result
 
-## Current Active Control
+M13 established the local-only Platform API service foundation and environment contract.
 
-Use these files for current status:
+Completed scope:
 
-1. `docs/START_HERE.md`
-2. `docs/master-project-checkpoint.md`
-3. `docs/m24-compact-project-checkpoint-refresh.md`
-4. `docs/m19-documentation-index-project-map.md`
-5. `docs/m21-decision-gate-system.md`
+- Local-only API runtime/config baseline
+- `.env.example` `DATABASE_URL` aligned with docker-compose local PostgreSQL password
+- `/health` preserved as static liveness
+- `/ready` endpoint added
+- `PrismaService` added
+- `/ready` checks only `DATABASE_URL` presence and DB ping
+- User local evidence confirmed
+- QA passed with process warning
+- Documentation recorded
+- Director lock approved
 
-## Paused Until Explicit Re-Approval
+Evidence status:
 
-- Railway deployment
-- Live PostgreSQL setup
-- Prisma migration execution
-- Production hosting/domain/server work
-- Heavy backend implementation
-- Heavy Android implementation
+- `pnpm.cmd install`: CONFIRMED
+- `docker compose up -d`: CONFIRMED
+- `docker compose ps`: Postgres healthy / Redis healthy
+- `pnpm.cmd db:generate`: CONFIRMED
+- `pnpm.cmd --filter @tv-platform/api run typecheck`: CONFIRMED
+- `pnpm.cmd --filter @tv-platform/api run build`: CONFIRMED
+- `GET /health`: CONFIRMED
+- `GET /ready`: CONFIRMED
 
-## Next Milestone Rule
+M13 records:
 
-Do not open another milestone unless there is a concrete product decision, specialist review, or implementation re-approval.
+- `docs/M13_LOCAL_VERIFICATION_EVIDENCE.md`
+- `docs/M13_QA_REVIEW.md`
+- `docs/M13_LOCK_REPORT.md`
+
+## Previous Locked Implementation Milestone
+
+`M12 Platform Database Baseline & Migration Foundation`
+
+## M12 Status
+
+LOCKED
+
+## M13 Lock Boundary
+
+M13 does not approve:
+
+- Production deployment
+- Production database mutation
+- Payment enforcement
+- Provider integration
+- Content hosting
+- Channel selling
+- Platform-owned stream catalog
+- Android bridge implementation
+- Auth/session/token implementation
+- Redis runtime/session system expansion
+- Migration auto-run
+- Seed execution
+- Legal media-player boundary changes
+
+## Process Warning
+
+QA reported documentation/path hygiene warning for missing canonical department/control docs by exact path in Platform repo.
+
+Classification:
+
+- Not a code blocker
+- Not a legal blocker
+- Not a protected-system rewrite
+- Future documentation hygiene cleanup recommended
+
+## Current Operating Rule
+
+Do not open another milestone unless there is a concrete product decision, specialist review, or explicit implementation re-approval.
+
+Host/deploy/live database work remains paused unless explicitly approved.
