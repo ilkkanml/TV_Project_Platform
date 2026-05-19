@@ -455,3 +455,15 @@ M37 is done when:
 - Smoke test checklist is ready.
 - Future paid transition remains compatible.
 - No media-provider behavior is introduced.
+
+## 17. Sync Check
+
+This file is aligned with:
+
+- M31 EA0 Database Bootstrap.
+- M32 EA0 to Paid License Transition.
+- M33 EA0 Final Launch Checklist.
+- M34 EA0 Backend Implementation Plan.
+- M35 EA0 Database Schema Blueprint.
+- M36 EA0 Database Setup and Seed Plan.
+- TV_Project EA0 Device Bootstrap Handoff.
