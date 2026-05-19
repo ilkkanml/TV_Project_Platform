@@ -9,7 +9,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "ignoreDeprecations": "6.0",
     "types": ["node"]
   },
   "include": [
