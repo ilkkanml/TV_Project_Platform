@@ -16,7 +16,8 @@ export class ReadyController {
       await this.prisma.ping();
       return { ready: true };
     } catch (error) {
-      return { ready: false, reason: error.message };
+      const reason = error instanceof Error ? error.message : "Database readiness check failed";
+      return { ready: false, reason };
     }
   }
 }
