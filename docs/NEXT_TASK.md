@@ -14,14 +14,24 @@ None — next milestone pending Director scoping.
 
 Director should scope the next milestone candidate:
 
-`M15 Internal Alpha Handoff & Install Package Readiness`
+`M15 Internal Alpha UI/UX Polish Direction & Handoff Readiness`
+
+## Reason For Scope Adjustment
+
+After M14 smoke pass, the app is functional but visually/raw experience is not ready enough for a clean internal alpha handoff.
+
+M15 should include UI/UX design direction before final handoff readiness.
 
 ## M15 Candidate Purpose
 
-M15 should prepare the internal alpha package handoff without expanding product scope.
+M15 should define a minimal TV-first UI/UX polish pass and prepare internal alpha handoff without expanding product scope.
 
 Focus:
 
+- TV-first UI polish direction
+- Home / navigation / player shell visual cleanup
+- Remote-friendly focus clarity
+- Premium streaming feel baseline
 - Internal APK handoff/install guidance
 - APK location/path expectation
 - Install instructions for Android TV / Fire TV / emulator
@@ -32,7 +42,13 @@ Focus:
 
 ## M15 Candidate IN
 
-- APK handoff checklist
+- UI/UX design review and polish direction
+- TV-first layout/readability checklist
+- Focus state clarity checklist
+- Home shell visual polish checklist
+- Navigation shell polish checklist
+- Player shell visual polish checklist
+- Internal APK handoff checklist
 - Internal install instructions
 - Repeatable smoke test checklist
 - Version/build evidence expectations
@@ -52,16 +68,21 @@ Focus:
 - Heavy backend implementation
 - Heavy Android implementation
 - New playback/provider work
+- Full redesign/rewrite
+- Design system rewrite
+- New feature flood
 - APK signing/release keystore unless separately approved
 
 ## Current Operating Rule
 
 If the user says `devam` or `+`:
 
-1. Do not create extra documents unless one is needed for compatibility, handoff, or a real decision.
-2. Director may scope M15 directly because this is handoff/readiness, not feature implementation.
-3. Use extra departments only if code, QA, documentation record, legal/security/auth risk, or specialist review is actually needed.
-4. Do not start Builder implementation unless Director explicitly approves it.
+1. Director should scope M15 with UI/UX polish direction included.
+2. Use UI/UX Designer or Product Designer report before Builder if implementation is requested.
+3. Do not start Builder implementation until design scope is approved.
+4. Keep the polish pass minimal and TV-first.
+5. Preserve M14 smoke-passed behavior.
+6. Do not create production/store/payment/provider/content scope.
 
 ## Paused Tasks
 
@@ -78,8 +99,8 @@ Do not proceed with these unless explicitly re-approved:
 
 ## Safe Next Action
 
-Open Director scoping for M15.
+Open Director scoping for M15 with UI/UX polish direction included.
 
 Recommended next prompt:
 
-- `Nexora TV devam — Director scoping M15 Internal Alpha Handoff & Install Package Readiness`
+- `Nexora TV devam — Director scoping M15 Internal Alpha UI/UX Polish Direction & Handoff Readiness`
