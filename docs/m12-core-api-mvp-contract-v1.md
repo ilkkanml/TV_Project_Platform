@@ -5,16 +5,20 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M12 defines the first backend API contract for the Core Media Player Ecosystem.
+M12 defines the first backend API contract for the platform launch MVP.
 
 The API exists to support:
 
-- Android TV / Fire TV first-client integration.
-- Device activation.
-- License check.
+- Official website.
+- Owner dashboard.
+- MAC address plus access key customer portal access.
+- Single-page customer portal.
+- Device registration / status.
+- License / free launch access check.
 - App version check.
 - Remote config.
-- Temporary encrypted profile transfer.
+- Download metadata.
+- Optional encrypted playlist/profile storage.
 - Basic health verification.
 
 The API must not become a media provider API.
@@ -30,48 +34,82 @@ All endpoints must respect these rules:
 - No backend stream relay.
 - No backend stream transformation.
 - No channel package management.
-- No profile payload inspection.
+- No public/shared playlist catalog.
+- No profile payload inspection when encrypted storage is used.
 
 Allowed backend role:
 
-- Identity.
+- Owner control.
+- Customer access identity.
 - Device state.
-- License state.
+- License/access state.
 - Version policy.
 - Safe remote configuration.
-- Temporary encrypted transfer coordination.
+- Download metadata.
+- Customer-owned profile bridge/storage under boundary rules.
 
-## 3. Base Client Assumptions
+## 3. Corrected Launch MVP Access Model
 
-Initial client:
+Launch MVP does not require normal customer email/name registration.
 
-- Android TV / Fire TV.
+Customer portal access uses:
 
-Client integration order:
+- MAC address / normalized device identifier.
+- Access key / customer key.
 
-1. Health check.
-2. App version check.
-3. Remote config fetch.
-4. Device identity load/create.
-5. Activation session start.
-6. Activation session polling.
-7. License check.
-8. Optional temporary profile transfer.
+Rules:
+
+- MAC address must be normalized before lookup.
+- Access key must never be stored in plaintext.
+- API verifies the access key against `accessKeyHash`.
+- Customer portal sessions must expire.
+- Failed attempts must be rate-limited.
+- No email/name/phone/address is required for customer portal access.
+
+Owner access remains separate and uses a secure owner login model.
 
 ## 4. Endpoint Summary
 
 Initial endpoint set:
 
+Public/system endpoints:
+
 - `GET /health`
 - `GET /app-version`
 - `GET /remote-config`
-- `POST /devices/activation-sessions`
-- `GET /devices/activation-sessions/:id`
-- `POST /devices/activation-sessions/:id/approve`
+- `GET /download-metadata`
+
+Customer portal endpoints:
+
+- `POST /customer-access/login`
+- `POST /customer-access/logout`
+- `GET /customer-portal/summary`
+- `GET /customer-portal/profile`
+- `PUT /customer-portal/profile`
+- `POST /customer-portal/profile/sync-request`, optional
+
+Device/license endpoints:
+
+- `POST /devices/register`
 - `POST /license/check`
-- `POST /profile-transfer-sessions`
-- `GET /profile-transfer-sessions/:id`
-- `POST /profile-transfer-sessions/:id/consume`
+
+Owner endpoints:
+
+- `POST /owner/login`
+- `POST /owner/logout`
+- `GET /owner/customer-access-records`
+- `POST /owner/customer-access-records`
+- `POST /owner/customer-access-records/:id/reset-key`
+- `PATCH /owner/customer-access-records/:id/status`
+- `GET /owner/devices`
+- `PATCH /owner/devices/:id/status`
+- `GET /owner/licenses`
+- `PATCH /owner/licenses/:id`
+- `GET /owner/app-versions`
+- `PUT /owner/app-versions/:id`
+- `GET /owner/remote-config`
+- `PUT /owner/remote-config/:id`
+- `GET /owner/audit-logs`
 
 ## 5. GET /health
 
@@ -81,7 +119,8 @@ Purpose:
 
 Used by:
 
-- Web dashboard.
+- Website.
+- Owner dashboard.
 - Android client diagnostics.
 - Internal smoke tests.
 
@@ -115,6 +154,7 @@ Purpose:
 Used by:
 
 - Android TV / Fire TV client at startup and safe intervals.
+- Website download/status UI.
 
 Query parameters:
 
@@ -148,11 +188,12 @@ Rules:
 
 Purpose:
 
-- Provides safe runtime configuration for clients.
+- Provides safe runtime configuration for clients and website.
 
 Used by:
 
 - Android TV / Fire TV client.
+- Website/customer portal.
 - Future clients.
 
 Query parameters:
@@ -168,6 +209,9 @@ Response:
 - `features`
 - `polling`
 - `support`
+- `termsVersion`
+- `privacyVersion`
+- `legalBoundaryVersion`
 
 Database:
 
@@ -181,7 +225,8 @@ Allowed config:
 - Maintenance banner.
 - Support link/email.
 - Safe polling intervals.
-- Profile transfer availability.
+- Profile manager availability.
+- Legal/Terms/Privacy version IDs.
 
 Forbidden config:
 
@@ -190,125 +235,305 @@ Forbidden config:
 - Provider credentials.
 - Scraped metadata.
 
-## 8. POST /devices/activation-sessions
+## 8. GET /download-metadata
 
 Purpose:
 
-- Starts TV device activation flow.
+- Provides official APK download metadata for the website.
 
 Used by:
 
-- Android TV / Fire TV client.
+- Website download page.
+- Owner dashboard preview.
 
-Request body:
+Query parameters:
 
-- `platform`
-- `deviceName`
-- `deviceKey`
-- `appVersion`
+- optional `platform`
+- optional `channel`
 
 Response:
 
-- `sessionId`
-- `activationCode`
-- `status`
 - `platform`
-- `expiresAt`
-- `pollingSeconds`
+- `currentVersion`
+- `fileName`
+- `downloadUrl`
+- `fileSize`
+- `sha256`
+- `releaseNotes`
+- `releaseDate`
+- `downloadEnabled`
+- `minimumSupportedVersion`
+- `forceUpdate`
 
 Database:
 
-- Writes ActivationSession.
-- May not create Device until approval.
+- Reads AppVersion / Download metadata records.
 
 Rules:
 
-- Activation code must expire.
-- Session must be single-use.
-- Polling interval must be controlled.
-- Response must not include profile payloads.
-- Response must not include media source data.
+- Must only describe official app files.
+- Must not provide playlist/channel/source packages.
 
-## 9. GET /devices/activation-sessions/:id
+## 9. POST /customer-access/login
 
 Purpose:
 
-- Allows TV client to poll activation status.
+- Allows customer to open the single-page portal using MAC address plus access key.
 
 Used by:
 
-- Android TV / Fire TV client.
+- Website customer portal.
 
-Path parameters:
+Request body:
 
-- `id`
+- `macAddress`
+- `accessKey`
 
 Response:
 
-- `sessionId`
 - `status`
-- `activated`
-- `deviceId`
+- `customerAccessId`
+- `sessionExpiresAt`
+- `deviceStatus`
+- `licenseState`
+- `freeLaunch`
 - optional `message`
 
 Database:
 
-- Reads ActivationSession.
-- May read Device if approved.
+- Reads CustomerAccess by normalized MAC.
+- Verifies access key against accessKeyHash.
+- May update lastPortalLoginAt.
+- May write AuditLog.
 
 Rules:
 
-- Polling must be rate-limited at API/service level.
-- Expired sessions return expired state.
-- Consumed sessions return final state.
-- No profile or media data returned.
+- No customer email/name required.
+- Invalid MAC/key returns generic `invalid_access`.
+- Raw access key must not be logged.
+- Access key must not be returned.
+- Must be rate-limited.
+- Must not ask for provider credentials.
 
-## 10. POST /devices/activation-sessions/:id/approve
+## 10. POST /customer-access/logout
 
 Purpose:
 
-- Allows authenticated web/mobile user to approve a TV activation code.
+- Ends customer portal session.
 
 Used by:
 
-- Web dashboard or future mobile account flow.
+- Website customer portal.
 
-Path parameters:
+Request:
 
-- `id`
-
-Request body:
-
-- authenticated user context
-- optional device label
+- Authenticated customer portal session.
 
 Response:
 
-- `sessionId`
 - `status`
-- `deviceId`
-- `approvedAt`
 
 Database:
 
-- Reads ActivationSession.
-- Creates or updates Device.
-- Updates ActivationSession.
-- May create LicenseGrant with free launch state.
-- Writes AuditLog.
+- May write AuditLog.
 
 Rules:
 
-- Requires authenticated user.
-- Must reject expired sessions.
-- Must reject reused sessions.
-- Must not require payment during free launch.
+- Must not expose token/session internals.
 
-## 11. POST /license/check
+## 11. GET /customer-portal/summary
 
 Purpose:
 
-- Tells the client whether the activated device may operate.
+- Loads the single-page customer portal summary.
+
+Used by:
+
+- Website customer portal after MAC/key login.
+
+Request:
+
+- Authenticated customer portal session.
+
+Response:
+
+- `customerAccessId`
+- `accessStatus`
+- `normalizedMacMasked`
+- `device`
+- `license`
+- `paymentStatus`
+- `profileStatus`
+- `download`
+- `support`
+- `termsVersion`
+- `privacyVersion`
+
+Database:
+
+- Reads CustomerAccess.
+- Reads Device.
+- Reads LicenseGrant.
+- Reads PaymentStatus placeholder if present.
+- Reads AppVersion/Download metadata.
+- Reads profile metadata only if profile storage is enabled.
+
+Rules:
+
+- Must return only the current customer access record.
+- Must not return other customers/devices.
+- Must not return provider credentials.
+- Must not expose plaintext playlist data unless explicitly allowed by a later storage decision.
+
+## 12. GET /customer-portal/profile
+
+Purpose:
+
+- Loads customer-owned profile/playlist data for editing, if the feature is enabled.
+
+Used by:
+
+- Website customer portal.
+
+Request:
+
+- Authenticated customer portal session.
+
+Response:
+
+- `profileMode`
+- `payloadVersion`
+- `encryptedPayload`, preferred mode
+- `lastUpdatedAt`
+- `status`
+
+Database:
+
+- Reads CustomerProfileStore for the current CustomerAccess.
+
+Rules:
+
+- Preferred mode is encrypted profile payload.
+- Backend must not parse encrypted payload.
+- Backend must not convert profile data into shared catalog data.
+- Backend must not sell, validate, scrape, or redistribute sources.
+
+## 13. PUT /customer-portal/profile
+
+Purpose:
+
+- Saves customer-owned profile/playlist data from the single-page portal.
+
+Used by:
+
+- Website customer portal.
+
+Request:
+
+- Authenticated customer portal session.
+- `profileMode`
+- `payloadVersion`
+- `encryptedPayload`, preferred
+
+Response:
+
+- `status`
+- `profileSaved`
+- `lastUpdatedAt`
+
+Database:
+
+- Creates/updates CustomerProfileStore.
+- May write AuditLog.
+
+Rules:
+
+- Preferred mode is client-side encrypted payload.
+- Backend must not inspect encrypted payload.
+- Raw provider credentials must not be stored as platform account fields.
+- Saved profile must remain private to that customer access record.
+- No public/shared playlist directory is allowed.
+
+## 14. POST /customer-portal/profile/sync-request, Optional
+
+Purpose:
+
+- Requests the linked device to fetch or receive the latest profile when supported by the app flow.
+
+Used by:
+
+- Website customer portal.
+- Future client integration.
+
+Request:
+
+- Authenticated customer portal session.
+- `deviceId`, optional if only one device exists.
+
+Response:
+
+- `status`
+- `syncRequested`
+- `message`
+
+Database:
+
+- Reads CustomerAccess and Device.
+- May update profile sync metadata.
+- May write AuditLog.
+
+Rules:
+
+- Must not push plaintext streams through backend logs.
+- Actual client implementation belongs to `TV_Project`.
+
+## 15. POST /devices/register
+
+Purpose:
+
+- Creates or updates a platform device record based on MAC/device identity.
+
+Used by:
+
+- Android TV / Fire TV client.
+- Owner dashboard if manually registering.
+
+Request body:
+
+- `platform`
+- `macAddress`
+- optional `deviceKey`
+- optional `deviceName`
+- `appVersion`
+
+Response:
+
+- `deviceId`
+- `status`
+- `platform`
+- `licenseState`
+- `freeLaunch`
+- optional `message`
+
+Database:
+
+- Reads or creates Device.
+- May read CustomerAccess by normalized MAC.
+- May create or update LicenseGrant if eligible.
+- May write AuditLog.
+
+Rules:
+
+- MAC must be normalized.
+- Device registration must not require customer email/name.
+- Device registration must not return media source data.
+- Device registration must not require payment during free launch.
+
+## 16. POST /license/check
+
+Purpose:
+
+- Tells the client whether the device may operate.
 
 Used by:
 
@@ -317,8 +542,9 @@ Used by:
 
 Request body:
 
-- `deviceId`
-- `deviceKey`
+- `macAddress`
+- optional `deviceId`
+- optional `deviceKey`
 - `platform`
 - `appVersion`
 
@@ -336,7 +562,8 @@ Response:
 
 Database:
 
-- Reads Device.
+- Reads Device by normalized MAC/deviceId.
+- Reads CustomerAccess if linked.
 - Reads LicenseGrant.
 - May update Device.lastSeenAt.
 - May update LicenseGrant.lastCheckedAt.
@@ -344,7 +571,7 @@ Database:
 
 Free launch behavior:
 
-- Activated valid devices may receive `free_launch_active`.
+- Valid devices may receive `free_launch_active`.
 - Payment enforcement remains disabled.
 - Payment missing must not block initial Android TV / Fire TV release usage.
 
@@ -354,147 +581,129 @@ Rules:
 - Must not inspect profile data.
 - Must not check provider credentials.
 
-## 12. POST /profile-transfer-sessions
+## 17. POST /owner/login
 
 Purpose:
 
-- Creates temporary encrypted profile transfer session.
+- Allows the single site owner/operator to access the owner dashboard.
 
 Used by:
 
-- Web dashboard.
-- Android client in controlled transfer flows.
+- Owner dashboard.
 
 Request body:
 
-- `userId`
-- `deviceId`
-- `encryptedPayload`
-- `payloadVersion`
+- `loginId` or `email`
+- `password`
 
 Response:
 
-- `sessionId`
 - `status`
-- `payloadStored`
-- `payloadVersion`
-- `expiresAt`
+- `role: OWNER`
+- `sessionExpiresAt`
 
 Database:
 
-- Writes ProfileTransferSession.
+- Reads OwnerUser.
+- May update lastLoginAt.
 - May write AuditLog.
 
 Rules:
 
-- Payload must already be encrypted.
-- Backend must not inspect payload contents.
-- Session must expire quickly.
-- Backend is not profile source of truth.
+- Safe generic error on failure.
+- Password must not be logged.
+- Must be rate-limited.
 
-## 13. GET /profile-transfer-sessions/:id
-
-Purpose:
-
-- Reads transfer session availability.
-
-Used by:
-
-- Receiving client.
-
-Path parameters:
-
-- `id`
-
-Response:
-
-- `sessionId`
-- `status`
-- `encryptedPayload`
-- `expiresAt`
-- `consumedAt`
-
-Database:
-
-- Reads ProfileTransferSession.
-
-Rules:
-
-- Expired sessions must not expose payload.
-- Consumed sessions must not expose payload.
-- Unauthorized users/devices must be rejected.
-
-## 14. POST /profile-transfer-sessions/:id/consume
+## 18. Owner Customer Access Management Endpoints
 
 Purpose:
 
-- Marks transfer session consumed.
+- Allows owner to create/manage MAC/access key customer records.
 
-Used by:
+Endpoints:
 
-- Receiving client after successful import.
-
-Path parameters:
-
-- `id`
-
-Response:
-
-- `sessionId`
-- `status`
-- `consumedAt`
-
-Database:
-
-- Reads ProfileTransferSession.
-- Updates consumedAt.
-- May write AuditLog.
+- `GET /owner/customer-access-records`
+- `POST /owner/customer-access-records`
+- `POST /owner/customer-access-records/:id/reset-key`
+- `PATCH /owner/customer-access-records/:id/status`
 
 Rules:
 
-- Consumption is one-way.
-- Consumed sessions should not be reused.
-- Payload should become inaccessible after consumption.
+- Owner can create a customer access record for a normalized MAC.
+- Owner can generate/reset access key.
+- Raw access key is shown only at generation/reset time.
+- Only accessKeyHash is stored.
+- Owner can disable/block/restore customer access.
+- Owner must not see plaintext profile payloads as normal admin data.
 
-## 15. Authentication Direction
+## 19. Owner Device / License / Config Endpoints
+
+Purpose:
+
+- Allows owner to manage launch-critical platform records.
+
+Endpoint groups:
+
+- `GET /owner/devices`
+- `PATCH /owner/devices/:id/status`
+- `GET /owner/licenses`
+- `PATCH /owner/licenses/:id`
+- `GET /owner/app-versions`
+- `PUT /owner/app-versions/:id`
+- `GET /owner/remote-config`
+- `PUT /owner/remote-config/:id`
+- `GET /owner/audit-logs`
+
+Rules:
+
+- Owner mutations must be audited.
+- Owner dashboard must not expose secrets.
+- Owner dashboard must not include source/provider/channel management.
+
+## 20. Authentication Direction
 
 MVP planning assumption:
 
-- Public lightweight endpoints: health, app-version, remote-config.
-- Activation creation may be unauthenticated but rate-limited.
-- Activation approval requires authenticated user.
-- License check requires valid device identity or device token.
-- Profile transfer requires authenticated user/device context.
+- Public lightweight endpoints: health, app-version, remote-config, download-metadata.
+- Customer portal requires MAC address plus access key login.
+- Owner dashboard requires owner login.
+- Device registration/license check may use MAC/device identity.
+- Profile save/load requires valid customer portal session.
 
-Full auth implementation is deferred until backend implementation is re-approved.
+Full production auth implementation is deferred until backend implementation is re-approved.
 
-## 16. Rate Limit Direction
+## 21. Rate Limit Direction
 
 Rate limits should apply to:
 
-- Activation session creation.
-- Activation polling.
+- Customer MAC/access key login.
+- Owner login.
+- Device registration.
 - License check.
-- Profile transfer creation.
-- Profile transfer retrieval.
+- Profile save/load.
+- Owner access key generation/reset.
 
 Rate limit store may use Redis later, but live infrastructure is currently paused.
 
-## 17. M12 Acceptance Criteria
+## 22. M12 Acceptance Criteria
 
 M12 is acceptable when:
 
-- Every Android-first endpoint has a clear purpose.
-- Each endpoint maps to database intent.
+- The API supports MAC address plus access key customer portal access.
+- No customer email/name registration is required.
+- Owner dashboard access is separate and protected.
 - Free launch behavior is preserved.
+- App version/update metadata is available.
+- Download metadata is available.
+- Optional profile/playlist storage remains private and boundary-controlled.
 - No endpoint introduces media-provider behavior.
-- Profile transfer privacy boundary is preserved.
 - Implementation can be resumed later without contract ambiguity.
 
-## 18. Next Step
+## 23. Next Step
 
 After M12:
 
-- Prepare Android First Client Integration Checklist.
-- Prepare Backend Specialist Task Pack for future implementation.
+- Align platform-client shared contract with MAC/access key model.
+- Prepare single-page customer portal data model.
+- Prepare owner dashboard MVP page map.
 - Keep hosting/deploy work paused unless explicitly re-approved.
