@@ -16,7 +16,7 @@ The current platform priority is:
 
 - Official website goes live.
 - First app version can be downloaded from the official website.
-- Customer/device access works with MAC address plus access key.
+- Customer/device access works with Device ID plus Activation Key.
 - No customer email/name registration is required for launch MVP.
 - Customer access records are stored.
 - Device registration / activation records are stored.
@@ -25,14 +25,33 @@ The current platform priority is:
 - Single-page customer portal works for basic device/profile/access/payment-status actions.
 - Owner dashboard works for launch-critical platform control.
 
-## 3. Simplified Role Rule
+## 3. Naming Correction
+
+The launch MVP must use the same naming as `TV_Project`.
+
+Approved shared terms:
+
+- `deviceId`
+- `activationKey`
+
+Do not use these terms as primary product/contract names:
+
+- MAC address
+- access key
+
+Rule:
+
+- Older notes that say MAC address plus access key must be interpreted as Device ID plus Activation Key.
+- New planning, API, UI, and database wording must use Device ID plus Activation Key.
+
+## 4. Simplified Role Rule
 
 The platform role system is intentionally simple.
 
 Active launch MVP roles:
 
 - OWNER: the single site owner/operator.
-- CUSTOMER_ACCESS: device/customer portal access based on MAC address plus access key.
+- CUSTOMER_ACCESS: device/customer portal access based on Device ID plus Activation Key.
 
 Deferred future role:
 
@@ -49,11 +68,11 @@ Not part of the product:
 Rule:
 
 - The site has one owner/admin: the project owner.
-- Customers use MAC address plus access key to access their minimal portal.
+- Customers use Device ID plus Activation Key to access their minimal portal.
 - Customers manage only their own linked device/profile/access/payment-status area.
 - Reseller logic is deferred until after launch MVP stability.
 
-## 4. Explicitly Deferred
+## 5. Explicitly Deferred
 
 These are deferred until the launch MVP foundation is stable:
 
@@ -69,7 +88,7 @@ These are deferred until the launch MVP foundation is stable:
 
 Reseller architecture remains documented for later, but it is not part of the immediate launch MVP.
 
-## 5. Platform Launch MVP Scope
+## 6. Platform Launch MVP Scope
 
 The first platform launch MVP includes:
 
@@ -99,8 +118,8 @@ The first platform launch MVP includes:
 
 ### Customer Access
 
-- MAC address plus access key login.
-- Access key hash storage only.
+- Device ID plus Activation Key login.
+- Activation Key hash storage only.
 - Customer access/profile record.
 - Single-page customer portal access.
 - No required email.
@@ -111,7 +130,7 @@ The first platform launch MVP includes:
 ### Device / Activation
 
 - Device registration record.
-- Device MAC / platform identifier record.
+- Device ID / platform identifier record.
 - Activation session record if needed by app flow.
 - Device linked to customer access record.
 - Device status.
@@ -135,7 +154,7 @@ The first platform launch MVP includes:
 ### Single-Page Customer Portal
 
 - Account/access status.
-- Device / MAC status.
+- Device ID status.
 - Playlist/profile manager.
 - License/payment status.
 - Download/update guidance.
@@ -153,7 +172,7 @@ The first platform launch MVP includes:
 - Audit logs.
 - Emergency controls.
 
-## 6. Platform Does Not Own Android UX
+## 7. Platform Does Not Own Android UX
 
 `TV_Project_Platform` owns policy, website, database, API contract, dashboard, customer/device/license records, download metadata, and owner control.
 
@@ -161,13 +180,13 @@ The first platform launch MVP includes:
 
 Shared values must be synchronized through `docs/PLATFORM_CLIENT_SYNC_PROTOCOL.md`.
 
-## 7. Launch MVP Success Criteria
+## 8. Launch MVP Success Criteria
 
 M25 is successful when:
 
 - The official website can be published.
 - A user can download the first APK from the official website.
-- A customer can enter MAC address plus access key and open the single-page portal.
+- A customer can enter Device ID plus Activation Key and open the single-page portal.
 - The platform can store customer access records without requiring email/name.
 - The platform can store device activation/registration records.
 - The platform can grant free launch license/access.
@@ -177,11 +196,12 @@ M25 is successful when:
 - Reseller/payment enforcement is not required for launch MVP.
 - No extra staff/task role system is introduced.
 
-## 8. Stop Conditions
+## 9. Stop Conditions
 
 Stop and escalate if a task tries to add:
 
 - Mandatory customer email/name registration for launch MVP.
+- MAC address as the primary customer portal identifier.
 - Reseller implementation before launch MVP stability.
 - Paid access enforcement before free launch ends.
 - Extra staff/support/department role system.
@@ -189,10 +209,10 @@ Stop and escalate if a task tries to add:
 - Android app UX implementation inside platform scope.
 - Backend source/provider credential storage.
 
-## 9. Next Recommended Work Order
+## 10. Next Recommended Work Order
 
 1. Single-page customer portal data model.
-2. MAC plus access key auth model.
+2. Device ID plus Activation Key auth model.
 3. Playlist/profile storage boundary.
 4. Device registration/activation database model.
 5. Free launch license/access model.
