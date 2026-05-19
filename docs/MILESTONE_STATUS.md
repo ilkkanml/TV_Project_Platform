@@ -6,7 +6,7 @@
 
 ## M14 Status
 
-SCOPING OPEN
+BUILDER HANDOFF READY
 
 ## M14 Result
 
@@ -16,9 +16,10 @@ M14 is approved with limits.
 
 M14 is not a production release, not backend expansion, not Android bridge implementation, not auth/session/token implementation, not payment enforcement, and not provider/content work.
 
-M14 scope record:
+M14 records:
 
 - `docs/M14_SCOPE.md`
+- `docs/M14_BUILDER_HANDOFF.md`
 
 ## M14 Current Scope
 
@@ -32,6 +33,16 @@ M14 focuses only on:
 - Local Platform API `/health` check
 - Local Platform API `/ready` check
 - Legal media-player boundary preservation
+
+## M14 Current Next Step
+
+Builder may inspect current repository state and return a minimal smoke-test readiness report.
+
+Builder must not start broad implementation.
+
+If no patch is needed, Builder must report `NO PATCH REQUIRED`.
+
+If a patch is needed, Builder must explain the minimum required patch before implementation.
 
 ## M14 Lock Boundary
 
