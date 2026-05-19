@@ -5,13 +5,15 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M26 defines the minimum customer-facing portal for the first platform launch MVP.
+M26 defines the minimum customer-facing portal for the later platform launch MVP.
 
-The customer is expected to visit the website rarely, possibly only once, to:
+EA0 can start before this portal exists.
 
-- Enter MAC address plus access key.
+When enabled later, the customer is expected to visit the website rarely, possibly only once, to:
+
+- Enter Device ID plus Activation Key.
 - View device/access status.
-- Edit/save playlist/profile area.
+- Edit/save playlist/profile area if enabled.
 - See license/payment status.
 - Download/update app if needed.
 
@@ -21,8 +23,8 @@ The portal must stay simple, single-page, and low-friction.
 
 Customer portal access uses:
 
-- MAC address / normalized device identifier.
-- Access key / customer key.
+- Device ID.
+- Activation Key.
 
 No launch MVP requirement for:
 
@@ -35,13 +37,29 @@ No launch MVP requirement for:
 
 Rules:
 
-- MAC address must be normalized before lookup.
-- Access key must be verified against `accessKeyHash`.
-- Raw access key must not be stored.
+- Device ID is the public lookup identifier.
+- Activation Key must be verified against `activationKeyHash`.
+- Raw Activation Key must not be stored in database.
+- Raw Activation Key must not be logged.
 - Failed attempts must be rate-limited.
 - Session must expire.
 
-## 3. Page Structure
+## 3. EA0 Relationship
+
+EA0 may operate before the portal.
+
+EA0 creates records through:
+
+```txt
+POST /devices/bootstrap
+POST /license/check
+```
+
+Later customer portal reads the same records.
+
+The portal must not force new Device IDs or new Activation Keys for existing EA0 users unless reset/recovery is required.
+
+## 4. Page Structure
 
 The customer portal is one page.
 
@@ -58,16 +76,16 @@ No sidebar is required for launch MVP.
 
 No complex dashboard navigation is required for launch MVP.
 
-## 4. Section: Access Status
+## 5. Section: Access Status
 
 Purpose:
 
-- Show whether the customer access record is active.
+- Show whether the customer/device access record is active.
 
 Displayed fields:
 
 - Access status.
-- Masked MAC/device identifier.
+- Masked Device ID.
 - Free launch status.
 - Last portal login, optional.
 
@@ -81,10 +99,10 @@ Example states:
 Rules:
 
 - Do not display raw secrets.
-- Do not display access key.
+- Do not display full Activation Key.
 - Do not expose owner/admin notes unless explicitly safe.
 
-## 5. Section: Device Status
+## 6. Section: Device Status
 
 Purpose:
 
@@ -110,11 +128,11 @@ Rules:
 - The device section does not manage playback sources.
 - The device section does not test channels/streams/providers.
 
-## 6. Section: Playlist / Profile Manager
+## 7. Section: Playlist / Profile Manager
 
 Purpose:
 
-- Let the customer manage their own playlist/profile area.
+- Let the customer manage their own playlist/profile area if enabled.
 
 Approved launch MVP options:
 
@@ -148,7 +166,7 @@ Rules:
 - No source scraping.
 - No content/package selling.
 
-## 7. Section: License / Payment Status
+## 8. Section: License / Payment Status
 
 Purpose:
 
@@ -168,10 +186,11 @@ Future paid display, deferred:
 
 Launch MVP rules:
 
-- Payment enforcement is disabled.
+- Payment enforcement is disabled until explicitly approved.
 - Missing payment must not block free launch access.
 - Payment UI may exist only as placeholder/status if explicitly enabled.
 - No card secrets are stored by the platform.
+- Future payment must attach to existing Device ID / Activation Key records.
 
 Initial payment states:
 
@@ -181,7 +200,7 @@ Initial payment states:
 - `ACTIVE_LATER`
 - `EXPIRED_LATER`
 
-## 8. Section: Download / Update
+## 9. Section: Download / Update
 
 Purpose:
 
@@ -202,7 +221,7 @@ Rules:
 - No playlist/channel/source package downloads.
 - No modified APK promotion.
 
-## 9. Section: Support / Legal
+## 10. Section: Support / Legal
 
 Purpose:
 
@@ -220,7 +239,7 @@ Rules:
 - Support copy must not ask customers to send provider passwords.
 - Support copy must not ask customers to send full playlist/source contents unless a later safe support workflow is explicitly approved.
 
-## 10. Customer Portal Summary Shape
+## 11. Customer Portal Summary Shape
 
 `GET /customer-portal/summary` should provide enough data to render the full single page.
 
@@ -229,8 +248,9 @@ Recommended response shape:
 ```json
 {
   "customerAccessId": "...",
+  "deviceAccessRecordId": "...",
   "accessStatus": "active",
-  "normalizedMacMasked": "AA:BB:**:**:**:FF",
+  "deviceIdMasked": "NX-****-1234",
   "device": {
     "status": "active",
     "platform": "android_tv",
@@ -270,17 +290,18 @@ Recommended response shape:
 
 Rules:
 
-- Summary must not include raw access key.
+- Summary must not include raw Activation Key.
+- Summary must not include activationKeyHash.
 - Summary must not include provider credentials.
 - Summary must not include plaintext stream URLs unless a later explicit decision changes profile storage mode.
 - Summary must not include other customer records.
 
-## 11. Owner Controls For Customer Portal
+## 12. Owner Controls For Customer Portal
 
-OWNER may:
+OWNER may later:
 
-- Create customer access record by MAC.
-- Generate/reset access key.
+- Create device/customer access record by Device ID.
+- Generate/reset Activation Key.
 - Disable/restore/block customer access.
 - View linked device status.
 - View license/access state.
@@ -290,12 +311,13 @@ OWNER may:
 
 OWNER must not:
 
-- See raw access key after generation/reset.
+- See raw Activation Key after generation/reset/recovery.
+- See activationKeyHash.
 - See plaintext provider passwords.
 - Use dashboard as channel/source/content management.
 - Browse customer playlist contents as a media catalog.
 
-## 12. UX Direction
+## 13. UX Direction
 
 The portal should feel like a simple utility page, not a full SaaS dashboard.
 
@@ -316,11 +338,12 @@ Avoid:
 - Usage analytics for what the user watches.
 - Channel/provider/source language.
 
-## 13. Stop Conditions
+## 14. Stop Conditions
 
 Stop and escalate if the portal starts adding:
 
 - Required email/name registration.
+- MAC address as the primary product/contract identifier.
 - Provider credential collection.
 - Plaintext playlist/source database as product feature.
 - Channel/package catalog.
@@ -328,12 +351,12 @@ Stop and escalate if the portal starts adding:
 - Reseller/payment enforcement before approval.
 - Multi-role staff/customer support dashboard complexity.
 
-## 14. Acceptance Criteria
+## 15. Acceptance Criteria
 
 M26 is acceptable when:
 
 - Customer portal is single-page.
-- MAC plus access key access is the only required customer entry method.
+- Device ID plus Activation Key is the only required customer entry method.
 - Customer can view device/access/license/payment-status basics.
 - Customer can manage playlist/profile only within approved storage boundary.
 - Download/update info is visible.
