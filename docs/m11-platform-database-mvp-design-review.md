@@ -5,22 +5,40 @@ Mode: Planning only. No live database, migration, hosting, or production deploy 
 
 ## 1. Purpose
 
-M11 defines the minimum database shape required for the platform launch MVP.
+M11 defines the minimum database shape required for EA0 and the later platform launch MVP.
 
 The database exists to support:
 
-- Owner/admin control.
-- MAC address plus access key customer portal access.
-- Device registration.
+- Owner/admin control later.
+- Device ID plus Activation Key customer/device access.
+- Early access database bootstrap without full website/customer portal.
+- Device registration/status.
 - License/free launch access state.
+- Future paid license transition.
 - App version checks.
 - Remote config.
-- Playlist/profile storage boundary if enabled.
+- Playlist/profile storage boundary later if enabled.
 - Audit visibility.
 
 It must not become a media provider database.
 
-## 2. Non-Negotiable Storage Boundary
+## 2. Current EA0 Database Priority
+
+EA0 current priority:
+
+```txt
+Download-only early access
+Backend-generated Device ID
+Backend-generated Activation Key
+Database stores activationKeyHash only
+Free launch access active
+No customer email/name required
+No full customer portal required yet
+```
+
+EA0 must start forming future customer/license records now, so paid licensing can attach to the same records later.
+
+## 3. Non-Negotiable Storage Boundary
 
 The database may store platform operation records.
 
@@ -35,16 +53,90 @@ The database must not store as plaintext/product-visible business data:
 - Playback source ownership claims.
 - User media consumption history tied to specific third-party sources.
 
-If playlist/profile data is stored through the website, it must be handled under the approved storage boundary:
+If playlist/profile data is stored later through the website, it must be handled under the approved storage boundary:
 
 - Prefer client-side encrypted profile storage.
 - Backend must not inspect provider credentials as account data.
 - Backend must not act as a channel/source catalog.
 - Backend must not sell or distribute content/source packages.
 
-## 3. MVP Entity Set
+## 4. EA0 Compact Entity
 
-Required MVP entities:
+For the download-only early access phase, one compact entity is acceptable first.
+
+Recommended compact entity:
+
+```txt
+DeviceAccessRecord
+```
+
+Minimum fields:
+
+```txt
+id
+deviceId
+platformDeviceHash
+activationKeyHash
+activationKeyHint
+platform
+appVersion
+status
+licenseState
+freeLaunch
+paymentRequired
+firstSeenAt
+lastSeenAt
+lastRecoveredAt, optional
+createdAt
+updatedAt
+ownerNote, optional
+```
+
+Rules:
+
+- Backend generates `deviceId`.
+- Backend generates `activationKey`.
+- Database stores only `activationKeyHash`.
+- Raw Activation Key must never be stored.
+- Raw Activation Key must never be logged.
+- App stores Device ID + Activation Key locally.
+- `platformDeviceHash` supports best-effort reinstall recovery.
+- `deviceId` must be unique.
+- No playlist/source/provider fields belong in this entity.
+
+Recommended statuses:
+
+```txt
+active
+pending
+disabled
+blocked
+revoked
+```
+
+Recommended license states:
+
+```txt
+free_launch_active
+active
+expired
+suspended
+device_revoked
+blocked
+```
+
+Typical EA0 values:
+
+```txt
+status = active
+licenseState = free_launch_active
+freeLaunch = true
+paymentRequired = false
+```
+
+## 5. Future MVP Entity Set
+
+When the website/customer portal/payment system becomes active, EA0 records can evolve into these entities:
 
 1. OwnerUser
 2. CustomerAccess
@@ -53,24 +145,23 @@ Required MVP entities:
 5. AppVersion
 6. RemoteConfig
 7. CustomerProfileStore, optional / boundary-controlled
-8. PaymentStatus, placeholder only
+8. PaymentStatus / Subscription, later
 9. AuditLog
 
 Deferred entities:
 
 - Email/name customer User account.
-- PaymentEvent enforcement.
-- Subscription enforcement.
+- Payment enforcement until explicitly approved.
 - ResellerProfile.
 - CreditLedgerEntry.
 - Advanced admin analytics.
 - Support/ticketing records.
 
-## 4. OwnerUser
+## 6. OwnerUser
 
 Purpose:
 
-- Allows the single site owner/operator to access the owner dashboard.
+- Allows the single site owner/operator to access the owner dashboard later.
 
 Minimum fields:
 
@@ -88,21 +179,21 @@ Rules:
 - There is one owner/admin for launch MVP.
 - No extra staff/admin/support role system is required.
 - Owner credentials must never be stored in plaintext.
-- Owner dashboard must not expose secrets or raw access keys after generation.
+- Owner dashboard must not expose secrets or raw Activation Keys after generation/recovery/reset.
 
-## 5. CustomerAccess
+## 7. CustomerAccess
 
 Purpose:
 
-- Represents the customer portal access record without requiring customer name or email.
-- The customer enters MAC address plus access key to open the single-page portal.
+- Represents the future customer portal access record without requiring customer name or email.
+- The customer enters Device ID plus Activation Key to open the single-page portal when portal is enabled.
 
 Minimum fields:
 
 - id
-- normalizedMac
-- accessKeyHash
-- accessKeyLabel or maskedKeyHint
+- deviceId
+- activationKeyHash
+- activationKeyHint
 - status
 - portalSessionVersion, optional
 - freeLaunchEligible
@@ -115,8 +206,8 @@ Rules:
 - Customer name is not required.
 - Customer email is not required.
 - Phone/address are not required.
-- Access key must never be stored in plaintext.
-- MAC address must be normalized before lookup.
+- Activation Key must never be stored in plaintext.
+- Device ID is the public lookup identifier.
 - Failed access attempts must be rate-limited at service level.
 - CustomerAccess owns only platform access/device/license/profile/payment-status records.
 - CustomerAccess must not become a provider/content account.
@@ -128,7 +219,7 @@ Initial statuses:
 - UNDER_REVIEW
 - BLOCKED
 
-## 6. Device
+## 8. Device
 
 Purpose:
 
@@ -139,8 +230,9 @@ Minimum fields:
 
 - id
 - customerAccessId
-- normalizedMac
-- deviceKey, optional if app provides it
+- deviceId
+- platformDeviceHash, optional / hashed
+- deviceKey, optional if app provides it later
 - name, optional
 - platform
 - appVersion
@@ -153,7 +245,8 @@ Minimum fields:
 
 Rules:
 
-- MAC/device identifier is used for customer access and license association.
+- Device ID is used for customer access and license association.
+- platformDeviceHash is only for best-effort reinstall recovery.
 - Device can be revoked or blocked.
 - Device must not store playlist contents as normal device metadata.
 - Device must not store provider credentials.
@@ -163,15 +256,17 @@ Initial statuses:
 
 - ACTIVE
 - PENDING
+- DISABLED
 - REVOKED
 - BLOCKED
 
-## 7. LicenseGrant
+## 9. LicenseGrant
 
 Purpose:
 
 - Separates license/access decision from payment enforcement.
 - Preserves free launch behavior.
+- Allows future paid licensing to attach to existing EA0 records.
 
 Minimum fields:
 
@@ -183,6 +278,7 @@ Minimum fields:
 - paymentRequired
 - validFrom
 - validUntil
+- paidUntil, later
 - lastCheckedAt
 - message
 - createdAt
@@ -192,7 +288,6 @@ Initial states:
 
 - FREE_LAUNCH_ACTIVE
 - ACTIVE
-- TRIALING
 - EXPIRED
 - SUSPENDED
 - DEVICE_REVOKED
@@ -204,8 +299,9 @@ Rules:
 - Payment enforcement is disabled by default.
 - License check never validates stream sources.
 - License check never inspects provider credentials.
+- Later paid licensing must update the same record path, not force new Device IDs.
 
-## 8. AppVersion
+## 10. AppVersion
 
 Purpose:
 
@@ -232,7 +328,7 @@ Rules:
 - Platform-specific records are required.
 - No media source data belongs here.
 
-## 9. RemoteConfig
+## 11. RemoteConfig
 
 Purpose:
 
@@ -257,7 +353,8 @@ Allowed values:
 - Support links.
 - Safe polling intervals.
 - Legal/terms version IDs.
-- Profile manager availability.
+- Device bootstrap availability.
+- Profile manager availability later.
 
 Forbidden values:
 
@@ -266,11 +363,11 @@ Forbidden values:
 - Provider credentials.
 - Scraped metadata.
 
-## 10. CustomerProfileStore, Optional / Boundary-Controlled
+## 12. CustomerProfileStore, Optional / Boundary-Controlled
 
 Purpose:
 
-- Allows the single-page customer portal to save a customer-owned playlist/profile area if this feature is enabled.
+- Allows the single-page customer portal to save a customer-owned playlist/profile area if this feature is enabled later.
 
 Minimum fields, if used:
 
@@ -298,21 +395,27 @@ Initial profileMode values:
 - LOCAL_ONLY
 - DISABLED
 
-## 11. PaymentStatus, Placeholder Only
+## 13. PaymentStatus / Subscription, Later
 
 Purpose:
 
-- Shows payment/access state in the customer portal without enforcing paid access during free launch.
+- Shows payment/access state in the future customer portal without enforcing paid access during free launch.
+- Allows EA0 records to continue into paid licensing later.
 
-Minimum fields:
+Minimum fields later:
 
 - id
 - customerAccessId
+- deviceId, optional
 - state
 - paymentRequired
-- provider, optional later
-- lastPaymentAt, optional later
-- nextDueAt, optional later
+- planId, optional
+- provider, optional
+- paymentProviderCustomerId, optional
+- subscriptionId, optional
+- lastPaymentAt, optional
+- nextDueAt, optional
+- paidUntil, optional
 - createdAt
 - updatedAt
 
@@ -327,10 +430,11 @@ Initial states:
 Rules:
 
 - Payment enforcement is deferred.
-- Payment absence must not block launch MVP free access.
+- Payment absence must not block EA0/free launch access.
 - No payment card secrets are stored in platform database.
+- Paid transition must reuse existing Device ID + Activation Key records.
 
-## 12. AuditLog
+## 14. AuditLog
 
 Purpose:
 
@@ -351,11 +455,12 @@ Initial audit events:
 
 - owner.login.success
 - owner.login.failed_limited
-- customer_access.created
-- customer_access.login.success
-- customer_access.login.failed_limited
-- customer_access.key.generated
-- customer_access.key.reset
+- device_access.created
+- device_access.recovered
+- device_access.key.rotated
+- device_access.disabled
+- device.bootstrap.success
+- device.bootstrap.failed_limited
 - device.registered
 - device.revoked
 - license.checked
@@ -363,23 +468,31 @@ Initial audit events:
 - remote_config.updated
 - app_version.updated
 - download.updated
-- profile.saved, if enabled
+- profile.saved, if enabled later
 
 Rules:
 
-- Audit metadata must not contain raw access keys.
+- Audit metadata must not contain raw Activation Keys.
+- Audit metadata must not contain activationKeyHash.
 - Audit metadata must not contain media source payloads.
 - Sensitive values must be redacted.
 
-## 13. MVP Index Direction
+## 15. MVP Index Direction
 
-Required index areas:
+Required EA0 index areas:
+
+- DeviceAccessRecord deviceId unique.
+- DeviceAccessRecord platformDeviceHash lookup when available.
+- DeviceAccessRecord status lookup.
+- DeviceAccessRecord lastSeenAt lookup.
+
+Future index areas:
 
 - OwnerUser loginId/email unique.
-- CustomerAccess normalizedMac lookup.
-- CustomerAccess normalizedMac plus status lookup.
-- CustomerAccess access key verification support through hash lookup strategy.
-- Device normalizedMac lookup.
+- CustomerAccess deviceId unique.
+- CustomerAccess deviceId plus status lookup.
+- Device deviceId lookup.
+- Device platformDeviceHash lookup when available.
 - Device customerAccessId/status lookup.
 - LicenseGrant customerAccessId/deviceId/state lookup.
 - AppVersion platform/version/channel uniqueness.
@@ -387,7 +500,7 @@ Required index areas:
 - CustomerProfileStore customerAccessId lookup, if enabled.
 - AuditLog action/time lookup.
 
-## 14. Deferred Until Later
+## 16. Deferred Until Later
 
 Do not prioritize in M11 launch MVP:
 
@@ -400,22 +513,25 @@ Do not prioritize in M11 launch MVP:
 - Content/source metadata.
 - Provider integrations.
 
-## 15. M11 Acceptance Criteria
+## 17. M11 Acceptance Criteria
 
 M11 is acceptable when:
 
-- Database MVP supports MAC address plus access key customer portal access.
+- Database MVP supports backend-generated Device ID plus Activation Key.
+- Activation Key raw value is never stored.
+- EA0 records can form before the full website/customer portal exists.
 - Free launch behavior is represented without payment blocking.
+- Future paid licensing can attach to existing records.
 - Device/license access can be modeled cleanly.
 - App version and remote config can be modeled cleanly.
 - Optional playlist/profile storage stays inside the approved no-content boundary.
 - No database table creates media-provider behavior.
 - No mandatory customer email/name account exists for launch MVP.
 
-## 16. Next Step
+## 18. Next Step
 
 After M11 review:
 
-- Align M12 Core API MVP Contract with MAC plus access key customer portal access.
+- Keep M12 Core API MVP Contract aligned with Device ID plus Activation Key.
 - Map each endpoint to required database reads/writes.
 - Keep implementation paused unless explicitly re-approved.
