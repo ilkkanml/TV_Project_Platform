@@ -5,12 +5,14 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M29 defines the minimum frontend route/page structure for the first platform launch MVP.
+M29 defines the minimum frontend route/page structure for the platform launch MVP.
 
-The website must support:
+EA0 can start before the full website/customer portal is live.
+
+The later website must support:
 
 - Public product/download pages.
-- MAC address plus access key customer portal.
+- Device ID plus Activation Key customer portal.
 - Single owner dashboard.
 - Legal/support pages.
 
@@ -26,6 +28,13 @@ Launch MVP frontend includes:
 - Owner login.
 - Owner dashboard.
 
+EA0 can temporarily operate with only:
+
+- Direct APK download/distribution.
+- API health/version/remote-config.
+- Device bootstrap.
+- License check.
+
 Launch MVP frontend does not include:
 
 - Reseller portal.
@@ -37,7 +46,7 @@ Launch MVP frontend does not include:
 
 ## 3. Public Routes
 
-Required public routes:
+Required public routes later:
 
 ```txt
 /
@@ -62,7 +71,7 @@ Rules:
 
 ## 4. Customer Portal Routes
 
-Required customer routes:
+Required customer routes later:
 
 ```txt
 /portal
@@ -73,7 +82,7 @@ Recommended behavior:
 
 - `/portal` shows the single-page customer portal if session is valid.
 - `/portal` redirects/shows login form if session is missing or expired.
-- `/portal/login` accepts MAC address plus access key only.
+- `/portal/login` accepts Device ID plus Activation Key only.
 
 No launch MVP routes for:
 
@@ -97,8 +106,8 @@ Rules:
 Fields:
 
 ```txt
-MAC Address
-Access Key
+Device ID
+Activation Key
 ```
 
 Primary action:
@@ -110,14 +119,14 @@ Open Portal
 Error copy:
 
 ```txt
-Invalid MAC address or access key.
+Invalid Device ID or Activation Key.
 ```
 
 Rules:
 
-- Do not say whether MAC or key failed.
+- Do not say whether Device ID or Activation Key failed.
 - Do not expose rate limit thresholds.
-- Do not show raw stored key.
+- Do not show raw stored Activation Key.
 - Do not ask for provider credentials.
 - Do not ask for playlist/source ownership proof.
 
@@ -154,12 +163,12 @@ Rules:
 
 ## 7. Owner Routes
 
-Required owner routes:
+Required owner routes later:
 
 ```txt
 /owner/login
 /owner
-/owner/customer-access
+/owner/device-access
 /owner/devices
 /owner/licenses
 /owner/profiles
@@ -202,11 +211,11 @@ Rules:
 
 - Do not reveal exact failure cause.
 - Do not expose token/session details.
-- Owner login is separate from customer MAC/access key login.
+- Owner login is separate from customer Device ID / Activation Key login.
 
 ## 9. Frontend API Dependencies
 
-Public pages use:
+Public pages use later:
 
 ```txt
 GET /health
@@ -215,7 +224,17 @@ GET /app-version
 GET /remote-config
 ```
 
-Customer portal uses:
+EA0 app/system uses:
+
+```txt
+GET /health
+GET /app-version
+GET /remote-config
+POST /devices/bootstrap
+POST /license/check
+```
+
+Customer portal uses later:
 
 ```txt
 POST /customer-access/login
@@ -226,15 +245,15 @@ PUT /customer-portal/profile
 POST /customer-portal/profile/sync-request, optional
 ```
 
-Owner dashboard uses:
+Owner dashboard uses later:
 
 ```txt
 POST /owner/login
 POST /owner/logout
-GET /owner/customer-access-records
-POST /owner/customer-access-records
-POST /owner/customer-access-records/:id/reset-key
-PATCH /owner/customer-access-records/:id/status
+GET /owner/device-access-records
+POST /owner/device-access-records
+POST /owner/device-access-records/:id/reset-activation-key
+PATCH /owner/device-access-records/:id/status
 GET /owner/devices
 PATCH /owner/devices/:id/status
 GET /owner/licenses
@@ -263,7 +282,7 @@ feature_disabled
 Customer portal specific states:
 
 ```txt
-invalid_access
+invalid_device_credentials
 access_disabled
 access_blocked
 license_free_launch_active
@@ -288,7 +307,7 @@ emergency_enabled
 
 Customer portal may display:
 
-- Masked MAC.
+- Masked Device ID.
 - Device status.
 - App version.
 - License/access state.
@@ -299,7 +318,8 @@ Customer portal may display:
 
 Customer portal must not display:
 
-- Raw access key.
+- Raw Activation Key.
+- activationKeyHash.
 - Other customer devices.
 - Admin notes unless safe.
 - Provider credentials.
@@ -308,8 +328,9 @@ Customer portal must not display:
 
 Owner dashboard may display:
 
-- Customer access records.
-- Masked/normalized MAC.
+- Device access records.
+- Device ID.
+- Masked Activation Key hint.
 - Device/license state.
 - Profile metadata only.
 - Download/version/config records.
@@ -317,7 +338,8 @@ Owner dashboard may display:
 
 Owner dashboard must not display:
 
-- Raw access key after generation/reset.
+- Raw Activation Key after generation/reset/recovery.
+- activationKeyHash.
 - Plaintext provider passwords.
 - Playlist/source catalog as admin feature.
 - Watch history.
@@ -344,7 +366,7 @@ Owner navigation:
 
 ```txt
 Overview
-Customer Access
+Device Access
 Devices
 Licenses
 Profiles
@@ -384,6 +406,7 @@ Operational control center, not a content management system.
 Stop and escalate if frontend starts adding:
 
 - Mandatory customer email/name registration.
+- MAC as the primary product/contract identifier.
 - Reseller dashboard before approval.
 - Staff/support/admin team management.
 - Channel/package/content/provider marketplace.
@@ -396,9 +419,10 @@ Stop and escalate if frontend starts adding:
 M29 is acceptable when:
 
 - Public website routes are clear.
-- Customer portal remains single-page and MAC/access key based.
+- Customer portal remains single-page and Device ID / Activation Key based.
 - Owner dashboard routes are clear.
 - Frontend routes match M12/M26/M27/M28.
+- EA0 can run before full website/customer portal exists.
 - No customer email/name account is required.
 - No extra staff/task role system is introduced.
 - No media-provider UI behavior is introduced.
