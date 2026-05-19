@@ -16,13 +16,13 @@ The current platform priority is:
 
 - Official website goes live.
 - First app version can be downloaded from the official website.
-- Customer registration works.
-- Customer login works.
-- Customer records are stored.
+- Customer/device access works with MAC address plus access key.
+- No customer email/name registration is required for launch MVP.
+- Customer access records are stored.
 - Device registration / activation records are stored.
 - Free launch license/access can be granted.
 - App version policy and update metadata can be served.
-- Customer dashboard works for basic account/device/access actions.
+- Single-page customer portal works for basic device/profile/access/payment-status actions.
 - Owner dashboard works for launch-critical platform control.
 
 ## 3. Simplified Role Rule
@@ -32,7 +32,7 @@ The platform role system is intentionally simple.
 Active launch MVP roles:
 
 - OWNER: the single site owner/operator.
-- CUSTOMER: registered platform user.
+- CUSTOMER_ACCESS: device/customer portal access based on MAC address plus access key.
 
 Deferred future role:
 
@@ -44,11 +44,13 @@ Not part of the product:
 - Support role system.
 - Department/task role system.
 - Complex organization/team permissions.
+- Email/name based customer account system for launch MVP.
 
 Rule:
 
 - The site has one owner/admin: the project owner.
-- Customers manage only their own account, devices, activation, and access status.
+- Customers use MAC address plus access key to access their minimal portal.
+- Customers manage only their own linked device/profile/access/payment-status area.
 - Reseller logic is deferred until after launch MVP stability.
 
 ## 4. Explicitly Deferred
@@ -80,6 +82,8 @@ The first platform launch MVP includes:
 - Legal boundary page.
 - Terms page.
 - Privacy page.
+- Single-page customer portal.
+- Owner login/dashboard.
 
 ### Download System
 
@@ -93,25 +97,30 @@ The first platform launch MVP includes:
 - Force update flag.
 - Emergency download disable.
 
-### Customer Account
+### Customer Access
 
-- Customer registration.
-- Customer login.
-- Customer profile/account record.
-- Customer dashboard access.
+- MAC address plus access key login.
+- Access key hash storage only.
+- Customer access/profile record.
+- Single-page customer portal access.
+- No required email.
+- No required name.
+- No required phone.
+- No required address.
 
 ### Device / Activation
 
 - Device registration record.
-- Activation session record.
-- Device linked to customer.
+- Device MAC / platform identifier record.
+- Activation session record if needed by app flow.
+- Device linked to customer access record.
 - Device status.
 - Last seen/check metadata.
 
 ### License / Free Launch Access
 
 - Free launch license state.
-- License/access record linked to customer/device.
+- License/access record linked to customer access/device.
 - Access check state.
 - Payment required remains false during free launch.
 
@@ -123,18 +132,18 @@ The first platform launch MVP includes:
 - Release notes.
 - Update/download URL.
 
-### Customer Dashboard
+### Single-Page Customer Portal
 
-- Account overview.
-- My devices.
-- Activation status.
-- License/access status.
-- Download/install guidance.
-- Basic support/diagnostics guidance.
+- Account/access status.
+- Device / MAC status.
+- Playlist/profile manager.
+- License/payment status.
+- Download/update guidance.
+- Support/legal links.
 
 ### Owner Dashboard
 
-- Customer records.
+- Customer access records.
 - Device records.
 - License/access records.
 - Download metadata.
@@ -158,12 +167,12 @@ M25 is successful when:
 
 - The official website can be published.
 - A user can download the first APK from the official website.
-- A customer can register and log in.
-- The platform can store customer records.
+- A customer can enter MAC address plus access key and open the single-page portal.
+- The platform can store customer access records without requiring email/name.
 - The platform can store device activation/registration records.
 - The platform can grant free launch license/access.
 - The app can read version/update metadata.
-- The customer dashboard can show account, device, and access status.
+- The customer portal can show device, profile, access, and payment-status basics.
 - The owner dashboard can manage launch-critical platform records.
 - Reseller/payment enforcement is not required for launch MVP.
 - No extra staff/task role system is introduced.
@@ -172,22 +181,23 @@ M25 is successful when:
 
 Stop and escalate if a task tries to add:
 
+- Mandatory customer email/name registration for launch MVP.
 - Reseller implementation before launch MVP stability.
 - Paid access enforcement before free launch ends.
 - Extra staff/support/department role system.
 - Channel/package/content/provider features.
 - Android app UX implementation inside platform scope.
-- Backend source/playlist/provider storage.
+- Backend source/provider credential storage.
 
 ## 9. Next Recommended Work Order
 
-1. Website launch page map final.
-2. Download metadata model.
-3. Customer registration/login model.
-4. Customer dashboard MVP pages.
-5. Owner dashboard MVP pages.
-6. Device registration/activation database model.
-7. Free launch license/access model.
-8. App version/update metadata model.
+1. Single-page customer portal data model.
+2. MAC plus access key auth model.
+3. Playlist/profile storage boundary.
+4. Device registration/activation database model.
+5. Free launch license/access model.
+6. Payment placeholder/status model.
+7. App version/update metadata model.
+8. Owner dashboard MVP pages.
 9. Platform-client shared contract check.
 10. Implementation planning only after explicit approval.
