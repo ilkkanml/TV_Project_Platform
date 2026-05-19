@@ -5,14 +5,16 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M28 defines the minimum owner dashboard for the first platform launch MVP.
+M28 defines the minimum owner dashboard for the platform launch MVP.
+
+EA0 can start before the owner dashboard is live, but the database records must support future owner visibility.
 
 There is only one site owner/admin for launch MVP.
 
 The owner dashboard exists to manage:
 
-- Customer access records.
-- MAC/access key control.
+- DeviceAccessRecord records.
+- Device ID / Activation Key control.
 - Devices.
 - Free launch license/access state.
 - APK download metadata.
@@ -29,7 +31,7 @@ It must not become a staff/task system, reseller system, or media-provider dashb
 Launch MVP owner dashboard pages:
 
 1. Overview
-2. Customer Access
+2. Device Access
 3. Devices
 4. Licenses / Free Launch Access
 5. Profile Manager Control
@@ -52,8 +54,8 @@ Purpose:
 
 Display:
 
-- Total customer access records.
-- Active customer access records.
+- Total device access records.
+- Active device access records.
 - Total devices.
 - Active devices.
 - Revoked/blocked devices.
@@ -64,7 +66,7 @@ Display:
 
 Allowed actions:
 
-- Quick link to Customer Access.
+- Quick link to Device Access.
 - Quick link to Download Management.
 - Quick link to Emergency Controls.
 
@@ -74,39 +76,49 @@ Forbidden:
 - Watch history analytics.
 - Stream health dashboard.
 
-## 4. Page: Customer Access
+## 4. Page: Device Access
 
 Purpose:
 
-- Manage MAC address plus access key customer portal access.
+- Manage Device ID plus Activation Key customer/device access.
 
 Display columns:
 
-- Masked/normalized MAC.
+- Device ID.
 - Status.
-- Device count.
+- Platform.
+- App version.
 - License state.
-- Profile status.
-- Last portal login.
+- Free launch flag.
+- Payment required flag.
+- Activation key hint.
+- First seen.
+- Last seen.
+- Last recovered, optional.
 - Created date.
 
 Allowed actions:
 
-- Create customer access record.
-- Generate access key.
-- Reset access key.
+- View device access record.
+- Create device access record, later/manual if needed.
+- Generate Activation Key.
+- Reset/rotate Activation Key.
 - Disable access.
 - Restore access.
 - Block access.
-- Open linked devices.
+- Revoke access.
+- Open linked device.
 - Open linked license/access record.
 
 Rules:
 
-- Raw access key is shown only once at generation/reset time.
-- Store only accessKeyHash.
-- Owner must not see raw access key after generation/reset.
+- Raw Activation Key is shown only once at generation/reset/recovery time.
+- Store only activationKeyHash.
+- Owner must not see raw Activation Key after generation/reset/recovery.
+- Owner must not see activationKeyHash.
 - No required customer name/email fields.
+- Device ID is the primary public identifier.
+- MAC must not be used as the primary product/contract identifier.
 
 Forbidden:
 
@@ -123,22 +135,27 @@ Purpose:
 Display columns:
 
 - Device ID.
-- Masked/normalized MAC.
 - Platform.
 - App version.
 - Device status.
 - License state.
 - Last seen.
-- Linked customer access record.
+- Linked DeviceAccessRecord / CustomerAccess record.
+- platformDeviceHash presence, masked/metadata only.
 
 Allowed actions:
 
 - View device details.
-- Link/unlink to customer access record if safe.
+- Link/unlink to device access record if safe.
 - Revoke device.
 - Restore device.
 - Block device.
 - Add owner note.
+
+Rules:
+
+- platformDeviceHash is for best-effort reinstall recovery.
+- Raw platform identifiers should not be exposed if avoidable.
 
 Forbidden:
 
@@ -155,13 +172,15 @@ Purpose:
 
 Display columns:
 
-- Customer access record.
+- Device access record.
+- Device ID.
 - Device.
 - License state.
 - Free launch flag.
 - Payment required flag.
 - Valid from.
 - Valid until, optional.
+- Paid until, later.
 - Last checked.
 
 Allowed actions:
@@ -171,11 +190,13 @@ Allowed actions:
 - Suspend access.
 - Block access.
 - Clear/adjust message.
+- Prepare paid-required state later after explicit approval.
 
 Rules:
 
 - Payment required remains false during free launch.
 - License/access does not verify media/source/provider permission.
+- Future paid licensing must attach to existing Device ID / Activation Key records.
 
 Forbidden:
 
@@ -187,7 +208,7 @@ Forbidden:
 
 Purpose:
 
-- Control whether customer portal profile editing is enabled.
+- Control whether customer portal profile editing is enabled later.
 
 Display:
 
@@ -220,7 +241,7 @@ Forbidden:
 
 Purpose:
 
-- Manage official APK download metadata shown on the website.
+- Manage official APK download metadata shown on the website later.
 
 Display fields:
 
@@ -296,6 +317,7 @@ Allowed config areas:
 - Free launch flag.
 - Maintenance flag/message.
 - Feature flags.
+- Device bootstrap flag.
 - Support email/link.
 - Legal/Terms/Privacy version IDs.
 - Safe polling intervals.
@@ -374,7 +396,8 @@ Allowed filters:
 Rules:
 
 - Audit logs must redact secrets.
-- Audit logs must not contain raw access keys.
+- Audit logs must not contain raw Activation Keys.
+- Audit logs must not contain activationKeyHash.
 - Audit logs must not contain provider credentials.
 - Audit logs must not contain plaintext playlist/profile payloads.
 
@@ -387,7 +410,7 @@ Purpose:
 Allowed controls:
 
 - Enable maintenance mode.
-- Disable new customer access creation.
+- Disable new device bootstrap.
 - Disable customer portal login.
 - Disable device registration.
 - Disable license grants.
@@ -424,7 +447,7 @@ Owner dashboard navigation:
 
 ```txt
 Overview
-Customer Access
+Device Access
 Devices
 Licenses
 Profiles
@@ -451,13 +474,14 @@ Stop and escalate if owner dashboard starts adding:
 - Stream testing tools.
 - Plaintext playlist/source browsing.
 - Customer email/name requirement as mandatory launch flow.
+- MAC as primary product/contract identifier.
 
 ## 17. Acceptance Criteria
 
 M28 is acceptable when:
 
 - Owner can manage launch-critical platform records.
-- Customer access is MAC plus access key based.
+- Customer/device access is Device ID plus Activation Key based.
 - Device/license/free launch management is clear.
 - Download/version/remote config controls exist.
 - Legal/policy version control exists.
