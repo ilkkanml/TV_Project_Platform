@@ -1,86 +1,85 @@
 # NEXT_TASK
 
-Status: Active compatibility entrypoint
+Status: Runtime next-action entrypoint
+
+## Current Active Milestone
+
+None — next milestone pending Director scoping.
+
+## Last Locked Milestone
+
+`M14 First Working Release / Internal Alpha Smoke Gate` — LOCKED
 
 ## Current Next Task
 
-No new planning milestone should be opened automatically.
+Director should scope the next milestone candidate:
 
-The current next task is:
+`M15 Internal Alpha Handoff & Install Package Readiness`
 
-- Wait for a concrete product decision, specialist review request, or explicit implementation re-approval.
+## M15 Candidate Purpose
+
+M15 should prepare the internal alpha package handoff without expanding product scope.
+
+Focus:
+
+- Internal APK handoff/install guidance
+- APK location/path expectation
+- Install instructions for Android TV / Fire TV / emulator
+- Internal smoke checklist for repeat testing
+- Current smoke-passed state preservation
+- Clear known limitations
+- No production/store release claim
+
+## M15 Candidate IN
+
+- APK handoff checklist
+- Internal install instructions
+- Repeatable smoke test checklist
+- Version/build evidence expectations
+- Local Platform API optional check guidance
+- Known limitations record
+- Legal media-player boundary reminder
+
+## M15 Candidate OUT
+
+- Production deploy
+- Store release
+- Payment enforcement
+- Provider integration
+- Content hosting/channel selling
+- Android bridge implementation
+- Auth/session/token implementation
+- Heavy backend implementation
+- Heavy Android implementation
+- New playback/provider work
+- APK signing/release keystore unless separately approved
 
 ## Current Operating Rule
 
 If the user says `devam` or `+`:
 
 1. Do not create extra documents unless one is needed for compatibility, handoff, or a real decision.
-2. Use `docs/m21-decision-gate-system.md` to evaluate the next concrete idea.
-3. Director handles normal scoping, gate checks, release readiness framing, and short roadmap decisions directly.
-4. Do not use extra departments for routine decisions that do not require code, patch planning, QA, legal/security/auth review, or special technical/design expertise.
-5. Use `docs/m23-specialist-prompt-library.md` only if a specialist department is actually needed.
-6. Keep updates short using `docs/m22-project-memory-update-template.md`.
-
-## Department Usage Rule
-
-Default mode:
-
-- Director decides and summarizes directly.
-
-Use extra departments only when one of these is true:
-
-- Code or patch work is being planned.
-- QA review is required before milestone status changes.
-- Documentation update/release record is required.
-- Legal/licensing risk appears.
-- Security, auth, session, token, privacy, or abuse risk appears.
-- Architecture, playback, Android, backend, database, release, UI/UX, or other specialist expertise is genuinely needed.
-- The user explicitly asks for a department report.
-
-Do not add department hops just to make the process look formal.
+2. Director may scope M15 directly because this is handoff/readiness, not feature implementation.
+3. Use extra departments only if code, QA, documentation record, legal/security/auth risk, or specialist review is actually needed.
+4. Do not start Builder implementation unless Director explicitly approves it.
 
 ## Paused Tasks
 
 Do not proceed with these unless explicitly re-approved:
 
-- Railway deployment.
-- Live PostgreSQL setup.
-- Prisma migration execution.
-- Production hosting/domain/server work.
-- Heavy backend implementation.
-- Heavy Android implementation.
+- Railway deployment
+- Live PostgreSQL setup
+- Prisma migration execution
+- Production hosting/domain/server work
+- Heavy backend implementation
+- Heavy Android implementation
+- Payment enforcement
+- Provider/content/source work
 
-## Safe Next Actions
+## Safe Next Action
 
-Allowed next actions:
+Open Director scoping for M15.
 
-- Evaluate a new product idea through M21 gates.
-- Prepare a specialist prompt from M23 only when needed.
-- Update a checkpoint if project direction changes.
-- Review existing documentation for consistency.
-- Prepare a short roadmap decision without implementation.
-- Define Director-level scope/checklists directly when no specialist is needed.
+Recommended next prompt:
 
-## Not Allowed As Automatic Next Task
-
-Do not automatically start:
-
-- New backend coding.
-- New Android coding.
-- Hosting setup.
-- Database migration.
-- Payment enforcement.
-- Reseller system.
-- Content/source/channel/provider features.
-- Unnecessary department routing.
-
-## Current Recommendation
-
-Next real work should be decision-driven, not document-driven.
-
-Recommended next prompt from user:
-
-- A concrete product decision to evaluate.
-- A department review request only when special expertise is needed.
-- A roadmap priority question.
-- An explicit re-approval if implementation work should resume later.
+- `Nexora TV devam — Director scoping M15 Internal Alpha Handoff & Install Package Readiness`
