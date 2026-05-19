@@ -2,7 +2,59 @@
 
 ## Current Active Milestone
 
-None — next milestone pending Director scoping.
+`M14 First Working Release / Internal Alpha Smoke Gate`
+
+## M14 Status
+
+SCOPING OPEN
+
+## M14 Result
+
+M14 scope was opened by Director as an internal alpha smoke gate.
+
+M14 is approved with limits.
+
+M14 is not a production release, not backend expansion, not Android bridge implementation, not auth/session/token implementation, not payment enforcement, and not provider/content work.
+
+M14 scope record:
+
+- `docs/M14_SCOPE.md`
+
+## M14 Current Scope
+
+M14 focuses only on:
+
+- Android TV / Fire TV app cold launch smoke check
+- Crash-free launch expectation
+- Home shell visibility
+- Navigation shell basic remote/focus behavior
+- Player screen shell opening without real stream requirement
+- Local Platform API `/health` check
+- Local Platform API `/ready` check
+- Legal media-player boundary preservation
+
+## M14 Lock Boundary
+
+M14 does not approve:
+
+- Production deployment
+- Live database setup
+- Railway/hosting/domain/server work
+- Payment enforcement
+- Provider integration
+- Content hosting
+- Channel selling
+- Backend-owned stream/channel catalog
+- Android bridge implementation
+- Auth/session/token implementation
+- Migration auto-run
+- Seed execution
+- Redis runtime/session expansion
+- Heavy Android implementation
+- Heavy backend implementation
+- Protected system rewrite
+- Illegal IPTV/source behavior
+- DRM bypass or unauthorized scraping
 
 ## Last Locked Implementation Milestone
 
@@ -85,6 +137,6 @@ Classification:
 
 ## Current Operating Rule
 
-Do not open another milestone unless there is a concrete product decision, specialist review, or explicit implementation re-approval.
+Do not use extra departments for routine Director decisions unless code/patch planning, QA, documentation record, legal/security/auth risk, or genuine specialist expertise is needed.
 
 Host/deploy/live database work remains paused unless explicitly approved.
