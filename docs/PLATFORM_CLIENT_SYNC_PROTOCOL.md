@@ -15,10 +15,10 @@ It defines what belongs to the platform project, what belongs to the Android/cli
 - Official website.
 - Download page metadata.
 - Owner dashboard.
-- Single-page customer portal.
-- MAC address plus access key customer portal policy.
+- Single-page customer portal, later.
+- Device ID plus Activation Key customer/device access policy.
 - Owner auth/session policy.
-- Customer portal session policy.
+- Customer portal session policy, later.
 - Database records.
 - Device registration/status records.
 - License/access records.
@@ -42,16 +42,17 @@ It defines what belongs to the platform project, what belongs to the Android/cli
 - Offline app behavior.
 - APK implementation/build behavior.
 - APK signing/build output.
-- Client-side storage.
-- Client-side encryption before profile/profile-transfer storage when used.
+- Client-side storage of Device ID and Activation Key.
+- Client-side generation of a privacy-safe platform device hash if supported.
 - Reading platform update/version/license/remote-config responses.
 
-## 3. Current Launch Access Model
+## 3. Current Early Access Access Model
 
-Launch MVP customer access uses:
+EA0 / early access customer-device access uses:
 
-- MAC address / normalized device identifier.
-- Access key / customer key.
+- Device ID.
+- Activation Key.
+- Optional platformDeviceHash for reinstall recovery.
 
 Launch MVP does not require:
 
@@ -63,10 +64,14 @@ Launch MVP does not require:
 
 Rules:
 
-- Platform stores accessKeyHash only.
-- Raw access key is shown only at owner generation/reset time.
+- Backend generates Device ID.
+- Backend generates Activation Key.
+- Backend stores activationKeyHash only.
+- App stores raw Device ID and Activation Key locally after bootstrap.
+- Raw Activation Key is never stored in the database.
+- Raw Activation Key is never logged.
+- Customer portal, when enabled later, uses Device ID plus Activation Key.
 - Android/client must not redefine customer login as email/password unless a future decision changes the model.
-- Customer portal is single-page and minimal.
 
 ## 4. Platform Must Not Decide As App UX
 
@@ -91,7 +96,7 @@ The Android/client project must not redefine:
 - App version response fields.
 - Free launch/payment-required behavior.
 - No-content boundary.
-- MAC/access key launch access model.
+- Device ID plus Activation Key access model.
 
 If the app needs a new shared value, it must request synchronization through the bridge role.
 
@@ -114,7 +119,9 @@ These items must be synchronized between both projects:
 - API base URL configuration name.
 - API endpoint paths.
 - Request/response field names.
-- MAC normalization expectations.
+- Device ID naming.
+- Activation Key naming.
+- platformDeviceHash naming and behavior.
 - Device status values.
 - License state values.
 - App version policy fields.
@@ -133,7 +140,7 @@ These items must be synchronized between both projects:
 
 ## 8. Shared Identifiers
 
-Initial shared platform identifiers:
+Initial platform identifiers:
 
 - `android_tv`
 - `fire_tv`
@@ -148,33 +155,26 @@ Initial device statuses:
 
 - `active`
 - `pending`
-- `revoked`
-- `blocked`
-
-Initial customer access statuses:
-
-- `active`
 - `disabled`
-- `under_review`
 - `blocked`
+- `revoked`
 
 Initial license states:
 
 - `free_launch_active`
 - `active`
-- `trialing`
 - `expired`
 - `suspended`
 - `device_revoked`
 - `blocked`
 
-Initial profile modes:
+Initial profile modes, later portal phase:
 
 - `CLIENT_ENCRYPTED`
 - `LOCAL_ONLY`
 - `DISABLED`
 
-Initial payment/status placeholders:
+Initial payment/status placeholders, later portal phase:
 
 - `FREE_LAUNCH`
 - `NOT_REQUIRED`
@@ -186,7 +186,7 @@ Initial error categories:
 
 - `connection_error`
 - `unsupported_app_version`
-- `invalid_access`
+- `invalid_device_credentials`
 - `session_expired`
 - `access_disabled`
 - `access_blocked`
@@ -200,26 +200,23 @@ Initial error categories:
 
 ## 9. Shared Endpoint Contract
 
-Public/system endpoints:
+EA0 app/system endpoints:
 
 - `GET /health`
 - `GET /app-version`
 - `GET /remote-config`
+- `POST /devices/bootstrap`
+- `POST /license/check`
+
+Later public/customer portal endpoints:
+
 - `GET /download-metadata`
-
-Customer portal endpoints:
-
 - `POST /customer-access/login`
 - `POST /customer-access/logout`
 - `GET /customer-portal/summary`
 - `GET /customer-portal/profile`
 - `PUT /customer-portal/profile`
 - `POST /customer-portal/profile/sync-request`, optional
-
-Device/license endpoints used by the app:
-
-- `POST /devices/register`
-- `POST /license/check`
 
 Owner endpoints stay platform/website-only unless a future approved app/admin client exists.
 
@@ -231,6 +228,7 @@ Initial shared remote config keys:
 - `maintenance.enabled`
 - `maintenance.message`
 - `features.licenseCheck.enabled`
+- `features.deviceBootstrap.enabled`
 - `features.deviceRegistration.enabled`
 - `features.customerPortal.enabled`
 - `features.profileManager.enabled`
@@ -253,6 +251,7 @@ Initial shared remote config keys:
 - `app.notice.message`
 - `app.notice.level`
 - `emergency.forceReadOnlyMode`
+- `emergency.disableDeviceBootstrap`
 - `emergency.disableCustomerPortalLogin`
 - `emergency.disableDeviceRegistration`
 - `emergency.disableLicenseGranting`
@@ -303,7 +302,7 @@ Shared values:
 
 Platform owns:
 
-- Website download page.
+- Website download page, later.
 - APK metadata.
 - Current version display.
 - Minimum supported version.
@@ -364,13 +363,16 @@ Stop and escalate if:
 - Remote config keys drift between repos.
 - License/device states drift between repos.
 - Reseller/payment enforcement starts before explicit approval.
+- Any APK contains a hardcoded universal Activation Key.
 
 ## 16. Current Correction
 
 Correction recorded:
 
-- Platform owns website, owner dashboard, single-page customer portal, database, MAC/access key customer access records, device records, license/free launch records, download metadata, app version policy, remote config, legal copy, and shared policy.
+- Platform owns website, owner dashboard, future single-page customer portal, database, Device ID / Activation Key access records, device records, license/free launch records, download metadata, app version policy, remote config, legal copy, and shared policy.
 - TV_Project owns Android app UX and implementation.
 - First-run Terms screen belongs to TV_Project implementation.
 - First-run Terms policy/version/copy belongs to TV_Project_Platform and must be handed off to TV_Project.
-- Launch MVP customer portal uses MAC address plus access key, not email/name registration.
+- EA0 uses backend-generated Device ID plus backend-generated Activation Key.
+- The app stores Device ID plus Activation Key locally.
+- Reinstall recovery is best-effort through platformDeviceHash.
