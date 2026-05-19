@@ -5,20 +5,21 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M12 defines the first backend API contract for the platform launch MVP.
+M12 defines the first backend API contract for EA0 and the later platform launch MVP.
 
 The API exists to support:
 
-- Official website.
-- Owner dashboard.
-- MAC address plus access key customer portal access.
-- Single-page customer portal.
-- Device registration / status.
+- Download-only early access.
+- Backend-generated Device ID.
+- Backend-generated Activation Key.
+- Device bootstrap.
 - License / free launch access check.
 - App version check.
 - Remote config.
-- Download metadata.
-- Optional encrypted playlist/profile storage.
+- Future official website.
+- Future owner dashboard.
+- Future single-page customer portal.
+- Future optional encrypted playlist/profile storage.
 - Basic health verification.
 
 The API must not become a media provider API.
@@ -35,51 +36,57 @@ All endpoints must respect these rules:
 - No backend stream transformation.
 - No channel package management.
 - No public/shared playlist catalog.
-- No profile payload inspection when encrypted storage is used.
+- No profile payload inspection when encrypted storage is used later.
 
 Allowed backend role:
 
-- Owner control.
-- Customer access identity.
+- Device/customer access identity.
 - Device state.
 - License/access state.
 - Version policy.
 - Safe remote configuration.
-- Download metadata.
-- Customer-owned profile bridge/storage under boundary rules.
+- Download metadata later.
+- Owner control later.
+- Customer-owned profile bridge/storage under boundary rules later.
 
-## 3. Corrected Launch MVP Access Model
+## 3. Corrected EA0 Access Model
 
-Launch MVP does not require normal customer email/name registration.
+EA0 does not require normal customer email/name registration.
 
-Customer portal access uses:
+EA0 app/device access uses:
 
-- MAC address / normalized device identifier.
-- Access key / customer key.
+- `deviceId`
+- `activationKey`
+- optional `platformDeviceHash` for best-effort reinstall recovery
 
 Rules:
 
-- MAC address must be normalized before lookup.
-- Access key must never be stored in plaintext.
-- API verifies the access key against `accessKeyHash`.
-- Customer portal sessions must expire.
-- Failed attempts must be rate-limited.
-- No email/name/phone/address is required for customer portal access.
+- Backend generates Device ID.
+- Backend generates Activation Key.
+- Backend stores only `activationKeyHash`.
+- Raw Activation Key is returned only once during first bootstrap or recovery rotation.
+- App stores Device ID + Activation Key locally.
+- License check uses Device ID + Activation Key.
+- No email/name/phone/address is required.
+- MAC address is not the primary product/contract identifier.
 
-Owner access remains separate and uses a secure owner login model.
+Owner access remains separate and uses a secure owner login model when owner dashboard is enabled.
 
 ## 4. Endpoint Summary
 
-Initial endpoint set:
-
-Public/system endpoints:
+EA0 active endpoints:
 
 - `GET /health`
 - `GET /app-version`
 - `GET /remote-config`
+- `POST /devices/bootstrap`
+- `POST /license/check`
+
+Later public/system endpoints:
+
 - `GET /download-metadata`
 
-Customer portal endpoints:
+Later customer portal endpoints:
 
 - `POST /customer-access/login`
 - `POST /customer-access/logout`
@@ -88,19 +95,14 @@ Customer portal endpoints:
 - `PUT /customer-portal/profile`
 - `POST /customer-portal/profile/sync-request`, optional
 
-Device/license endpoints:
-
-- `POST /devices/register`
-- `POST /license/check`
-
-Owner endpoints:
+Later owner endpoints:
 
 - `POST /owner/login`
 - `POST /owner/logout`
-- `GET /owner/customer-access-records`
-- `POST /owner/customer-access-records`
-- `POST /owner/customer-access-records/:id/reset-key`
-- `PATCH /owner/customer-access-records/:id/status`
+- `GET /owner/device-access-records`
+- `POST /owner/device-access-records`
+- `POST /owner/device-access-records/:id/reset-activation-key`
+- `PATCH /owner/device-access-records/:id/status`
 - `GET /owner/devices`
 - `PATCH /owner/devices/:id/status`
 - `GET /owner/licenses`
@@ -119,14 +121,10 @@ Purpose:
 
 Used by:
 
-- Website.
-- Owner dashboard.
 - Android client diagnostics.
+- Website later.
+- Owner dashboard later.
 - Internal smoke tests.
-
-Request:
-
-- No body.
 
 Response:
 
@@ -154,7 +152,7 @@ Purpose:
 Used by:
 
 - Android TV / Fire TV client at startup and safe intervals.
-- Website download/status UI.
+- Website download/status UI later.
 
 Query parameters:
 
@@ -188,12 +186,12 @@ Rules:
 
 Purpose:
 
-- Provides safe runtime configuration for clients and website.
+- Provides safe runtime configuration for clients and website later.
 
 Used by:
 
 - Android TV / Fire TV client.
-- Website/customer portal.
+- Website/customer portal later.
 - Future clients.
 
 Query parameters:
@@ -225,7 +223,8 @@ Allowed config:
 - Maintenance banner.
 - Support link/email.
 - Safe polling intervals.
-- Profile manager availability.
+- Device bootstrap availability.
+- Profile manager availability later.
 - Legal/Terms/Privacy version IDs.
 
 Forbidden config:
@@ -235,7 +234,103 @@ Forbidden config:
 - Provider credentials.
 - Scraped metadata.
 
-## 8. GET /download-metadata
+## 8. POST /devices/bootstrap
+
+Purpose:
+
+- Create or recover an EA0 device/customer access record.
+
+Used by:
+
+- Android TV / Fire TV client on first launch or recovery.
+
+Request body:
+
+- `platformDeviceHash`
+- `platform`
+- `appVersion`
+- optional `existingDeviceId`
+- optional `existingActivationKey`
+
+Response:
+
+- `deviceId`
+- `activationKey`, returned only on first create or recovery rotation
+- `status`
+- `licenseState`
+- `freeLaunch`
+- `paymentRequired`
+- `message`
+
+Database:
+
+- If existingDeviceId + existingActivationKey are valid, reads DeviceAccessRecord and updates appVersion/lastSeenAt.
+- If platformDeviceHash matches an existing active/recoverable record, recovers existing deviceId and rotates Activation Key.
+- If no match exists, creates DeviceAccessRecord with new Device ID and new Activation Key.
+- Stores only activationKeyHash.
+- May write AuditLog.
+
+Rules:
+
+- Backend generates Device ID.
+- Backend generates Activation Key.
+- Raw Activation Key must not be logged.
+- Raw Activation Key must not be stored.
+- Payment required remains false during free launch.
+- No email/name is required.
+- No provider/source/playlist data is accepted.
+
+## 9. POST /license/check
+
+Purpose:
+
+- Tells the client whether the device may operate.
+
+Used by:
+
+- Android TV / Fire TV client.
+- Future clients.
+
+Request body:
+
+- `deviceId`
+- `activationKey`
+- `platform`
+- `appVersion`
+
+Response:
+
+- `state`
+- `allowed`
+- `freeLaunch`
+- `paymentRequired`
+- `platform`
+- `appVersion`
+- `deviceId`
+- `deviceStatus`
+- `message`
+
+Database:
+
+- Reads DeviceAccessRecord by deviceId.
+- Verifies activationKey against activationKeyHash.
+- May update lastSeenAt.
+- May update license lastCheckedAt if split LicenseGrant exists later.
+- May write AuditLog, preferably rate-controlled.
+
+Free launch behavior:
+
+- Active valid device returns `free_launch_active`.
+- Payment enforcement remains disabled.
+- Payment missing must not block initial Android TV / Fire TV release usage.
+
+Rules:
+
+- Must not validate stream sources.
+- Must not inspect profile data.
+- Must not check provider credentials.
+
+## 10. GET /download-metadata, Later
 
 Purpose:
 
@@ -243,8 +338,8 @@ Purpose:
 
 Used by:
 
-- Website download page.
-- Owner dashboard preview.
+- Website download page later.
+- Owner dashboard preview later.
 
 Query parameters:
 
@@ -274,25 +369,25 @@ Rules:
 - Must only describe official app files.
 - Must not provide playlist/channel/source packages.
 
-## 9. POST /customer-access/login
+## 11. POST /customer-access/login, Later
 
 Purpose:
 
-- Allows customer to open the single-page portal using MAC address plus access key.
+- Allows customer to open the single-page portal using Device ID plus Activation Key.
 
 Used by:
 
-- Website customer portal.
+- Website customer portal later.
 
 Request body:
 
-- `macAddress`
-- `accessKey`
+- `deviceId`
+- `activationKey`
 
 Response:
 
 - `status`
-- `customerAccessId`
+- `customerAccessId` or `deviceAccessRecordId`
 - `sessionExpiresAt`
 - `deviceStatus`
 - `licenseState`
@@ -301,21 +396,21 @@ Response:
 
 Database:
 
-- Reads CustomerAccess by normalized MAC.
-- Verifies access key against accessKeyHash.
+- Reads CustomerAccess / DeviceAccessRecord by Device ID.
+- Verifies Activation Key against activationKeyHash.
 - May update lastPortalLoginAt.
 - May write AuditLog.
 
 Rules:
 
 - No customer email/name required.
-- Invalid MAC/key returns generic `invalid_access`.
-- Raw access key must not be logged.
-- Access key must not be returned.
+- Invalid device/key returns generic `invalid_device_credentials`.
+- Raw Activation Key must not be logged.
+- Activation Key must not be returned.
 - Must be rate-limited.
 - Must not ask for provider credentials.
 
-## 10. POST /customer-access/logout
+## 12. POST /customer-access/logout, Later
 
 Purpose:
 
@@ -323,7 +418,7 @@ Purpose:
 
 Used by:
 
-- Website customer portal.
+- Website customer portal later.
 
 Request:
 
@@ -341,7 +436,7 @@ Rules:
 
 - Must not expose token/session internals.
 
-## 11. GET /customer-portal/summary
+## 13. GET /customer-portal/summary, Later
 
 Purpose:
 
@@ -349,7 +444,7 @@ Purpose:
 
 Used by:
 
-- Website customer portal after MAC/key login.
+- Website customer portal after Device ID / Activation Key login.
 
 Request:
 
@@ -357,9 +452,9 @@ Request:
 
 Response:
 
-- `customerAccessId`
+- `customerAccessId` or `deviceAccessRecordId`
 - `accessStatus`
-- `normalizedMacMasked`
+- `deviceIdMasked`
 - `device`
 - `license`
 - `paymentStatus`
@@ -371,9 +466,9 @@ Response:
 
 Database:
 
-- Reads CustomerAccess.
-- Reads Device.
-- Reads LicenseGrant.
+- Reads CustomerAccess / DeviceAccessRecord.
+- Reads Device, if split.
+- Reads LicenseGrant, if split.
 - Reads PaymentStatus placeholder if present.
 - Reads AppVersion/Download metadata.
 - Reads profile metadata only if profile storage is enabled.
@@ -385,7 +480,7 @@ Rules:
 - Must not return provider credentials.
 - Must not expose plaintext playlist data unless explicitly allowed by a later storage decision.
 
-## 12. GET /customer-portal/profile
+## 14. GET /customer-portal/profile, Later
 
 Purpose:
 
@@ -393,7 +488,7 @@ Purpose:
 
 Used by:
 
-- Website customer portal.
+- Website customer portal later.
 
 Request:
 
@@ -409,7 +504,7 @@ Response:
 
 Database:
 
-- Reads CustomerProfileStore for the current CustomerAccess.
+- Reads CustomerProfileStore for the current CustomerAccess / DeviceAccessRecord.
 
 Rules:
 
@@ -418,7 +513,7 @@ Rules:
 - Backend must not convert profile data into shared catalog data.
 - Backend must not sell, validate, scrape, or redistribute sources.
 
-## 13. PUT /customer-portal/profile
+## 15. PUT /customer-portal/profile, Later
 
 Purpose:
 
@@ -426,7 +521,7 @@ Purpose:
 
 Used by:
 
-- Website customer portal.
+- Website customer portal later.
 
 Request:
 
@@ -454,7 +549,7 @@ Rules:
 - Saved profile must remain private to that customer access record.
 - No public/shared playlist directory is allowed.
 
-## 14. POST /customer-portal/profile/sync-request, Optional
+## 16. POST /customer-portal/profile/sync-request, Optional Later
 
 Purpose:
 
@@ -478,7 +573,7 @@ Response:
 
 Database:
 
-- Reads CustomerAccess and Device.
+- Reads CustomerAccess / DeviceAccessRecord and Device.
 - May update profile sync metadata.
 - May write AuditLog.
 
@@ -487,101 +582,7 @@ Rules:
 - Must not push plaintext streams through backend logs.
 - Actual client implementation belongs to `TV_Project`.
 
-## 15. POST /devices/register
-
-Purpose:
-
-- Creates or updates a platform device record based on MAC/device identity.
-
-Used by:
-
-- Android TV / Fire TV client.
-- Owner dashboard if manually registering.
-
-Request body:
-
-- `platform`
-- `macAddress`
-- optional `deviceKey`
-- optional `deviceName`
-- `appVersion`
-
-Response:
-
-- `deviceId`
-- `status`
-- `platform`
-- `licenseState`
-- `freeLaunch`
-- optional `message`
-
-Database:
-
-- Reads or creates Device.
-- May read CustomerAccess by normalized MAC.
-- May create or update LicenseGrant if eligible.
-- May write AuditLog.
-
-Rules:
-
-- MAC must be normalized.
-- Device registration must not require customer email/name.
-- Device registration must not return media source data.
-- Device registration must not require payment during free launch.
-
-## 16. POST /license/check
-
-Purpose:
-
-- Tells the client whether the device may operate.
-
-Used by:
-
-- Android TV / Fire TV client.
-- Future clients.
-
-Request body:
-
-- `macAddress`
-- optional `deviceId`
-- optional `deviceKey`
-- `platform`
-- `appVersion`
-
-Response:
-
-- `state`
-- `allowed`
-- `freeLaunch`
-- `paymentRequired`
-- `platform`
-- `appVersion`
-- `deviceId`
-- `deviceStatus`
-- `message`
-
-Database:
-
-- Reads Device by normalized MAC/deviceId.
-- Reads CustomerAccess if linked.
-- Reads LicenseGrant.
-- May update Device.lastSeenAt.
-- May update LicenseGrant.lastCheckedAt.
-- May write AuditLog.
-
-Free launch behavior:
-
-- Valid devices may receive `free_launch_active`.
-- Payment enforcement remains disabled.
-- Payment missing must not block initial Android TV / Fire TV release usage.
-
-Rules:
-
-- Must not validate stream sources.
-- Must not inspect profile data.
-- Must not check provider credentials.
-
-## 17. POST /owner/login
+## 17. POST /owner/login, Later
 
 Purpose:
 
@@ -589,7 +590,7 @@ Purpose:
 
 Used by:
 
-- Owner dashboard.
+- Owner dashboard later.
 
 Request body:
 
@@ -614,29 +615,29 @@ Rules:
 - Password must not be logged.
 - Must be rate-limited.
 
-## 18. Owner Customer Access Management Endpoints
+## 18. Owner Device Access Management Endpoints, Later
 
 Purpose:
 
-- Allows owner to create/manage MAC/access key customer records.
+- Allows owner to manage Device ID / Activation Key customer-device records.
 
 Endpoints:
 
-- `GET /owner/customer-access-records`
-- `POST /owner/customer-access-records`
-- `POST /owner/customer-access-records/:id/reset-key`
-- `PATCH /owner/customer-access-records/:id/status`
+- `GET /owner/device-access-records`
+- `POST /owner/device-access-records`
+- `POST /owner/device-access-records/:id/reset-activation-key`
+- `PATCH /owner/device-access-records/:id/status`
 
 Rules:
 
-- Owner can create a customer access record for a normalized MAC.
-- Owner can generate/reset access key.
-- Raw access key is shown only at generation/reset time.
-- Only accessKeyHash is stored.
-- Owner can disable/block/restore customer access.
+- Owner can create a device access record.
+- Owner can generate/reset Activation Key.
+- Raw Activation Key is shown only at generation/reset/recovery time.
+- Only activationKeyHash is stored.
+- Owner can disable/block/restore device access.
 - Owner must not see plaintext profile payloads as normal admin data.
 
-## 19. Owner Device / License / Config Endpoints
+## 19. Owner Device / License / Config Endpoints, Later
 
 Purpose:
 
@@ -662,13 +663,14 @@ Rules:
 
 ## 20. Authentication Direction
 
-MVP planning assumption:
+EA0 planning assumption:
 
-- Public lightweight endpoints: health, app-version, remote-config, download-metadata.
-- Customer portal requires MAC address plus access key login.
-- Owner dashboard requires owner login.
-- Device registration/license check may use MAC/device identity.
-- Profile save/load requires valid customer portal session.
+- Public lightweight endpoints: health, app-version, remote-config.
+- Device bootstrap uses platformDeviceHash and returns Device ID + Activation Key only when needed.
+- License check requires Device ID + Activation Key.
+- Customer portal later requires Device ID plus Activation Key login.
+- Owner dashboard later requires owner login.
+- Profile save/load later requires valid customer portal session.
 
 Full production auth implementation is deferred until backend implementation is re-approved.
 
@@ -676,12 +678,12 @@ Full production auth implementation is deferred until backend implementation is 
 
 Rate limits should apply to:
 
-- Customer MAC/access key login.
-- Owner login.
-- Device registration.
+- Device bootstrap.
 - License check.
-- Profile save/load.
-- Owner access key generation/reset.
+- Customer Device ID / Activation Key login later.
+- Owner login later.
+- Profile save/load later.
+- Owner Activation Key generation/reset later.
 
 Rate limit store may use Redis later, but live infrastructure is currently paused.
 
@@ -689,13 +691,14 @@ Rate limit store may use Redis later, but live infrastructure is currently pause
 
 M12 is acceptable when:
 
-- The API supports MAC address plus access key customer portal access.
+- The API supports backend-generated Device ID plus Activation Key.
 - No customer email/name registration is required.
-- Owner dashboard access is separate and protected.
+- EA0 can operate without website/customer portal.
+- License check uses Device ID plus Activation Key.
 - Free launch behavior is preserved.
 - App version/update metadata is available.
-- Download metadata is available.
-- Optional profile/playlist storage remains private and boundary-controlled.
+- Download metadata can be added later.
+- Optional profile/playlist storage remains private and boundary-controlled later.
 - No endpoint introduces media-provider behavior.
 - Implementation can be resumed later without contract ambiguity.
 
@@ -703,7 +706,6 @@ M12 is acceptable when:
 
 After M12:
 
-- Align platform-client shared contract with MAC/access key model.
-- Prepare single-page customer portal data model.
-- Prepare owner dashboard MVP page map.
+- Keep platform-client shared contract aligned with Device ID plus Activation Key.
+- Prepare final launch MVP checklist.
 - Keep hosting/deploy work paused unless explicitly re-approved.
