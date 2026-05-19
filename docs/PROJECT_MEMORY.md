@@ -25,6 +25,57 @@ Previous locked implementation milestone:
 
 - `M13 Platform API Service Foundation & Environment Contract` — LOCKED
 
+## Current Operating Model
+
+The project is now using a simplified operating model.
+
+Default workflow:
+
+- Director handles scope, decisions, roadmap, and documentation directly.
+- Documentation Producer department is disabled for routine work; Director records docs directly.
+- Extra departments are disabled by default to reduce process overhead.
+- Builder is used only for code/patch/build implementation work.
+- QA remains required before any milestone can be marked LOCKED.
+- A dedicated Premium UI / Art Direction role is allowed for visual quality, UX polish, and premium streaming feel.
+
+Use departments only when needed:
+
+- Builder: code/patch/build work
+- QA: lock gate and regression review
+- Premium UI / Art Direction: visual design, TV-first UI polish, premium feel
+
+Do not route normal decisions through extra departments.
+
+## Premium UI Direction
+
+Nexora must feel like a premium streaming product, not a raw prototype.
+
+UI direction principles:
+
+- TV-first visual hierarchy
+- Remote-friendly focus clarity
+- Large-screen readability
+- Premium dark cinematic atmosphere
+- Clean spacing and composition
+- High-quality cards, rows, titles, and player shell
+- Smooth but restrained motion
+- Distinct identity from generic IPTV apps
+- User should feel they received a polished, high-quality app
+
+M15 should include UI/UX polish direction before handoff readiness.
+
+Recommended next milestone candidate:
+
+`M15 Internal Alpha UI/UX Polish Direction & Handoff Readiness`
+
+Purpose:
+
+- Define premium UI/UX polish scope
+- Improve perceived product quality before broader internal handoff
+- Preserve current smoke-passed behavior
+- Prepare internal APK handoff/install guidance
+- Avoid production/store/payment/provider/content expansion
+
 ## M14 Lock Summary
 
 M14 validated the first working internal alpha smoke readiness.
@@ -97,20 +148,6 @@ During free launch:
 - Payment enforcement is deferred.
 - Payment absence must not block eligible early usage.
 - Billing/reseller behavior must not become first-run blocker.
-
-## Current Direction
-
-Recommended next milestone candidate:
-
-`M15 Internal Alpha Handoff & Install Package Readiness`
-
-Purpose:
-
-- Prepare internal alpha APK handoff/install guidance
-- Preserve current smoke-passed state
-- Define package evidence requirements
-- Define internal install/test instructions
-- Avoid production/store/payment/provider/content expansion
 
 ## Current Rule
 
