@@ -5,19 +5,46 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M30 maps the single-page customer portal UI sections to API data, frontend state, and allowed user actions.
+M30 maps the later single-page customer portal UI sections to API data, frontend state, and allowed user actions.
+
+EA0 can run before the customer portal exists.
 
 The customer portal must remain:
 
 - Single-page.
-- MAC address plus access key based.
+- Device ID plus Activation Key based.
 - Minimal.
 - Launch-focused.
 - Free launch compatible.
+- Future paid-license compatible.
 - No customer email/name account required.
 - No media-provider behavior.
 
-## 2. Customer Portal Entry
+## 2. EA0 Relationship
+
+EA0 app flow uses:
+
+```txt
+POST /devices/bootstrap
+POST /license/check
+```
+
+EA0 creates DeviceAccessRecord records with:
+
+```txt
+deviceId
+activationKeyHash
+platformDeviceHash
+licenseState
+freeLaunch
+paymentRequired
+```
+
+The later customer portal reads the same records.
+
+The portal must not require existing EA0 users to receive new Device IDs or Activation Keys unless reset/recovery is needed.
+
+## 3. Customer Portal Entry
 
 Route:
 
@@ -30,8 +57,8 @@ If no valid portal session exists, show login form.
 Login fields:
 
 ```txt
-MAC Address
-Access Key
+Device ID
+Activation Key
 ```
 
 Login endpoint:
@@ -50,18 +77,18 @@ Render single-page portal
 On failure:
 
 ```txt
-Invalid MAC address or access key.
+Invalid Device ID or Activation Key.
 ```
 
 Rules:
 
-- Do not say whether MAC or access key failed.
+- Do not say whether Device ID or Activation Key failed.
 - Do not expose rate-limit thresholds.
-- Do not display raw stored access key.
+- Do not display raw stored Activation Key.
 - Do not ask for email/name/phone/address.
 - Do not ask for provider credentials.
 
-## 3. Initial Page Load Data
+## 4. Initial Page Load Data
 
 Primary endpoint:
 
@@ -89,7 +116,7 @@ GET /customer-portal/profile
 
 Use only when the customer opens the profile editor or when profile data is needed.
 
-## 4. UI Section Mapping
+## 5. UI Section Mapping
 
 The single page contains these sections:
 
@@ -106,7 +133,7 @@ No sidebar is required.
 
 No multi-page customer account center is required.
 
-## 5. Access Status Section
+## 6. Access Status Section
 
 Data source:
 
@@ -118,7 +145,7 @@ Fields:
 
 ```txt
 accessStatus
-normalizedMacMasked
+deviceIdMasked
 freeLaunch
 lastPortalLoginAt, optional
 ```
@@ -127,7 +154,7 @@ Display example:
 
 ```txt
 Access: Active
-Device ID: AA:BB:**:**:**:FF
+Device ID: NX-****-1234
 Free Launch: Active
 ```
 
@@ -145,12 +172,13 @@ POST /customer-access/logout
 
 Forbidden display:
 
-- Raw access key.
+- Raw Activation Key.
+- activationKeyHash.
 - Raw secret/token.
 - Other customers.
 - Owner notes unless explicitly safe.
 
-## 6. Device Status Section
+## 7. Device Status Section
 
 Data source:
 
@@ -196,7 +224,7 @@ Forbidden actions:
 - Provider validation.
 - Playback history view.
 
-## 7. Playlist / Profile Manager Section
+## 8. Playlist / Profile Manager Section
 
 Data sources:
 
@@ -290,7 +318,7 @@ Save Profile
 Send to Device
 ```
 
-## 8. License / Payment Status Section
+## 9. License / Payment Status Section
 
 Data source:
 
@@ -308,6 +336,7 @@ license.paymentRequired
 license.message
 paymentStatus.state
 paymentStatus.paymentRequired
+paymentStatus.paidUntil, later
 ```
 
 Free launch display:
@@ -317,16 +346,17 @@ Access: Free Launch Active
 Payment Required: No
 ```
 
-Future payment placeholder display:
+Future payment-required display:
 
 ```txt
-Payments are not active during free launch.
+Payment Required
+Please activate your license to continue.
 ```
 
 Allowed actions during launch MVP:
 
 ```txt
-None required
+None required during free launch
 ```
 
 Deferred actions:
@@ -334,16 +364,17 @@ Deferred actions:
 ```txt
 Pay
 Renew
-View payment history
+View payment status
 ```
 
 Rules:
 
-- Payment enforcement is disabled for launch MVP.
+- Payment enforcement is disabled for free launch until explicitly approved.
 - Missing payment must not block free launch access.
 - No card secrets stored by platform.
+- Future paid license flow must attach to the same Device ID / Activation Key record.
 
-## 9. Download / Update Section
+## 10. Download / Update Section
 
 Data source:
 
@@ -389,7 +420,7 @@ Rules:
 - No playlist/channel/source downloads.
 - No modified APK links.
 
-## 10. Support / Legal Section
+## 11. Support / Legal Section
 
 Data source:
 
@@ -428,7 +459,7 @@ Rules:
 - Do not ask users to send provider passwords.
 - Do not ask users to send full playlist/source contents unless a later safe support workflow is approved.
 
-## 11. Frontend State Model
+## 12. Frontend State Model
 
 Required customer portal states:
 
@@ -441,7 +472,7 @@ saving_profile
 profile_saved
 profile_save_failed
 session_expired
-invalid_access
+invalid_device_credentials
 access_disabled
 access_blocked
 maintenance
@@ -452,14 +483,14 @@ error
 State behavior:
 
 - `loading`: show minimal loading state.
-- `login_required`: show MAC/access key form.
+- `login_required`: show Device ID / Activation Key form.
 - `ready`: render single-page portal.
 - `session_expired`: return to login with calm message.
 - `access_disabled` / `access_blocked`: show contact/support message.
 - `maintenance`: show maintenance message from remote config.
 - `feature_disabled`: hide or disable profile/payment features safely.
 
-## 12. Recommended Minimal Component Map
+## 13. Recommended Minimal Component Map
 
 Frontend components:
 
@@ -486,7 +517,7 @@ CustomerTeamSettings
 CustomerBillingDetailsPage
 ```
 
-## 13. Data Refresh Behavior
+## 14. Data Refresh Behavior
 
 Recommended behavior:
 
@@ -501,11 +532,12 @@ Reason:
 - Portal should remain simple.
 - Heavy real-time dashboard behavior is unnecessary.
 
-## 14. Security / Privacy Display Rules
+## 15. Security / Privacy Display Rules
 
 Frontend must not display:
 
-- Raw access key after login.
+- Raw Activation Key after login.
+- activationKeyHash.
 - Hash values.
 - Tokens.
 - Session internals.
@@ -515,19 +547,19 @@ Frontend must not display:
 
 Frontend may display:
 
-- Masked MAC.
+- Masked Device ID.
 - Access state.
 - Device state.
 - License state.
 - Profile saved metadata.
 - Download/update metadata.
 
-## 15. Error Copy
+## 16. Error Copy
 
 Allowed customer-facing error copy:
 
 ```txt
-Invalid MAC address or access key.
+Invalid Device ID or Activation Key.
 Your session expired. Please sign in again.
 This access is currently disabled. Please contact support.
 This device is currently blocked. Please contact support.
@@ -538,7 +570,7 @@ Connection issue. Please try again.
 Avoid:
 
 ```txt
-MAC exists but key is wrong.
+Device ID exists but key is wrong.
 Password hash failed.
 Token invalid.
 Provider rejected credentials.
@@ -546,11 +578,12 @@ Stream URL invalid.
 Channel package unavailable.
 ```
 
-## 16. Stop Conditions
+## 17. Stop Conditions
 
 Stop and escalate if frontend mapping adds:
 
 - Required customer email/name registration.
+- MAC as primary product/contract identifier.
 - Multi-page customer account center.
 - Provider credential fields.
 - Backend stream checker.
@@ -558,12 +591,13 @@ Stop and escalate if frontend mapping adds:
 - Public playlist catalog.
 - Reseller/payment enforcement before approval.
 
-## 17. Acceptance Criteria
+## 18. Acceptance Criteria
 
 M30 is acceptable when:
 
-- The customer portal renders from `GET /customer-portal/summary`.
-- Login uses MAC address plus access key only.
+- The customer portal renders from `GET /customer-portal/summary` later.
+- Login uses Device ID plus Activation Key only.
+- EA0 records can continue into portal/payment flow later.
 - Profile editor uses approved profile storage boundary.
 - Device/license/payment/download/support/legal sections are mapped.
 - Frontend states are clear.
