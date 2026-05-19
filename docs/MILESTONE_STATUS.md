@@ -2,55 +2,64 @@
 
 ## Current Active Milestone
 
+None — next milestone pending Director scoping.
+
+## Last Locked Implementation Milestone
+
 `M14 First Working Release / Internal Alpha Smoke Gate`
 
 ## M14 Status
 
-BUILDER HANDOFF READY
+LOCKED
 
 ## M14 Result
 
-M14 scope was opened by Director as an internal alpha smoke gate.
+M14 validated the first working internal alpha smoke readiness across Android TV / Fire TV app shell and Platform API local health/readiness checks.
 
-M14 is approved with limits.
+Completed scope:
 
-M14 is not a production release, not backend expansion, not Android bridge implementation, not auth/session/token implementation, not payment enforcement, and not provider/content work.
+- Builder result: NO PATCH REQUIRED
+- APK generated: CONFIRMED
+- Android app run: CONFIRMED
+- Splash: CONFIRMED
+- Login: CONFIRMED
+- Activation `demo123`: CONFIRMED
+- Home shell: CONFIRMED
+- Focus/navigation: CONFIRMED
+- Detail screen: CONFIRMED
+- Player shell: CONFIRMED
+- Crash/error: NONE REPORTED
+- Platform `/health`: CONFIRMED
+- Platform `/ready`: CONFIRMED with `{ "ready": true }`
+- QA Result: PASS
+- Documentation recorded
+- Director lock approved
 
 M14 records:
 
 - `docs/M14_SCOPE.md`
 - `docs/M14_BUILDER_HANDOFF.md`
+- `docs/M14_LOCAL_SMOKE_EVIDENCE.md`
+- `docs/M14_QA_REVIEW.md`
+- `docs/M14_LOCK_REPORT.md`
 
-## M14 Current Scope
+## Previous Locked Implementation Milestone
 
-M14 focuses only on:
+`M13 Platform API Service Foundation & Environment Contract`
 
-- Android TV / Fire TV app cold launch smoke check
-- Crash-free launch expectation
-- Home shell visibility
-- Navigation shell basic remote/focus behavior
-- Player screen shell opening without real stream requirement
-- Local Platform API `/health` check
-- Local Platform API `/ready` check
-- Legal media-player boundary preservation
+## M13 Status
 
-## M14 Current Next Step
-
-Builder may inspect current repository state and return a minimal smoke-test readiness report.
-
-Builder must not start broad implementation.
-
-If no patch is needed, Builder must report `NO PATCH REQUIRED`.
-
-If a patch is needed, Builder must explain the minimum required patch before implementation.
+LOCKED
 
 ## M14 Lock Boundary
 
+M14 is locked only for internal alpha smoke readiness.
+
 M14 does not approve:
 
-- Production deployment
+- Production deploy
 - Live database setup
-- Railway/hosting/domain/server work
+- Hosting/domain/server work
 - Payment enforcement
 - Provider integration
 - Content hosting
@@ -67,77 +76,9 @@ M14 does not approve:
 - Illegal IPTV/source behavior
 - DRM bypass or unauthorized scraping
 
-## Last Locked Implementation Milestone
-
-`M13 Platform API Service Foundation & Environment Contract`
-
-## M13 Status
-
-LOCKED
-
-## M13 Result
-
-M13 established the local-only Platform API service foundation and environment contract.
-
-Completed scope:
-
-- Local-only API runtime/config baseline
-- `.env.example` `DATABASE_URL` aligned with docker-compose local PostgreSQL password
-- `/health` preserved as static liveness
-- `/ready` endpoint added
-- `PrismaService` added
-- `/ready` checks only `DATABASE_URL` presence and DB ping
-- User local evidence confirmed
-- QA passed with process warning
-- Documentation recorded
-- Director lock approved
-
-Evidence status:
-
-- `pnpm.cmd install`: CONFIRMED
-- `docker compose up -d`: CONFIRMED
-- `docker compose ps`: Postgres healthy / Redis healthy
-- `pnpm.cmd db:generate`: CONFIRMED
-- `pnpm.cmd --filter @tv-platform/api run typecheck`: CONFIRMED
-- `pnpm.cmd --filter @tv-platform/api run build`: CONFIRMED
-- `GET /health`: CONFIRMED
-- `GET /ready`: CONFIRMED
-
-M13 records:
-
-- `docs/M13_LOCAL_VERIFICATION_EVIDENCE.md`
-- `docs/M13_QA_REVIEW.md`
-- `docs/M13_LOCK_REPORT.md`
-
-## Previous Locked Implementation Milestone
-
-`M12 Platform Database Baseline & Migration Foundation`
-
-## M12 Status
-
-LOCKED
-
-## M13 Lock Boundary
-
-M13 does not approve:
-
-- Production deployment
-- Production database mutation
-- Payment enforcement
-- Provider integration
-- Content hosting
-- Channel selling
-- Platform-owned stream catalog
-- Android bridge implementation
-- Auth/session/token implementation
-- Redis runtime/session system expansion
-- Migration auto-run
-- Seed execution
-- Legal media-player boundary changes
-
 ## Process Warning
 
-QA reported documentation/path hygiene warning for missing canonical department/control docs by exact path in Platform repo.
+QA reported documentation/path hygiene warning for missing canonical docs by exact path in Platform repo.
 
 Classification:
 
@@ -146,8 +87,20 @@ Classification:
 - Not a protected-system rewrite
 - Future documentation hygiene cleanup recommended
 
+## Recommended Next Milestone Candidate
+
+`M15 Internal Alpha Handoff & Install Package Readiness`
+
+Purpose:
+
+- Prepare clear internal alpha APK handoff/install guidance
+- Preserve current smoke-passed state
+- Define install package evidence requirements
+- Define APK sharing/install instructions for internal use
+- Avoid production/store/payment/provider/content expansion
+
 ## Current Operating Rule
 
-Do not use extra departments for routine Director decisions unless code/patch planning, QA, documentation record, legal/security/auth risk, or genuine specialist expertise is needed.
+Do not open another milestone unless Director explicitly scopes it.
 
 Host/deploy/live database work remains paused unless explicitly approved.
