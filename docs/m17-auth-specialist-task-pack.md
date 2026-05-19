@@ -5,17 +5,17 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M17 defines the authentication and authorization direction for `TV_Project_Platform` after the launch-scope correction.
+M17 defines the authentication and authorization direction for `TV_Project_Platform` after the EA0 launch-scope correction.
 
 The platform does not need a normal customer email/name account system for launch MVP.
 
-Launch MVP auth must support:
+Launch MVP / EA0 auth must support:
 
-- One OWNER login for the site/operator.
-- Customer portal access by MAC address plus access key.
-- Device/license/access records tied to MAC/access identity.
-- Single-page customer portal.
-- Future reseller accounts after launch MVP.
+- One OWNER login for the site/operator, when owner dashboard is enabled.
+- Device/customer access by Device ID plus Activation Key.
+- Device/license/access records tied to Device ID identity.
+- Single-page customer portal later.
+- Future reseller accounts after launch MVP stability.
 
 Auth must not create a staff/task/department role system for the website.
 
@@ -42,8 +42,8 @@ Not needed for current product:
 Rules:
 
 - The project owner is the only site owner/admin.
-- Customers access the minimal portal using MAC address plus access key.
-- Customers only manage their own linked device/profile/license/payment-status area.
+- Customers/devices use Device ID plus Activation Key.
+- Customers only manage their own linked device/profile/license/payment-status area when the portal is enabled.
 - Resellers will exist later, but are not part of the immediate launch MVP.
 
 ## 3. Owner Role
@@ -55,8 +55,8 @@ OWNER login may use a normal secure admin credential model.
 OWNER may control:
 
 - Website/admin dashboard.
-- Customer access records.
-- Device registration and activation records.
+- Device/customer access records.
+- Device registration records.
 - Device revoke/block state.
 - License/access records.
 - Free launch access.
@@ -82,25 +82,27 @@ OWNER must not:
 
 CUSTOMER_ACCESS is not a traditional account with name/email.
 
-Customer portal entry uses:
+Customer/device identity uses:
 
-- MAC address / normalized device identifier.
-- Access key / customer key.
+- Device ID.
+- Activation Key.
 
 Minimum rules:
 
-- MAC address must be normalized before lookup.
-- Access key must never be stored in plaintext.
-- Store only accessKeyHash.
-- Access key verification must use safe hash comparison.
-- Portal session must expire.
-- Rate limiting must apply to failed access attempts.
+- Backend generates Device ID.
+- Backend generates Activation Key.
+- Backend stores only `activationKeyHash`.
+- Raw Activation Key is returned only during first bootstrap or recovery rotation.
+- App stores Device ID + Activation Key locally.
+- Activation Key verification must use safe hash comparison.
+- Portal session, when enabled, must expire.
+- Rate limiting must apply to failed attempts.
 
 CUSTOMER_ACCESS may:
 
-- Open the single-page customer portal.
+- Open the single-page customer portal later.
 - View own device/access/license/payment-status information.
-- Edit/save own playlist/profile area according to storage boundary.
+- Edit/save own playlist/profile area according to storage boundary when enabled.
 - Send/sync own profile to linked device if enabled.
 
 CUSTOMER_ACCESS must not:
@@ -117,8 +119,7 @@ RESELLER is deferred until after launch MVP is stable.
 
 When approved later, RESELLER may manage only reseller-scoped platform records:
 
-- Own customers.
-- Own customer devices.
+- Own customers/devices.
 - Own customer access/license actions within limits.
 - Own credit balance and usage.
 - Own activity history.
@@ -140,31 +141,41 @@ RESELLER must not:
 Auth exists to prove:
 
 - Who the OWNER is.
-- Which MAC/access key pair may open a customer portal.
-- Which device/license/access record belongs to that customer access record.
+- Which Device ID + Activation Key pair may access platform services.
+- Which device/license/access record belongs to that access record.
 - Which future reseller owns which reseller-scoped records.
 
 Auth does not prove ownership of media content, streams, providers, channels, or third-party sources.
 
-## 7. Customer Portal Access Direction
+## 7. EA0 Device Bootstrap Direction
 
-Customer portal access should support:
+EA0 should support:
 
-- MAC address input.
-- Access key input.
-- Safe validation.
-- Customer portal session creation.
-- Rate limiting.
+- Device bootstrap without customer portal.
+- Backend-generated Device ID.
+- Backend-generated Activation Key.
+- Hash-only Activation Key storage.
+- Free launch license/access.
+
+App bootstrap flow:
+
+1. App starts.
+2. App checks local Device ID + Activation Key.
+3. If missing, app creates/sends privacy-safe `platformDeviceHash` if supported.
+4. App calls `POST /devices/bootstrap`.
+5. Backend creates or recovers DeviceAccessRecord.
+6. Backend returns Device ID and raw Activation Key once.
+7. App stores both locally.
 
 Rules:
 
 - No required customer email.
 - No required customer name.
 - No required phone/address.
-- Access key must not be stored in plaintext.
-- Portal access must not ask for provider credentials.
-- Portal access must not ask for playlist/source ownership proof.
-- Portal access must not require payment during free launch.
+- Activation Key must not be stored in plaintext in database.
+- Device bootstrap must not ask for provider credentials.
+- Device bootstrap must not ask for playlist/source ownership proof.
+- Device bootstrap must not require payment during free launch.
 
 ## 8. Owner Login Direction
 
@@ -183,20 +194,20 @@ Rules:
 - Do not expose tokens in logs.
 - Do not allow unlimited login attempts.
 
-## 9. Access Key Security Direction
+## 9. Activation Key Security Direction
 
-Access key handling must include:
+Activation Key handling must include:
 
-- Random/generated access keys where possible.
-- Hash-only storage.
-- No plaintext storage after initial generation/display.
-- No access key logging.
-- Owner reset/regenerate capability.
+- Backend-generated strong keys.
+- Hash-only database storage.
+- No plaintext database storage after generation/display.
+- No Activation Key logging.
+- Owner reset/regenerate capability later.
 
 Recommended owner behavior:
 
-- Owner can generate/reset an access key for a MAC/customer access record.
-- The raw access key is shown only at generation time.
+- Owner can reset Activation Key for a Device ID / customer access record.
+- Raw Activation Key is shown only at generation/reset/recovery time.
 - After that, only masked key metadata is visible.
 
 ## 10. Session / Token Direction
@@ -231,13 +242,17 @@ Rules:
 - They must not expose media source data.
 - Remote config must remain safe and narrow.
 
-## 12. Device / MAC Direction
+## 12. Device Identity Direction
 
-Device identity for launch MVP may be based on MAC address plus platform-safe device fields.
+Device identity for EA0 uses:
+
+- Backend Device ID.
+- Activation Key.
+- Optional `platformDeviceHash` for best-effort reinstall recovery.
 
 Rules:
 
-- MAC must be normalized.
+- Avoid MAC as the primary identifier.
 - Avoid invasive hardware fingerprinting beyond what the app/platform legitimately provides.
 - Device can be revoked or blocked.
 - Device status must not depend on playlist/provider validation.
@@ -245,13 +260,13 @@ Rules:
 
 ## 13. License Auth Direction
 
-License/access check should verify MAC/device platform permission.
+License/access check should verify Device ID + Activation Key platform permission.
 
 It should not verify media permission.
 
 Rules:
 
-- License check may require MAC/device identity.
+- License check requires Device ID + Activation Key.
 - Free launch eligible devices receive access without payment blocking.
 - Suspended, revoked, or blocked devices receive clear blocked states.
 - License check must not inspect playlists, provider credentials, or source URLs.
@@ -260,7 +275,7 @@ Rules:
 
 OWNER dashboard access should protect:
 
-- Customer access management.
+- Device/customer access management.
 - Device management.
 - License/access state management.
 - App version management.
@@ -282,13 +297,13 @@ Rules:
 
 - OWNER actions must be audited.
 - OWNER UI must not expose secrets.
-- OWNER UI must not expose raw access keys after initial generation.
+- OWNER UI must not expose raw Activation Keys after generation/reset/recovery.
 
 ## 15. Free Launch Auth Behavior
 
 During free launch:
 
-- MAC/access infrastructure may exist.
+- Device ID / Activation Key infrastructure may exist.
 - Payment enforcement is disabled by default.
 - Payment absence must not block eligible Android TV / Fire TV usage.
 - Subscription-first UI must not become the first-run blocker.
@@ -299,10 +314,11 @@ Auth exists to protect ownership and abuse boundaries, not to force payment earl
 
 Auth-related rate limits should apply to:
 
-- Customer portal MAC/access key attempts.
-- Owner login.
-- Access key reset later.
+- Device bootstrap.
 - License check.
+- Customer portal Device ID / Activation Key attempts later.
+- Owner login.
+- Activation Key reset later.
 - Profile save/sync if backend is used.
 
 Error response should be calm and not reveal internal thresholds.
@@ -311,17 +327,18 @@ Error response should be calm and not reveal internal thresholds.
 
 Auth-related audit events:
 
-- customer_access.created
-- customer_access.login.success
-- customer_access.login.failed_limited
-- customer_access.key.generated
-- customer_access.key.reset
-- customer_access.disabled
+- device_access.created
+- device_access.recovered
+- device_access.key.rotated
+- device_access.disabled
+- device.bootstrap.success
+- device.bootstrap.failed_limited
 - device.registered
 - device.revoked
+- license.checked
 - owner.login.success
 - owner.login.failed_limited
-- owner.customer_access.updated
+- owner.device_access.updated
 - owner.device.revoked
 - owner.license.updated
 - owner.download.updated
@@ -329,7 +346,7 @@ Auth-related audit events:
 
 Audit metadata must not include:
 
-- Raw access keys.
+- Raw Activation Keys.
 - Passwords.
 - Tokens.
 - Secrets.
@@ -343,7 +360,7 @@ Auth errors should be typed and safe.
 
 Examples:
 
-- invalid_access
+- invalid_device_credentials
 - rate_limited
 - session_expired
 - unauthorized
@@ -388,6 +405,8 @@ Stop and escalate if:
 - Owner/admin scope expands into channel/source/content management.
 - Extra staff/task roles are added without explicit approval.
 - Token/session storage rules are unclear.
+- APK contains a hardcoded universal Activation Key.
+- MAC becomes the primary product/contract identifier.
 
 ## 21. Acceptance Criteria
 
@@ -397,8 +416,8 @@ Auth direction is acceptable when:
 - RESELLER remains deferred until later.
 - No customer email/name registration is required.
 - No extra website staff/task role system exists.
-- MAC/access key ownership is clear.
+- Device ID + Activation Key ownership is clear.
 - License/access ownership is clear without media-provider drift.
 - Free launch remains non-payment-blocking.
-- Secrets, tokens, owner password, and raw access keys are protected.
+- Secrets, tokens, owner password, and raw Activation Keys are protected.
 - Owner control remains platform/legal, not content/provider/source control.
