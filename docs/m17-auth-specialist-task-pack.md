@@ -5,28 +5,26 @@ Mode: Planning only. No hosting, live database, production deploy, or heavy impl
 
 ## 1. Purpose
 
-M17 defines the authentication and authorization direction for `TV_Project_Platform`.
+M17 defines the authentication and authorization direction for `TV_Project_Platform` after the launch-scope correction.
 
-Auth must support:
+The platform does not need a normal customer email/name account system for launch MVP.
 
-- The single site owner/admin.
-- Customer accounts.
-- Customer login.
-- Customer dashboard access.
-- Device registration / activation ownership.
-- License/access ownership.
-- Future reseller accounts, after launch MVP.
+Launch MVP auth must support:
+
+- One OWNER login for the site/operator.
+- Customer portal access by MAC address plus access key.
+- Device/license/access records tied to MAC/access identity.
+- Single-page customer portal.
+- Future reseller accounts after launch MVP.
 
 Auth must not create a staff/task/department role system for the website.
 
 ## 2. Corrected Role Model
 
-The website/platform role model is intentionally simple.
-
 Active launch MVP roles:
 
 - OWNER
-- CUSTOMER
+- CUSTOMER_ACCESS
 
 Deferred future role:
 
@@ -34,27 +32,30 @@ Deferred future role:
 
 Not needed for current product:
 
+- Email/name based customer account system.
 - Extra ADMIN role.
 - SUPPORT role.
 - Staff/task role system.
 - Department permission system.
 - Complex organization/team permission matrix.
 
-Rule:
+Rules:
 
 - The project owner is the only site owner/admin.
-- Customers only manage their own account, devices, activation, and access status.
+- Customers access the minimal portal using MAC address plus access key.
+- Customers only manage their own linked device/profile/license/payment-status area.
 - Resellers will exist later, but are not part of the immediate launch MVP.
 
 ## 3. Owner Role
 
 OWNER means the single site owner/operator.
 
+OWNER login may use a normal secure admin credential model.
+
 OWNER may control:
 
 - Website/admin dashboard.
-- Customer records.
-- Customer account status.
+- Customer access records.
 - Device registration and activation records.
 - Device revoke/block state.
 - License/access records.
@@ -71,33 +72,44 @@ OWNER must not use platform authority to manage private media/source/provider da
 
 OWNER must not:
 
-- Read user local playlist/source contents from backend.
+- Read user local playlist/source contents as plaintext backend data.
 - Store provider usernames/passwords.
-- Force stream URLs to be uploaded.
+- Force stream URLs to be uploaded as backend-visible data.
 - Use remote config to distribute channel packages.
 - Turn platform tools into content-provider tools.
 
-## 4. Customer Role
+## 4. Customer Access Model
 
-CUSTOMER may control only their own platform account area.
+CUSTOMER_ACCESS is not a traditional account with name/email.
 
-CUSTOMER may:
+Customer portal entry uses:
 
-- Register.
-- Log in.
-- View account status.
-- View own devices.
-- Approve/link own device activation.
-- View own license/access status.
-- Use customer dashboard basics.
+- MAC address / normalized device identifier.
+- Access key / customer key.
 
-CUSTOMER must not:
+Minimum rules:
 
-- See other customers.
-- See other devices.
-- Manage global license/access states.
-- Access admin dashboard.
-- Access reseller functions unless later assigned through reseller model.
+- MAC address must be normalized before lookup.
+- Access key must never be stored in plaintext.
+- Store only accessKeyHash.
+- Access key verification must use safe hash comparison.
+- Portal session must expire.
+- Rate limiting must apply to failed access attempts.
+
+CUSTOMER_ACCESS may:
+
+- Open the single-page customer portal.
+- View own device/access/license/payment-status information.
+- Edit/save own playlist/profile area according to storage boundary.
+- Send/sync own profile to linked device if enabled.
+
+CUSTOMER_ACCESS must not:
+
+- See other customers/devices.
+- Access owner dashboard.
+- Manage global config.
+- Manage reseller functions.
+- Upload provider credentials as platform account data.
 
 ## 5. Future Reseller Role
 
@@ -115,80 +127,87 @@ RESELLER remains below OWNER authority.
 
 RESELLER must not:
 
-- Become an admin.
+- Become owner/admin.
 - Manage global config.
 - Manage app version policy.
 - Use emergency controls.
 - See all customers.
 - Sell channels/IPTV/content/provider access.
-- Store stream URLs or provider credentials.
+- Store stream URLs or provider credentials as backend-visible data.
 
 ## 6. Auth Mission
 
 Auth exists to prove:
 
 - Who the OWNER is.
-- Who the CUSTOMER is.
-- Which customer owns which account/device/license record.
-- Which future reseller owns which reseller-scoped customer/device/license records.
+- Which MAC/access key pair may open a customer portal.
+- Which device/license/access record belongs to that customer access record.
+- Which future reseller owns which reseller-scoped records.
 
 Auth does not prove ownership of media content, streams, providers, channels, or third-party sources.
 
-## 7. Registration Direction
+## 7. Customer Portal Access Direction
 
-Customer registration should support:
+Customer portal access should support:
 
-- Email.
-- Password.
-- Basic customer account record.
-- Email normalization.
-- Duplicate email protection.
-
-Rules:
-
-- Password must never be stored in plaintext.
-- Password hash only.
-- Registration must not ask for provider credentials.
-- Registration must not ask for playlist/source ownership proof.
-- Registration must not require payment during free launch.
-
-## 8. Login Direction
-
-Login should support:
-
-- Email and password.
-- Safe error messages.
-- Session/token creation.
+- MAC address input.
+- Access key input.
+- Safe validation.
+- Customer portal session creation.
 - Rate limiting.
 
 Rules:
 
-- Do not reveal whether email or password was the exact failure cause.
+- No required customer email.
+- No required customer name.
+- No required phone/address.
+- Access key must not be stored in plaintext.
+- Portal access must not ask for provider credentials.
+- Portal access must not ask for playlist/source ownership proof.
+- Portal access must not require payment during free launch.
+
+## 8. Owner Login Direction
+
+Owner login should support:
+
+- Secure owner credential.
+- Safe error messages.
+- Session/token creation.
+- Rate limiting.
+- Strong secret handling.
+
+Rules:
+
+- Do not reveal whether username/email/password was the exact failure cause.
 - Do not log password attempts.
 - Do not expose tokens in logs.
 - Do not allow unlimited login attempts.
 
-## 9. Password Security Direction
+## 9. Access Key Security Direction
 
-Password handling must include:
+Access key handling must include:
 
-- Modern password hashing.
-- Unique salt behavior from the hashing algorithm.
-- Minimum password policy.
-- Password reset flow later if needed.
-- No plaintext storage.
-- No password logging.
+- Random/generated access keys where possible.
+- Hash-only storage.
+- No plaintext storage after initial generation/display.
+- No access key logging.
+- Owner reset/regenerate capability.
+
+Recommended owner behavior:
+
+- Owner can generate/reset an access key for a MAC/customer access record.
+- The raw access key is shown only at generation time.
+- After that, only masked key metadata is visible.
 
 ## 10. Session / Token Direction
 
-Auth may use secure sessions or signed tokens depending on future implementation choice.
+Auth may use secure sessions or signed tokens depending on implementation choice.
 
 Minimum requirements:
 
 - Tokens/sessions must expire.
 - Secrets must be stored only in secure environment variables.
-- Refresh behavior must be explicit if added.
-- OWNER session is more sensitive than customer session.
+- OWNER session is more sensitive than customer portal session.
 - Logout should invalidate or abandon client session state safely.
 
 Rules:
@@ -212,38 +231,27 @@ Rules:
 - They must not expose media source data.
 - Remote config must remain safe and narrow.
 
-## 12. Activation Auth Direction
+## 12. Device / MAC Direction
 
-Activation creation:
-
-- TV client may create activation session without login.
-- Must be rate-limited.
-- Must expire.
-- Must not create a final Device before approval/linking.
-
-Activation approval/linking:
-
-- Requires authenticated CUSTOMER or OWNER context.
-- Binds activation session to a customer.
-- Creates or updates Device.
-- May create free-launch LicenseGrant.
-- Writes AuditLog.
+Device identity for launch MVP may be based on MAC address plus platform-safe device fields.
 
 Rules:
 
-- Expired sessions cannot be approved.
-- Consumed sessions cannot be reused.
-- Payment must not be required during free launch activation.
+- MAC must be normalized.
+- Avoid invasive hardware fingerprinting beyond what the app/platform legitimately provides.
+- Device can be revoked or blocked.
+- Device status must not depend on playlist/provider validation.
+- Device record must not store provider credentials.
 
 ## 13. License Auth Direction
 
-License/access check should verify account/device platform permission.
+License/access check should verify MAC/device platform permission.
 
 It should not verify media permission.
 
 Rules:
 
-- License check may require device identity.
+- License check may require MAC/device identity.
 - Free launch eligible devices receive access without payment blocking.
 - Suspended, revoked, or blocked devices receive clear blocked states.
 - License check must not inspect playlists, provider credentials, or source URLs.
@@ -252,7 +260,7 @@ Rules:
 
 OWNER dashboard access should protect:
 
-- Customer management.
+- Customer access management.
 - Device management.
 - License/access state management.
 - App version management.
@@ -267,22 +275,21 @@ OWNER must not manage:
 - Channel packages.
 - Stream catalogs.
 - Provider accounts.
-- User playlist contents.
+- User playlist contents as plaintext backend data.
 - Source scraping rules.
 
 Rules:
 
 - OWNER actions must be audited.
 - OWNER UI must not expose secrets.
-- OWNER UI must not show encrypted profile payloads as normal dashboard data.
+- OWNER UI must not expose raw access keys after initial generation.
 
 ## 15. Free Launch Auth Behavior
 
 During free launch:
 
-- Account/device infrastructure may exist.
+- MAC/access infrastructure may exist.
 - Payment enforcement is disabled by default.
-- Login may support account/device ownership.
 - Payment absence must not block eligible Android TV / Fire TV usage.
 - Subscription-first UI must not become the first-run blocker.
 
@@ -292,12 +299,11 @@ Auth exists to protect ownership and abuse boundaries, not to force payment earl
 
 Auth-related rate limits should apply to:
 
-- Registration.
-- Login.
-- Password reset later.
-- Activation creation.
-- Activation approval attempts.
+- Customer portal MAC/access key attempts.
+- Owner login.
+- Access key reset later.
 - License check.
+- Profile save/sync if backend is used.
 
 Error response should be calm and not reveal internal thresholds.
 
@@ -305,13 +311,17 @@ Error response should be calm and not reveal internal thresholds.
 
 Auth-related audit events:
 
-- customer.registered
-- customer.login.success
-- customer.login.failed_limited
-- customer.logout
-- customer.password_reset_requested
-- device.activation.approved
-- owner.customer.updated
+- customer_access.created
+- customer_access.login.success
+- customer_access.login.failed_limited
+- customer_access.key.generated
+- customer_access.key.reset
+- customer_access.disabled
+- device.registered
+- device.revoked
+- owner.login.success
+- owner.login.failed_limited
+- owner.customer_access.updated
 - owner.device.revoked
 - owner.license.updated
 - owner.download.updated
@@ -319,12 +329,13 @@ Auth-related audit events:
 
 Audit metadata must not include:
 
+- Raw access keys.
 - Passwords.
 - Tokens.
 - Secrets.
 - Stream URLs.
 - Provider credentials.
-- Profile payloads.
+- Plaintext playlist/profile payloads.
 
 ## 18. Error Direction
 
@@ -332,19 +343,19 @@ Auth errors should be typed and safe.
 
 Examples:
 
-- invalid_credentials
+- invalid_access
 - rate_limited
 - session_expired
 - unauthorized
 - forbidden
-- activation_auth_required
 - device_revoked
+- license_suspended
 
 Errors must not expose:
 
 - Stack traces.
 - Token internals.
-- Password hash details.
+- Hash details.
 - Secret names/values.
 - Provider/source details.
 
@@ -352,6 +363,7 @@ Errors must not expose:
 
 Deferred until needed:
 
+- Customer email/password accounts.
 - Social login.
 - Multi-factor authentication.
 - Advanced account recovery.
@@ -369,23 +381,24 @@ Explicitly not planned:
 
 Stop and escalate if:
 
+- Customer email/name registration becomes mandatory for launch MVP.
 - Auth requires provider credential storage.
-- Auth requires playlist/source inspection.
+- Auth requires plaintext playlist/source inspection.
 - Auth becomes payment-first blocking during free launch.
 - Owner/admin scope expands into channel/source/content management.
 - Extra staff/task roles are added without explicit approval.
-- Device identity requires invasive hardware fingerprinting.
 - Token/session storage rules are unclear.
 
 ## 21. Acceptance Criteria
 
 Auth direction is acceptable when:
 
-- OWNER and CUSTOMER roles support launch MVP.
+- OWNER and CUSTOMER_ACCESS support launch MVP.
 - RESELLER remains deferred until later.
+- No customer email/name registration is required.
 - No extra website staff/task role system exists.
-- Activation approval ownership is clear.
+- MAC/access key ownership is clear.
 - License/access ownership is clear without media-provider drift.
 - Free launch remains non-payment-blocking.
-- Secrets, tokens, and passwords are protected.
+- Secrets, tokens, owner password, and raw access keys are protected.
 - Owner control remains platform/legal, not content/provider/source control.
