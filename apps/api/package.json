@@ -12,7 +12,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed:ea0": "node prisma/seed-ea0.js"
+    "prisma:seed:ea0": "node prisma/seed-ea0.js",
+    "prisma:validate:ea0": "node prisma/validate-ea0.js",
+    "ea0:db:prepare": "prisma generate && prisma migrate dev && node prisma/seed-ea0.js && node prisma/validate-ea0.js"
   },
   "dependencies": {
     "@nestjs/common": "latest",
