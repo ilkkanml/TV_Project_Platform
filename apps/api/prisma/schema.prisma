@@ -104,6 +104,26 @@ model DeviceAccessRecord {
   @@index([createdAt])
 }
 
+model DeviceInstallRecord {
+  id                 String   @id @default(cuid())
+  installId          String   @unique
+  platformDeviceHash String?  @unique
+  platform           String   @default("android_tv")
+  appVersion         String?
+  status             String   @default("seen")
+  firstSeenAt        DateTime @default(now())
+  lastSeenAt         DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  ownerNote          String?
+
+  @@index([platform])
+  @@index([appVersion])
+  @@index([status])
+  @@index([lastSeenAt])
+  @@index([createdAt])
+}
+
 model Device {
   id          String         @id @default(cuid())
   userId      String
