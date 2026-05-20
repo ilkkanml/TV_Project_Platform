@@ -36,6 +36,7 @@ enum SubscriptionStatus {
 enum DeviceStatus {
   PENDING
   ACTIVE
+  DISABLED
   REVOKED
   BLOCKED
 }
@@ -72,6 +73,35 @@ model User {
   activationSessions  ActivationSession[]
   transferSessions    PlaylistTransferSession[]
   reseller            ResellerProfile?
+}
+
+model DeviceAccessRecord {
+  id                 String   @id @default(cuid())
+  deviceId           String   @unique
+  platformDeviceHash String?
+  activationKeyHash  String
+  activationKeyHint  String?
+  platform           String
+  appVersion         String
+  status             String   @default("active")
+  licenseState       String   @default("free_launch_active")
+  freeLaunch         Boolean  @default(true)
+  paymentRequired    Boolean  @default(false)
+  firstSeenAt        DateTime @default(now())
+  lastSeenAt         DateTime @default(now())
+  lastRecoveredAt    DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  ownerNote          String?
+
+  @@index([platformDeviceHash])
+  @@index([status])
+  @@index([licenseState])
+  @@index([lastSeenAt])
+  @@index([platform, appVersion])
+  @@index([freeLaunch])
+  @@index([paymentRequired])
+  @@index([createdAt])
 }
 
 model Device {
@@ -192,7 +222,7 @@ model RemoteConfig {
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
 
-  @@unique([scope, key])
+  @@unique([scope, key, platform])
   @@index([platform, enabled])
 }
 
@@ -201,6 +231,7 @@ model AppVersion {
   platform            ClientPlatform
   version             String
   channel             String         @default("stable")
+  currentRecommended  Boolean        @default(false)
   minimumSupported    String?
   updateUrl           String?
   forceUpdate         Boolean        @default(false)
@@ -210,6 +241,7 @@ model AppVersion {
   updatedAt           DateTime       @updatedAt
 
   @@unique([platform, version, channel])
+  @@index([platform, currentRecommended])
   @@index([platform, enabled])
 }
 
@@ -241,14 +273,19 @@ model PaymentEvent {
 }
 
 model AuditLog {
-  id        String   @id @default(cuid())
-  actorId   String?
-  action    String
-  target    String?
-  metadata  Json?
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  actorType  String?
+  actorId    String?
+  action     String
+  target     String?
+  targetType String?
+  targetId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
 
+  @@index([actorType, actorId])
   @@index([actorId])
   @@index([action])
+  @@index([targetType, targetId])
   @@index([createdAt])
 }
