@@ -4,9 +4,13 @@ Compact app integration authority for TV Project Platform.
 
 ## App Integration Rule
 
-The app integrates with backend for approved platform access only.
+The Android TV / Fire TV app is the player client.
 
-The app must not expect backend provider, distribution, catalog, marketplace, relay, or permanent user-profile-authority behavior.
+TV Project Platform is the web/API support layer.
+
+The app integrates with backend only for approved platform information and access-state checks.
+
+The app must not expect backend provider, distribution, catalog, marketplace, relay, playback-control, stream-authority, or permanent user-profile-authority behavior.
 
 ## Supported Platforms
 
@@ -21,11 +25,13 @@ Initial supported platforms may include:
 
 The app should:
 
+- own playback behavior
+- own local source/profile entry behavior
 - generate app_generated_device_id
 - persist device identity securely
-- activate/register device with backend
+- activate/register device with backend when needed
 - check license status
-- check subscription status
+- check subscription/access status when needed
 - check app version rules
 - fetch remote config
 - respect maintenance mode
@@ -36,16 +42,17 @@ The app should:
 
 ## Backend Responsibilities
 
-Backend may provide:
+Backend may provide information only in approved places:
 
 - account/activation validation
 - device activation/status
-- license/subscription status
+- license/subscription/access status
 - app version rules
 - remote configuration
+- maintenance or force-update status
 - temporary transfer bridge when enabled
 
-Backend must not be default permanent authority for user profile/provider data.
+Backend must not control playback, provide media sources, provide stream URLs, manage content catalogs, or become default permanent authority for user profile/provider data.
 
 ## Device Identity
 
@@ -76,7 +83,7 @@ It must be:
 - consumable once where practical
 - deleted or marked consumed after pickup
 
-It must not become cloud profile storage, shared profile library, public search, or marketplace.
+It must not become cloud profile storage, shared profile library, public search, marketplace, provider storage, or app playback control.
 
 ## App-Facing API Needs
 
@@ -89,13 +96,17 @@ App may call:
 - remote config
 - temporary transfer consume when enabled
 
+These calls send or receive platform information only.
+
+They must not create provider, catalog, stream, playlist marketplace, or playback-control behavior.
+
 ## Security
 
 The app must not log sensitive provider/profile data.
 
 Backend responses must not expose secrets or unrelated user data.
 
-License and device decisions are backend-authoritative.
+License, access, version, and device decisions are backend-authoritative only inside approved platform-access scope.
 
 ## Related Authority Files
 
@@ -109,4 +120,4 @@ License and device decisions are backend-authoritative.
 
 ## Final App Rule
 
-The app owns local user profile behavior; backend owns platform access authority.
+The app owns playback and local profile behavior; backend provides approved platform information and access authority only.
