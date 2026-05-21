@@ -1,43 +1,53 @@
 # TV Project Platform
 
-## Purpose
+Internal web/API support platform for the Nexora TV Android TV / Fire TV application.
 
-`TV_Project_Platform` is the platform-side source-of-truth repository for the Nexora TV ecosystem.
+## Product Role
 
-It supports the Android TV / Fire TV client through account, device, license, app version, remote config, and temporary profile transfer foundations.
+`TV_Project_Platform` is not the main player app.
+
+The Android TV / Fire TV application is the player client.
+
+This repository provides only the platform-side information the app needs in approved places, such as device, license, app version, remote config, activation, and operational status.
+
+The platform does not remotely control playback, replace local app behavior, manage user media catalogs, or become the permanent source of truth for provider/profile data.
 
 ## Product Boundary
 
-Nexora TV is a legal Core Media Player Ecosystem.
+The platform must not provide, sell, host, relay, transcode, package, index, or distribute channels, streams, playlists, provider credentials, broadcasts, or media content.
 
-The platform does not provide content, channels, broadcasts, bundled media, provider credentials, or stream distribution.
+Users are responsible for using lawful sources they are authorized to access.
 
-Users may only use sources they are legally authorized to access.
+## Allowed Responsibilities
 
-## Current Role
+This repository may support:
 
-This repo is responsible for:
+- account foundation
+- device install / activation status
+- license status information
+- app version information
+- remote configuration
+- maintenance / force-update flags
+- admin, reseller, and customer web foundations
+- reseller credit records when approved
+- manual payment records when approved
+- audit logs
+- optional temporary encrypted web-to-device transfer when explicitly enabled
+- shared platform constants and types
 
-- Account foundation
-- Device registry foundation
-- Activation session foundation
-- License check foundation
-- App version check foundation
-- Remote config foundation
-- Temporary encrypted profile transfer foundation
-- Admin/platform web foundation
-- Shared platform constants/types
+## Not Responsible For
 
-This repo is not responsible for:
+This repository must not handle:
 
-- Content hosting
-- Broadcasting
-- Channel selling
-- Bundled streams
-- Provider credential sharing
-- Unauthorized source extraction
-- Protected-system circumvention
 - Android playback implementation
+- provider inventory
+- channel packages
+- stream URLs as a platform catalog
+- permanent provider/profile credential storage by default
+- public playlist/profile marketplace
+- stream hosting or relay
+- content discovery
+- unauthorized source extraction
 
 ## Current Stack
 
@@ -45,28 +55,23 @@ This repo is not responsible for:
 - Next.js web app
 - NestJS API app
 - Prisma
-- PostgreSQL
+- MySQL / MariaDB-compatible local database
 - Redis
 - Shared TypeScript package
+- Docker Compose
 
-## Read First
+## Active Authority Files
 
-1. `docs/START_HERE.md`
-2. `docs/PLATFORM_SOURCE_OF_TRUTH.md`
-3. `docs/API_CONTRACT_ALIGNMENT.md`
-4. `docs/DATABASE_BASELINE.md`
-5. `docs/SECURITY_SESSION_POLICY.md`
-6. `docs/LEGAL_BOUNDARY.md`
+Read these first when continuing the project:
 
-## Current Milestone Context
-
-This repository is being audited under:
-
-`M11 Platform Source-of-Truth Audit`
-
-M11 is documentation/audit only.
-
-No backend implementation, database migration, Android bridge, payment enforcement, or provider integration is approved by M11.
+1. `PROJECT_STATE.md`
+2. `AI_HANDOFF.md`
+3. `ROADMAP.md`
+4. `LEGAL_SCOPE.md`
+5. `SECURITY.md`
+6. `project-bible/00-project-rules.md`
+7. `project-bible/13-decision-log.md`
+8. `project-bible/17-ai-operations-bible.md`
 
 ## Development Commands
 
@@ -106,10 +111,8 @@ Generate Prisma client:
 pnpm db:generate
 ```
 
-## Guardrails
+## Director Rule
 
-- Keep platform source-of-truth aligned with the Android client contract.
-- Do not turn the platform into a media/content provider.
-- Do not enable channel/package selling.
-- Do not store user media sources unless a future Director-approved policy explicitly allows it.
-- Payment/subscription enforcement remains inactive until a future approved milestone.
+Keep this repo as a controlled web/API support layer for Nexora TV.
+
+Do not turn it into a content provider, media catalog, stream distributor, or app playback controller.
