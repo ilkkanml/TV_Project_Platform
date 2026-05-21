@@ -6,7 +6,7 @@ Compact DevOps authority for TV Project Platform.
 
 DevOps must support approved platform operations only.
 
-Infrastructure must not support provider, distribution, relay, transcoding, catalog, marketplace, broadcast, or permanent user-profile-authority behavior.
+Infrastructure must not support provider, distribution, relay, transcoding, catalog, marketplace, broadcast, playback-control, stream-authority, or permanent user-profile-authority behavior.
 
 ## Approved Stack
 
@@ -17,7 +17,7 @@ Infrastructure must not support provider, distribution, relay, transcoding, cata
 - Tailwind CSS
 - NestJS
 - Prisma
-- PostgreSQL
+- MySQL / MariaDB-compatible local database
 - Redis
 - Docker Compose
 
@@ -38,7 +38,7 @@ Removed from active workflow:
 
 Local development should support:
 
-- PostgreSQL
+- MySQL / MariaDB-compatible database
 - Redis
 - API app
 - web app
@@ -51,6 +51,7 @@ Local development should support:
 - .env.example may contain placeholders only.
 - Required environment variables must be documented.
 - Production secrets belong in hosting/runtime secret storage.
+- Database provider references must stay aligned across Prisma schema, Docker Compose, and env examples.
 
 ## Deployment Rules
 
@@ -81,12 +82,12 @@ Allowed runtime infrastructure:
 
 - web app hosting
 - API app hosting
-- PostgreSQL
+- MySQL / MariaDB-compatible database
 - Redis
 - logs
 - monitoring
 - backups
-- APK/file storage for app distribution when needed
+- APK/file storage for controlled app distribution when needed
 - payment webhook handling when providers are integrated
 - temporary transfer storage when enabled
 
@@ -98,6 +99,21 @@ Forbidden runtime infrastructure:
 - broadcast systems
 - public marketplace hosting
 - catalog distribution infrastructure
+- backend playback-control infrastructure
+- stream-authority infrastructure
+
+## Early Access Distribution Infrastructure
+
+Early access is controlled distribution, not marketplace launch.
+
+Approved early access app distribution:
+
+- Downloader-code / direct APK installation flow
+- APK/file storage only when needed for controlled app distribution
+
+Do not prioritize public TV/app market publishing infrastructure during early access.
+
+Core reliability has priority over store visibility.
 
 ## Backup / Rollback
 
@@ -120,4 +136,4 @@ Rollback actions must be logged.
 
 ## Final DevOps Rule
 
-Keep infrastructure minimal, private, secure, reversible, and inside the approved platform boundary.
+Keep infrastructure minimal, private, secure, reversible, app-support-only, and inside the approved platform boundary.
