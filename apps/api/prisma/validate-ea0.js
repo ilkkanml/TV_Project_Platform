@@ -25,6 +25,23 @@ async function validateDeviceAccessRecordModel() {
   await validateNoRawActivationKeyColumns();
 }
 
+async function validateDeviceInstallRecordModel() {
+  await prisma.deviceInstallRecord.findMany({ take: 1 });
+
+  const rows = await prisma.$queryRaw`
+    SELECT column_name
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'DeviceInstallRecord'
+      AND column_name IN ('activationKey', 'activationKeyHash', 'licenseState', 'paymentRequired', 'providerUsername', 'providerPassword')
+  `;
+
+  await assert(
+    rows.length === 0,
+    "DeviceInstallRecord contains fields that do not belong in install-only registration."
+  );
+}
+
 async function validateAppVersionSeed() {
   const record = await prisma.appVersion.findFirst({
     where: {
@@ -80,6 +97,7 @@ async function validateAuditLogModel() {
 
 async function main() {
   await validateDeviceAccessRecordModel();
+  await validateDeviceInstallRecordModel();
   await validateAppVersionSeed();
   await validateRemoteConfigSeed();
   await validateAuditLogModel();
