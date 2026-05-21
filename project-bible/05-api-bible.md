@@ -6,14 +6,16 @@ Compact API authority for TV Project Platform.
 
 The API must support approved platform operations only.
 
-Do not expose provider, distribution, relay, catalog, marketplace, or permanent user-profile-authority behavior.
+The API may provide approved app-support information to the Nexora TV app.
+
+Do not expose provider, distribution, relay, catalog, marketplace, playback-control, stream-authority, or permanent user-profile-authority behavior.
 
 ## Stack
 
 - NestJS
 - TypeScript
 - Prisma
-- PostgreSQL
+- MySQL / MariaDB-compatible local database
 - Redis when needed
 - DTO validation
 - server-side authorization
@@ -43,15 +45,17 @@ API modules may include:
 
 ## App-Facing Endpoints
 
-App-facing API may support:
+App-facing API may support information-only checks:
 
-- device activation
-- device status
+- device activation/status
 - heartbeat when needed
-- license status
+- license/access status
 - app version check
 - remote config
+- maintenance / force-update status
 - temporary transfer consume when enabled
+
+These endpoints must not provide media content, provider catalogs, stream lists, channel packages, or playback-control commands.
 
 ## Web Panel Endpoints
 
@@ -68,6 +72,8 @@ Web panel API may support:
 - app version management
 - remote config management
 - audit log review
+
+Web panel endpoints must stay inside platform management and must not become source/media management.
 
 ## Authorization Rule
 
@@ -87,12 +93,14 @@ Use predictable API response and error shapes.
 
 Do not leak sensitive internals in errors.
 
+Backend responses should inform the app, not take over app playback or local source/profile behavior.
+
 ## Forbidden API Areas
 
 Do not create endpoints for:
 
 - provider inventory
-- stream URLs
+- stream URLs as platform catalog data
 - relay routes
 - transcoding jobs
 - CDN delivery
@@ -100,6 +108,7 @@ Do not create endpoints for:
 - public marketplace
 - content catalogs
 - broadcast schedules
+- backend playback-control commands
 - permanent user-profile credential authority
 - public profile search
 - shared profile library
@@ -127,4 +136,4 @@ Never return password hashes, secrets, sensitive provider/profile data, tokens, 
 
 ## Final API Rule
 
-The API is the backend authority for platform access, not a provider or distribution backend.
+The API is the backend authority for approved platform access information, not a provider, distribution backend, media catalog, or playback controller.
