@@ -12,35 +12,9 @@ Marketing must not imply provider, distribution, catalog, marketplace, relay, in
 
 Current workflow is private/internal-first.
 
-Early access is controlled and reliability-first.
-
 Public marketing is allowed later only when needed and only inside the approved product boundary.
 
-## Early Access Positioning
-
-Early access must not be treated as a public marketplace launch.
-
-Early access is not focused on broad visibility, ratings, store ranking, or aggressive promotion.
-
-Approved early access distribution message:
-
-- controlled Downloader-code / direct APK access
-- Android TV / Fire TV compatible player app
-- free during early access when enabled
-- no ads during early access when enabled
-- local-first user profile/source handling
-- no MAC-address primary identity
-- platform provides only approved app-support information
-
-Early access messaging should focus on:
-
-- stable install
-- stable launch
-- stable remote-friendly navigation
-- stable profile/source entry
-- stable playback shell
-- stable app-support checks when enabled
-- clear legal/product boundary
+Distribution decisions for the Android TV / Fire TV player app belong in the player app repository, not this web/API platform repository.
 
 ## Approved Positioning
 
@@ -70,7 +44,6 @@ Marketing may focus on:
 - remote configuration
 - secure own-device transfer when enabled
 - clear product boundary
-- controlled early access reliability
 
 ## Forbidden Claims
 
@@ -87,7 +60,6 @@ Do not claim or imply:
 - distribution or relay service
 - backend playback control
 - guaranteed third-party provider compatibility
-- public app-store availability during early access
 
 ## Pricing / Payment Copy
 
@@ -100,8 +72,6 @@ Do not describe plans as content, channel, stream, provider, or package access.
 Reseller copy must describe software/platform access operations only.
 
 Do not imply resellers sell channels, streams, content, provider access, or packages through the platform.
-
-For early access, reseller-facing copy may say the app can be shared through controlled Downloader-code access when approved.
 
 ## Support Copy
 
@@ -130,6 +100,6 @@ Legal copy must reinforce:
 
 ## Final Marketing Rule
 
-Market the platform honestly, narrowly, safely, and reliability-first.
+Market the platform honestly, narrowly, and safely.
 
-Early access is controlled sharing, not a public marketplace launch.
+Keep app distribution decisions in the player app repository.
