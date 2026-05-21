@@ -1,19 +1,21 @@
-# NexoraTV Release Constants
+# Nexora TV Release Constants
 
 Status: Active
 Mode: Minimal download/update structure. No license, activation key, payment, reseller, or customer portal yet.
 
 ## 1. App Name
 
-Approved public app name:
+Approved public app display name:
 
 ```txt
-NexoraTV
+Nexora TV
 ```
 
 Use this name consistently in:
 
 - APK label / launcher name.
+- TV home screen name.
+- Android install screen name.
 - Release notes.
 - Install guide.
 - Downloader instructions.
@@ -80,12 +82,14 @@ If the file path stays the same, the Downloader code can stay the same.
 The Android app should use:
 
 ```txt
-App display name: NexoraTV
+App display name: Nexora TV
 Recommended package name: com.nexoratv.app
+APK file name: nexoratv.apk
 ```
 
 Critical rules:
 
+- Changing display name is safe before and after release.
 - Do not change package name after release unless a full reinstall/migration is accepted.
 - Do not change signing key between updates.
 - Always increase versionCode for each update.
@@ -128,7 +132,7 @@ Current minimal release flow:
 ```txt
 User enters Downloader code
 Downloader downloads nexoratv.apk
-User installs NexoraTV
+User installs Nexora TV
 App opens
 App calls /api/devices/install/index.php
 DeviceInstallRecord is created or updated
@@ -141,7 +145,7 @@ No license, activation key, payment, customer login, or reseller logic is requir
 Recommended support wording:
 
 ```txt
-If NexoraTV install registration fails, send your app version, platform, and any visible error message to support.
+If Nexora TV install registration fails, send your app version, platform, and any visible error message to support.
 Do not send provider passwords, playlist contents, or private source URLs.
 ```
 
@@ -149,7 +153,7 @@ Do not send provider passwords, playlist contents, or private source URLs.
 
 Stop if a release build changes:
 
-- App display name away from NexoraTV without approval.
+- App display name away from Nexora TV without approval.
 - Package name after first public release.
 - Signing key after first public release.
 - APK download path without updating Downloader code.
