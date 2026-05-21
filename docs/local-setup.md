@@ -28,7 +28,7 @@ Use root scripts to start, stop, and inspect local services.
 
 Local services:
 
-- PostgreSQL
+- MySQL / MariaDB-compatible database
 - Redis
 
 ## Database
@@ -39,6 +39,8 @@ Use root database scripts for:
 - development migrations
 - Prisma Studio when needed
 
+The active Prisma datasource is defined in `apps/api/prisma/schema.prisma`.
+
 ## Applications
 
 Use root scripts to run:
@@ -46,6 +48,14 @@ Use root scripts to run:
 - all development apps
 - web app only
 - API app only
+
+## Platform Role
+
+This repo is the web/API support layer for the Nexora TV app.
+
+It provides approved platform information to the app where needed.
+
+It does not control playback, provide media content, or become permanent provider/profile storage.
 
 ## Validation
 
