@@ -1,21 +1,22 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: tv_platform_postgres
+  mysql:
+    image: mysql:8.4
+    container_name: tv_platform_mysql
     restart: unless-stopped
     environment:
-      POSTGRES_USER: tv_platform
-      POSTGRES_PASSWORD: tv_platform_password
-      POSTGRES_DB: tv_project_platform
+      MYSQL_ROOT_PASSWORD: tv_platform_root_password
+      MYSQL_DATABASE: tv_project_platform
+      MYSQL_USER: tv_platform
+      MYSQL_PASSWORD: tv_platform_password
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - tv_platform_postgres_data:/var/lib/postgresql/data
+      - tv_platform_mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tv_platform -d tv_project_platform"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u tv_platform --password=tv_platform_password"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -32,24 +33,23 @@ services:
       timeout: 5s
       retries: 5
 
-  pgadmin:
-    image: dpage/pgadmin4:8
-    container_name: tv_platform_pgadmin
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: tv_platform_phpmyadmin
     restart: unless-stopped
     profiles:
       - tools
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@tvplatform.local
-      PGADMIN_DEFAULT_PASSWORD: admin_password
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: tv_platform
+      PMA_PASSWORD: tv_platform_password
     ports:
       - "5050:80"
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
-    volumes:
-      - tv_platform_pgadmin_data:/var/lib/pgadmin
 
 volumes:
-  tv_platform_postgres_data:
+  tv_platform_mysql_data:
   tv_platform_redis_data:
-  tv_platform_pgadmin_data:
