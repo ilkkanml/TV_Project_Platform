@@ -4,22 +4,24 @@ Compact legal and product-boundary scope for TV Project Platform.
 
 ## Legal Position
 
-TV Project Platform is a licensed player platform.
+TV Project Platform is the web/API support platform for the Nexora TV Android TV / Fire TV player app.
 
-It is a software/access management platform.
+It is a software/access management support layer.
 
-It is not a provider, media service, content platform, channel seller, relay, CDN, broadcaster, catalog, marketplace, or permanent user-profile authority.
+It provides approved platform information where the app needs it.
+
+It is not a provider, media service, content platform, channel seller, relay, CDN, broadcaster, catalog, marketplace, playback controller, stream authority, or permanent user-profile authority.
 
 ## Backend Scope
 
-Backend may manage:
+Backend may manage approved platform information:
 
 - accounts
 - authentication
 - roles and authorization
 - customer subscriptions
 - player licenses
-- device activation
+- device activation/status
 - payment records
 - reseller accounts
 - reseller credit transactions
@@ -32,10 +34,12 @@ Backend may manage:
 
 ## Backend Out of Scope
 
-Backend must not manage or provide:
+Backend must not manage, provide, or control:
 
+- Android playback behavior
 - provider inventory
 - content catalog
+- stream URLs as a platform catalog
 - stream hosting
 - stream relay
 - stream transcoding
@@ -67,7 +71,7 @@ Backend is not the default permanent source of truth for this data.
 
 Optional transfer may exist only as scoped, protected, expiring, user-owned transfer to the user's own device.
 
-It must not become permanent backend storage, marketplace, shared library, or provider service.
+It must not become permanent backend storage, marketplace, shared library, provider service, or playback-control mechanism.
 
 ## Payments
 
@@ -85,14 +89,19 @@ Resellers must not sell content, channels, streams, provider access, packages, o
 
 Any public, UI, pricing, support, or marketing copy must preserve this boundary.
 
+Public messaging may describe platform support, app access, device/license status, and app version support.
+
+Public messaging must not imply included media content or backend playback/source control.
+
 ## Related Authority Files
 
 - project-bible/00-project-rules.md
 - project-bible/01-product-bible.md
 - project-bible/06-security-bible.md
+- project-bible/10-app-integration.md
 - project-bible/11-marketing-bible.md
 - SECURITY.md
 
 ## Final Legal Rule
 
-Keep the platform legally and operationally positioned as software/access management only.
+Keep the platform legally and operationally positioned as an app-support software/access management layer only.
