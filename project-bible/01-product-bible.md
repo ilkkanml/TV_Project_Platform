@@ -4,13 +4,15 @@ Compact product authority for TV Project Platform.
 
 ## Product Identity
 
-TV Project Platform is a licensed player platform.
+TV Project Platform is the web/API support platform for the Nexora TV Android TV / Fire TV player application.
 
-It manages approved platform access, accounts, subscriptions, licenses, devices, reseller operations, payments, app version rules, remote configuration, audit logs, and optional temporary encrypted web-to-device transfer.
+The Android TV / Fire TV app is the player client.
+
+The platform manages approved platform information and access state, including accounts, subscriptions, licenses, devices, reseller operations, payment records, app version rules, remote configuration, audit logs, and optional temporary encrypted web-to-device transfer.
 
 ## Product Boundary
 
-The platform is not a provider, distributor, relay, transcoder, catalog, public marketplace, or permanent user-profile authority.
+The platform is not a provider, distributor, relay, transcoder, catalog, public marketplace, playback controller, stream authority, or permanent user-profile authority.
 
 User profile/provider information is local-first by default.
 
@@ -38,15 +40,17 @@ Admin manages platform operations:
 - audit logs
 - system settings
 
-Admin scope must stay inside platform management.
+Admin scope must stay inside platform management and must not become media/source management.
 
 ## Reseller Scope
 
-Reseller manages own customers and software access operations.
+Reseller manages own customers and approved software access operations.
 
 Reseller may use credit for approved subscription/license actions.
 
 Reseller must not access other reseller data.
+
+Reseller scope must not include selling or distributing media content through the platform.
 
 ## Customer Scope
 
@@ -86,8 +90,10 @@ The app is the player client.
 
 The app should:
 
+- own playback behavior
+- own local source/profile entry behavior
 - generate app_generated_device_id
-- activate device with backend
+- activate/register device with backend when needed
 - check license/subscription/app version/remote config
 - manage local profiles
 - store sensitive profile data securely on device
@@ -95,9 +101,9 @@ The app should:
 
 ## Backend Relationship
 
-Backend authority covers platform access and operational state.
+Backend authority covers approved platform information and access state only.
 
-Backend must not become default permanent source for user profile/provider data.
+Backend may inform the app, but it must not control playback, provide media sources, provide stream URLs, manage content catalogs, or become default permanent source for user profile/provider data.
 
 ## Payment Product Decision
 
@@ -119,7 +125,7 @@ Credit operations must be transaction-based and backend-calculated.
 
 Product succeeds when it provides:
 
-- clear player-platform identity
+- clear app-support platform identity
 - secure account management
 - reliable subscription/license validation
 - clean device activation
@@ -131,7 +137,7 @@ Product succeeds when it provides:
 
 ## Failure Conditions
 
-Product fails if it becomes a provider, distribution system, public marketplace, relay, catalog, or permanent user-profile authority.
+Product fails if it becomes a provider, distribution system, public marketplace, relay, catalog, playback controller, stream authority, or permanent user-profile authority.
 
 ## Related Authority Files
 
@@ -148,4 +154,4 @@ Product fails if it becomes a provider, distribution system, public marketplace,
 
 ## Final Product Rule
 
-Keep the product focused, private, controlled, and inside the approved licensed-player-platform boundary.
+Keep the product focused, private, controlled, and inside the approved app-support platform boundary.
