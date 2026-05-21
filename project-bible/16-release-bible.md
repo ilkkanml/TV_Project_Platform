@@ -6,7 +6,7 @@ Compact release authority for TV Project Platform.
 
 Every release must stay inside the approved platform boundary.
 
-A release must not introduce provider, distribution, relay, transcoding, catalog, marketplace, broadcast, or permanent user-profile-authority behavior.
+A release must not introduce provider, distribution, relay, transcoding, catalog, marketplace, broadcast, playback-control, or permanent user-profile-authority behavior.
 
 ## Release Philosophy
 
@@ -20,6 +20,30 @@ Every release should be:
 - security-aware
 - data-safe
 - milestone-scoped
+- app-support-only where platform integration is involved
+
+## Early Access Distribution Decision
+
+Early access must not be published through public TV/app marketplaces by default.
+
+Early access distribution is controlled and limited.
+
+Approved early access distribution method:
+
+- Downloader code / direct APK installation flow
+
+Early access priority:
+
+- stable install
+- stable launch
+- stable navigation
+- stable playback shell
+- stable local profile/source entry
+- stable license/version/remote-config information checks when enabled
+- no unnecessary market approval work
+- no public visibility push before core reliability
+
+Do not spend early access scope on marketplace packaging, public store listing optimization, broad launch marketing, ratings/reviews, or public discoverability.
 
 ## Release Types
 
@@ -36,6 +60,7 @@ Possible release types:
 - reseller release
 - security release
 - hotfix release
+- controlled early access APK release
 - production release
 
 ## Documentation Release
@@ -121,7 +146,11 @@ Rollback must be logged.
 
 App version releases must respect app version control, minimum version, force update, and remote config decisions.
 
-APK/file storage is allowed only for app distribution needs.
+APK/file storage is allowed only for controlled app distribution needs.
+
+Downloader-code distribution is approved for early access.
+
+Marketplace release is deferred until core reliability, legal copy, support readiness, and Director approval exist.
 
 ## Forbidden Release Content
 
@@ -131,6 +160,7 @@ Do not release features for:
 - relay/transcoding/CDN behavior
 - public marketplace
 - content catalog
+- playback/source control from backend
 - permanent user-profile credential authority
 - public profile search
 - shared profile library
@@ -140,6 +170,7 @@ Do not release features for:
 - project-bible/00-project-rules.md
 - project-bible/03-feature-list.md
 - project-bible/06-security-bible.md
+- project-bible/10-app-integration.md
 - project-bible/12-devops-bible.md
 - project-bible/14-testing-bible.md
 - ROADMAP.md
@@ -149,3 +180,5 @@ Do not release features for:
 ## Final Release Rule
 
 No release passes without scope alignment, validation, rollback awareness, and Director approval.
+
+Early access is controlled Downloader-code distribution focused on reliability, not marketplace visibility.
