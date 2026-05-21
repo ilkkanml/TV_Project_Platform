@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS DeviceInstallRecord (
+  id VARCHAR(191) NOT NULL,
+  installId VARCHAR(191) NOT NULL,
+  platformDeviceHash VARCHAR(191) NULL,
+  platform VARCHAR(64) NOT NULL DEFAULT 'android_tv',
+  appVersion VARCHAR(64) NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'seen',
+  firstSeenAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  lastSeenAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  ownerNote TEXT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY DeviceInstallRecord_installId_key (installId),
+  UNIQUE KEY DeviceInstallRecord_platformDeviceHash_key (platformDeviceHash),
+  KEY DeviceInstallRecord_platform_idx (platform),
+  KEY DeviceInstallRecord_appVersion_idx (appVersion),
+  KEY DeviceInstallRecord_status_idx (status),
+  KEY DeviceInstallRecord_lastSeenAt_idx (lastSeenAt),
+  KEY DeviceInstallRecord_createdAt_idx (createdAt)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
