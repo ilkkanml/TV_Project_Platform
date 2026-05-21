@@ -6,17 +6,19 @@ Compact database authority for TV Project Platform.
 
 Database design must support approved platform operations only.
 
-Do not create source-of-truth models for provider, distribution, catalog, marketplace, relay, or permanent user-profile authority behavior.
+Do not create source-of-truth models for provider, distribution, catalog, marketplace, relay, playback control, stream authority, or permanent user-profile authority behavior.
 
 ## Stack
 
-- PostgreSQL
+- MySQL / MariaDB-compatible local database
 - Prisma
 - TypeScript
 
 Primary schema:
 
 - apps/api/prisma/schema.prisma
+
+The active datasource provider is defined in the Prisma schema and must stay aligned with Docker Compose and environment examples.
 
 ## MVP Model Areas
 
@@ -42,7 +44,7 @@ Required model areas:
 Do not create source-of-truth models for:
 
 - provider inventory
-- stream sources
+- stream sources as platform catalog records
 - relay routes
 - transcoding jobs
 - CDN delivery
@@ -50,6 +52,7 @@ Do not create source-of-truth models for:
 - public marketplace records
 - channel packages
 - broadcast schedules
+- backend playback-control state
 - permanent user-profile credential authority
 - shared profile libraries
 - public profile search
@@ -113,6 +116,8 @@ Do not claim a model is complete until Prisma schema, relations, indexes, and us
 - project-bible/08-reseller-bible.md
 - project-bible/10-app-integration.md
 - apps/api/prisma/schema.prisma
+- docker-compose.yml
+- .env.example
 
 ## Final Database Rule
 
