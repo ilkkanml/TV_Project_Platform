@@ -18,6 +18,7 @@ Primary handoff document for TV Project Platform.
 - docs/local-setup.md
 - docs/environment-variables.md
 - project-bible/00-project-rules.md
+- project-bible/13-decision-log.md
 - project-bible/17-ai-operations-bible.md
 - project-bible directory as needed
 - docs directory as needed
@@ -30,13 +31,17 @@ TV Project Platform
 
 Product type:
 
-Licensed player platform.
+Web/API support platform for Nexora TV.
+
+This repo owns website, admin/control panel, reseller panel, customer panel, backend API, platform database, device records, license/access records, app version metadata, remote configuration, payment records, reseller records, and audit logs.
+
+The Android TV / Fire TV player application is developed separately.
 
 Product boundary is defined in LEGAL_SCOPE.md, SECURITY.md, and project-bible/00-project-rules.md.
 
 ## Current State
 
-The project workspace is in cleanup and simplification before implementation.
+The project workspace is in platform scope sync and local validation preparation.
 
 Do not describe the project as empty or not started.
 
@@ -46,8 +51,14 @@ Foundation exists:
 - apps/web Next.js skeleton
 - apps/api NestJS skeleton
 - packages/shared TypeScript package
-- apps/api/prisma/schema.prisma early schema
+- apps/api/prisma/schema.prisma foundation schema
+- MySQL / MariaDB-compatible local database direction
 - API health endpoint
+- ready endpoint foundation
+- device install endpoint foundation
+- app version endpoint foundation
+- remote config endpoint foundation
+- license check endpoint foundation
 - Web landing page shell
 - Docker Compose local services
 - Project Bible canonical tree
@@ -64,17 +75,23 @@ Foundation exists:
 
 Removed from active use:
 
-- README.md
 - CONTRIBUTING.md
 - CHANGELOG.md
 - docs/new-chat-start-message.md
 - .github/workflows/ci.yml
 
+README.md exists as a lightweight repository overview only. It is not the main authority file.
+
 Still pending before full MVP implementation:
 
 - pnpm-lock.yaml after first dependency install
+- local dependency install verification
+- Prisma generate verification
+- migration verification
+- EA0 seed verification
+- EA0 database validation verification
+- API typecheck/build verification
 - finalized MVP Prisma schema
-- real API modules beyond health
 - real dashboard implementation
 - tests
 - production deployment setup
@@ -88,13 +105,14 @@ Rules:
 - Owner approves major direction decisions.
 - Director controls workflow and final execution order.
 - Milestones control scope.
+- GitHub Issues may be used for department tasks with department labels.
 - AI Gate blocks unnecessary AI calls.
 - Context Builder Engine builds the smallest useful context package.
 - Departments are single-task expert calls, not permanent chat rooms.
 - Departments answer only with structured output.
 - Departments do not acknowledge instructions.
 - Departments do not add filler text.
-- Department outputs are archived.
+- Department outputs may be archived.
 - Accepted compact outputs become reusable memory.
 - Old department conversations are not reused as default AI context.
 - Three failures on the same problem stop the loop.
@@ -103,14 +121,21 @@ Rules:
 - Deployment requires Director approval, dry run, path whitelist, backup/checkpoint, and audit log.
 - AI usage should be logged and token budgets should be enforced.
 
-## Approved AI Departments
+## Active Department Labels
 
-- Architect
-- Database
-- Backend
-- Frontend
-- QA Security
-- Memory Documentation
+- department:director
+- department:product
+- department:engineering
+- department:backend
+- department:database
+- department:web
+- department:security
+- department:qa
+- department:docs
+
+Optional integration label:
+
+- integration:app
 
 ## Approved System Engines
 
@@ -164,16 +189,17 @@ AI should see only what it needs for the current task.
 - apps/web: Next.js, React, TypeScript, Tailwind CSS
 - apps/api: NestJS, TypeScript, Prisma
 - packages/shared: shared types, constants, schemas, utilities
-- PostgreSQL
+- MySQL / MariaDB-compatible local database
 - Redis
 - Docker Compose
 
 ## Current Next Steps
 
-1. Finish cleanup reference synchronization.
-2. Simplify oversized Bible files.
-3. Run dependency install and save pnpm-lock.yaml.
-4. Continue implementation through milestones only.
+1. Run dependency install and save pnpm-lock.yaml.
+2. Run Prisma generate, migration, EA0 seed, and EA0 database validation.
+3. Run API typecheck/build.
+4. If validation passes, mark M2/M3 completed in ROADMAP.md.
+5. Continue to Core Backend API Foundation through milestones only.
 
 ## Assistant Rules
 
@@ -184,3 +210,5 @@ AI should see only what it needs for the current task.
 - Do not retry the same failing task more than three times.
 - Do not deploy AI output without Director approval.
 - Keep answers concise unless complete file content is requested.
+- Keep this repo inside web/API platform scope.
+- Do not move player app, playback, player distribution, provider, playlist, stream, or catalog work into this repository.
