@@ -8,35 +8,38 @@ Detailed rules live in dedicated Bible and docs files.
 
 ## Rule 1 - Product Identity
 
-TV Project Platform is a licensed player platform.
+TV Project Platform is the web/API support platform for Nexora TV.
 
-It manages platform access, accounts, subscriptions, licenses, devices, payments, reseller operations, app version rules, remote configuration, audit logs, and optional temporary encrypted web-to-device transfer.
+This repo owns the website, admin/control panel, reseller panel, customer panel, backend API, platform database, device records, license/access records, app version metadata, remote configuration, payment records, reseller records, and audit logs.
 
-The platform must not drift outside its approved product boundary.
+The Android TV / Fire TV player application is developed separately.
+
+## Rule 2 - Product Boundary
+
+The platform provides approved platform information and management tools only.
+
+It must not become a provider, distribution system, catalog, marketplace, relay, playback controller, stream authority, or permanent provider/profile authority.
+
+User profile/provider handling is local-first in the player app by default.
+
+Temporary transfer is allowed only as scoped, expiring, user-owned transfer when explicitly approved.
 
 Detailed boundary rules:
 
 - LEGAL_SCOPE.md
 - SECURITY.md
 - project-bible/01-product-bible.md
-
-## Rule 2 - Product Boundary
-
-The backend manages platform authority only.
-
-It must not become a provider, distribution, catalog, marketplace, relay, or permanent user-profile authority.
-
-User profile handling is local-first by default.
-
-Temporary transfer is allowed only as scoped, expiring, user-owned transfer.
+- project-bible/10-app-integration.md
 
 ## Rule 3 - Device Identity
 
 Primary device identity is:
 
-- app_generated_device_id
+- app_generated_device_id / installId
 
 Secondary signals may support debugging and fraud review, but must not replace the primary identity.
+
+MAC address must not be the primary device identity.
 
 ## Rule 4 - Roles and Authorization
 
@@ -71,8 +74,6 @@ Detailed rules:
 
 Payments are for approved platform access only.
 
-Payment card data must not be stored.
-
 Payment approval must be backend-authoritative.
 
 Detailed rules:
@@ -105,7 +106,7 @@ Approved stack:
 - Tailwind CSS
 - NestJS
 - Prisma
-- PostgreSQL
+- MySQL / MariaDB-compatible local database
 - Redis
 - Docker Compose
 
@@ -122,6 +123,8 @@ Active project structure:
 - docs
 - infra
 
+README.md may exist as a lightweight repository overview, but it is not the main project authority.
+
 Do not create duplicate nested folders.
 
 ## Rule 10 - Director-Led Workflow
@@ -133,6 +136,8 @@ Director controls execution order.
 Milestones control scope.
 
 Departments are single-task expert calls.
+
+GitHub Issues may be used for department tasks with department labels.
 
 System engines enforce deterministic safety.
 
@@ -167,11 +172,6 @@ Do not present unverified information as confirmed.
 If something is unknown, missing, inferred, or not checked, label it clearly.
 
 A task is not complete unless completion is verified.
-
-Detailed truthfulness rules:
-
-- project-bible/17-ai-operations-bible.md
-- docs/department-response-rules.md
 
 ## Rule 13 - Three-Fail Stop
 
@@ -231,7 +231,8 @@ Do not change these without explicit Owner approval:
 
 - product identity
 - product boundary
-- local-first profile direction
+- app-support platform boundary
+- local-first provider/profile direction
 - temporary transfer boundary
 - app-generated device identity
 - main role model
@@ -246,4 +247,4 @@ Do not change these without explicit Owner approval:
 
 ## Final Rule
 
-Keep the project focused, private, controlled, truthful, token-efficient, and milestone-driven.
+Keep the project focused, private, controlled, truthful, token-efficient, app-support-only, and milestone-driven.
