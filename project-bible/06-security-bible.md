@@ -4,7 +4,9 @@ Compact security authority for TV Project Platform.
 
 ## Security Rule
 
-Security is mandatory across API, web, database, reseller operations, payments, app integration, deployment, support, and temporary transfer flows.
+Security is mandatory across API, web panels, database, reseller operations, payments, app-support API integration, deployment, support, and temporary transfer flows.
+
+This platform must not take responsibility for player playback, player UI, player distribution policy, provider accounts, playlist storage by default, streams, channels, or media catalogs.
 
 ## Authentication
 
@@ -55,11 +57,14 @@ Never log or expose:
 - Credit operations must be transaction-based.
 - Critical credit changes must be audit logged.
 
-## Device / License Security
+## Device / License / App-Support Security
 
-- License checks are backend-authoritative.
-- app_generated_device_id is primary device identity.
+- License/access checks are backend-authoritative inside approved platform scope.
+- app_generated_device_id / installId is primary device identity.
 - Device block/status rules must be enforced server-side.
+- App version metadata and remote config must not contain secrets.
+- App-support endpoints must not return media sources, provider credentials, playlists, streams, or channel/catalog data.
+- App-support endpoints must not control playback or local profile/source behavior.
 
 ## Temporary Transfer Security
 
@@ -72,7 +77,7 @@ Temporary transfer must be:
 - consumable once where practical
 - deleted or marked consumed after pickup
 
-It must not become permanent backend profile storage.
+It must not become permanent backend profile storage, shared profile storage, provider storage, stream storage, or player playback control.
 
 ## Audit Logs
 
@@ -102,4 +107,4 @@ AI may not silently deploy its own output.
 
 ## Final Security Rule
 
-Trust the backend, validate everything, log safely, and never expose sensitive data.
+Trust the backend, validate everything, log safely, protect app-support boundaries, and never expose sensitive data.
