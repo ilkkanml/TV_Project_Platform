@@ -4,9 +4,9 @@ Compact support authority for TV Project Platform.
 
 ## Support Rule
 
-Support helps with approved platform operations only.
+Support helps with approved web/API platform operations only.
 
-Support must not provide provider, distribution, catalog, marketplace, relay, content, credential, or permanent user-profile-authority help.
+Support must not provide provider, distribution, catalog, marketplace, relay, playback-control, content, credential, app distribution policy, or permanent user-profile-authority help.
 
 ## Allowed Support Scope
 
@@ -14,11 +14,10 @@ Support may help with:
 
 - account access
 - login issues
-- subscription status
-- license status
-- device activation/status
-- app download/update guidance
-- app version rules
+- subscription/access status
+- license/access status
+- device record/status
+- app version status guidance
 - remote config / maintenance messages
 - payment status
 - manual payment review status
@@ -38,11 +37,12 @@ Support must not provide or help users obtain:
 - public marketplace links
 - shared profile data
 - third-party provider recommendations
-- illegal access instructions
+- app store / Downloader distribution decisions for the player app
+- playback/source-control instructions for the backend
 
 ## Customer Support
 
-Customer support is limited to the customer's own account, subscription, devices, payment history, and enabled own-device transfer flow.
+Customer support is limited to the customer's own account, subscription/access status, devices, payment history, and enabled own-device transfer flow.
 
 Do not expose other users' data.
 
@@ -62,7 +62,7 @@ Admin support must still protect sensitive data and audit critical actions.
 
 Support must not request, expose, log, or store sensitive data unless explicitly required and safe.
 
-Never ask users to share passwords, full tokens, payment card data, or secrets.
+Never ask users to share passwords, full tokens, payment card data, provider credentials, or secrets.
 
 ## Escalation Rule
 
@@ -71,7 +71,7 @@ Escalate when:
 - account ownership is unclear
 - payment/subscription state conflicts
 - reseller credit balance is disputed
-- device/license state conflicts
+- device/license/access state conflicts
 - security-sensitive information may be exposed
 - product boundary risk appears
 
@@ -79,7 +79,7 @@ Escalate when:
 
 Support language must be clear, narrow, and boundary-safe.
 
-Do not imply the platform provides content, providers, channels, streams, packages, marketplaces, or shared profile data.
+Do not imply the platform provides content, providers, channels, streams, packages, marketplaces, playback control, player distribution, or shared profile data.
 
 ## Related Authority Files
 
@@ -96,4 +96,4 @@ Do not imply the platform provides content, providers, channels, streams, packag
 
 ## Final Support Rule
 
-Support solves platform-access problems without crossing product, privacy, or security boundaries.
+Support solves platform-access problems without crossing product, privacy, app-boundary, or security boundaries.
