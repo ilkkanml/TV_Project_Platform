@@ -4,9 +4,9 @@ Compact release authority for TV Project Platform.
 
 ## Release Rule
 
-Every release must stay inside the approved platform boundary.
+Every release must stay inside the approved web/API platform boundary.
 
-A release must not introduce provider, distribution, relay, transcoding, catalog, marketplace, broadcast, or permanent user-profile-authority behavior.
+A release must not introduce provider, distribution, relay, transcoding, catalog, marketplace, broadcast, playback-control, stream-authority, player-distribution-policy, or permanent user-profile-authority behavior.
 
 ## Release Philosophy
 
@@ -23,16 +23,17 @@ Every release should be:
 
 ## Release Types
 
-Possible release types:
+Possible platform release types:
 
 - documentation release
 - foundation release
 - web release
 - API release
 - database release
-- app integration release
-- app version release
-- payment release
+- app-support integration release
+- app version metadata release
+- remote config release
+- payment record release
 - reseller release
 - security release
 - hotfix release
@@ -75,9 +76,9 @@ Extra review required for changes involving:
 - payments
 - reseller credit
 - subscriptions
-- device activation
-- license checks
-- app version rules
+- device records/status
+- license/access checks
+- app version metadata
 - remote config
 - temporary transfer
 - secrets or environment variables
@@ -117,11 +118,18 @@ Rollback may use:
 
 Rollback must be logged.
 
-## App Release Rule
+## App-Support Release Rule
 
-App version releases must respect app version control, minimum version, force update, and remote config decisions.
+This platform repo may release app-support metadata and configuration only:
 
-APK/file storage is allowed only for app distribution needs.
+- app version metadata
+- minimum supported version metadata
+- force update flag
+- maintenance status
+- remote config values
+- app-support API contracts
+
+Player app release, APK/file hosting, marketplace publishing, sideloading, Downloader-code decisions, and player distribution strategy belong to the separate player app project.
 
 ## Forbidden Release Content
 
@@ -131,6 +139,8 @@ Do not release features for:
 - relay/transcoding/CDN behavior
 - public marketplace
 - content catalog
+- backend playback control
+- player distribution policy
 - permanent user-profile credential authority
 - public profile search
 - shared profile library
