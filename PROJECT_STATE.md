@@ -4,13 +4,48 @@ Current state summary for TV Project Platform.
 
 ## Current Phase
 
-Cleanup and simplification before implementation.
+Web/API platform scope sync and local validation preparation.
 
 The project workspace is not empty.
 
 Foundation code and foundation documentation exist.
 
 Do not describe the project as not started.
+
+## Current Product Scope
+
+TV Project Platform owns:
+
+- public website foundation
+- admin/control panel
+- reseller panel
+- customer panel
+- backend API
+- platform database
+- user/customer/reseller records
+- device records
+- license/access records
+- app version metadata
+- remote configuration
+- payment records
+- reseller credit records
+- audit logs
+
+TV Project Platform does not own:
+
+- Android TV / Fire TV player development
+- playback implementation
+- player UI
+- player distribution policy
+- TV market publishing
+- Downloader-code distribution decisions
+- playlist/provider account storage by default
+- stream/channel/content catalog
+- media distribution
+
+The Android TV / Fire TV player application is developed separately.
+
+This platform may provide approved app-support information only.
 
 ## Confirmed Foundation
 
@@ -21,12 +56,18 @@ Code foundation:
 - apps/api NestJS skeleton
 - packages/shared TypeScript package
 - apps/api/prisma/schema.prisma early schema
+- MySQL / MariaDB-compatible local database direction
 - API health endpoint
-- Web landing page shell
+- device install endpoint foundation
+- app version endpoint foundation
+- remote config endpoint foundation
+- license check endpoint foundation
 - Docker Compose local services
+- Web landing page shell
 
 Documentation and workflow foundation:
 
+- README.md lightweight repository overview
 - PROJECT_STATE.md
 - AI_HANDOFF.md
 - ROADMAP.md
@@ -47,11 +88,12 @@ Documentation and workflow foundation:
 
 Removed from active use:
 
-- README.md
 - CONTRIBUTING.md
 - CHANGELOG.md
 - docs/new-chat-start-message.md
 - .github/workflows/ci.yml
+
+README.md is present again as a lightweight overview only. It is not the main authority file.
 
 ## Management Model
 
@@ -62,42 +104,37 @@ Core rules:
 - Owner approves major direction decisions.
 - Director controls execution order.
 - Milestones control scope.
+- GitHub Issues may be used for department tasks with department labels.
 - AI Gate blocks unnecessary AI calls.
 - Context Builder Engine builds the smallest useful context package.
 - Departments are single-task expert calls.
 - Departments answer only with structured output.
 - Departments do not acknowledge instructions.
 - Departments do not add filler text.
-- Department raw outputs are archived.
+- Department raw outputs may be archived.
 - Accepted compact outputs become reusable memory.
 - Full old conversations are not reused as default AI context.
 - Three failures on the same task stop the loop.
 - Last successful checkpoint must be used before risky retry.
 - AI output does not deploy itself.
 - Deployment requires Director approval, dry run, whitelist, backup/checkpoint, and audit logging.
-- AI usage must be logged and token budgets must be enforced.
+- AI usage should be logged and token budgets should be enforced.
 
-Approved AI departments:
+Active department labels:
 
-- Architect
-- Database
-- Backend
-- Frontend
-- QA Security
-- Memory Documentation
+- department:director
+- department:product
+- department:engineering
+- department:backend
+- department:database
+- department:web
+- department:security
+- department:qa
+- department:docs
 
-Approved system engines:
+Optional integration label:
 
-- Milestone Controller
-- AI Gate
-- Context Builder Engine
-- Similar Task Cache
-- Loop Breaker
-- Checkpoint Manager
-- Deployment Engine
-- Rollback Engine
-- Cost Guard
-- Audit Logger
+- integration:app
 
 ## Current Project Structure
 
@@ -105,6 +142,7 @@ Expected active root structure:
 
 ```txt
 TV_Project_Platform/
+├── README.md
 ├── PROJECT_STATE.md
 ├── AI_HANDOFF.md
 ├── ROADMAP.md
@@ -144,6 +182,12 @@ pnpm db:generate
 pnpm db:migrate
 ```
 
+Important API validation command:
+
+```txt
+pnpm --filter @tv-platform/api ea0:db:prepare
+```
+
 ## Implementation State
 
 Completed foundation areas:
@@ -151,10 +195,17 @@ Completed foundation areas:
 - shared package skeleton
 - API app skeleton
 - health endpoint
+- ready endpoint foundation
+- device install endpoint foundation
+- app version endpoint foundation
+- remote config endpoint foundation
+- license check endpoint foundation
 - web app skeleton
 - public landing shell
-- Prisma early schema
+- Prisma schema foundation
 - local Docker services
+- MySQL / MariaDB alignment in docs/config
+- EA0 database validation script corrected for MySQL
 - internal validation direction
 - project workflow docs
 - department system docs
@@ -164,6 +215,17 @@ Completed foundation areas:
 - local setup docs
 - environment variable docs
 
+Pending verification:
+
+- dependency install
+- pnpm-lock.yaml creation
+- Prisma generate
+- migration run
+- EA0 seed
+- EA0 database validation
+- API typecheck
+- API build
+
 Not complete yet:
 
 - authentication
@@ -171,14 +233,14 @@ Not complete yet:
 - user management
 - plan management
 - subscription engine
-- license engine
-- device activation engine
+- license engine beyond EA0 foundation
+- device activation engine beyond foundation
 - reseller credit engine
-- payment records
-- app version module
-- remote config module
+- payment records UI/API flow
+- app version admin management UI
+- remote config admin management UI
 - temporary transfer bridge
-- audit log module
+- audit log module UI/API flow
 - admin panel
 - reseller panel
 - customer panel
@@ -189,19 +251,22 @@ Not complete yet:
 
 ## Current Risks
 
-- Prisma schema is early and not MVP-complete.
+- Local install and DB validation have not been run in this workspace yet.
+- Prisma schema is foundation-level and not full MVP-complete.
 - Real product modules are not implemented yet.
 - Tests are not complete yet.
 - Production deployment setup is not complete yet.
 - Long documents must not be sent to AI as full context.
-- Oversized Bible files should be simplified next.
+- Platform must not drift into player app, playback, provider, playlist, stream, or catalog responsibilities.
 
 ## Current Recommended Next Steps
 
-1. Finish reference cleanup.
-2. Simplify oversized Bible files.
-3. Generate and save pnpm-lock.yaml after first dependency install.
-4. Continue milestone-based implementation.
+1. Run dependency install.
+2. Generate and save pnpm-lock.yaml.
+3. Run EA0 database preparation and validation.
+4. Run API typecheck/build.
+5. If validation passes, mark M2/M3 completed in ROADMAP.md.
+6. Continue to Core Backend API Foundation.
 
 ## Update Rule
 
