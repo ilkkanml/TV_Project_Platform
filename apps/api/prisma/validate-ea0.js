@@ -8,14 +8,22 @@ async function assert(condition, message) {
   }
 }
 
-async function validateNoRawActivationKeyColumns() {
-  const rows = await prisma.$queryRaw`
+async function findColumns(tableName, columnNames) {
+  return prisma.$queryRaw`
     SELECT column_name
     FROM information_schema.columns
-    WHERE table_schema = 'public'
-      AND table_name = 'DeviceAccessRecord'
-      AND column_name IN ('activationKey', 'rawActivationKey', 'plainActivationKey')
+    WHERE table_schema = DATABASE()
+      AND table_name = ${tableName}
+      AND column_name IN (${Prisma.join(columnNames)})
   `;
+}
+
+async function validateNoRawActivationKeyColumns() {
+  const rows = await findColumns("DeviceAccessRecord", [
+    "activationKey",
+    "rawActivationKey",
+    "plainActivationKey"
+  ]);
 
   await assert(rows.length === 0, "Unsafe raw Activation Key column exists.");
 }
@@ -28,13 +36,14 @@ async function validateDeviceAccessRecordModel() {
 async function validateDeviceInstallRecordModel() {
   await prisma.deviceInstallRecord.findMany({ take: 1 });
 
-  const rows = await prisma.$queryRaw`
-    SELECT column_name
-    FROM information_schema.columns
-    WHERE table_schema = 'public'
-      AND table_name = 'DeviceInstallRecord'
-      AND column_name IN ('activationKey', 'activationKeyHash', 'licenseState', 'paymentRequired', 'providerUsername', 'providerPassword')
-  `;
+  const rows = await findColumns("DeviceInstallRecord", [
+    "activationKey",
+    "activationKeyHash",
+    "licenseState",
+    "paymentRequired",
+    "providerUsername",
+    "providerPassword"
+  ]);
 
   await assert(
     rows.length === 0,
