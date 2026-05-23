@@ -27,7 +27,7 @@ Required database variable:
 
 - DATABASE_URL
 
-Local values may use local PostgreSQL credentials.
+Local values may use local MySQL / MariaDB credentials.
 
 Production values must use secure credentials.
 
@@ -75,11 +75,17 @@ Temporary transfer variables may cover:
 
 Transfer configuration must preserve expiring, scoped, user-owned behavior.
 
-## App Version / Files
+## App Version / Remote Config
 
-App distribution variables may cover APK/file storage when needed.
+App-support metadata variables may cover:
 
-File storage must not be used for provider, content, catalog, or distribution behavior.
+- app version metadata
+- minimum supported version metadata
+- force update flag
+- maintenance status
+- remote config values
+
+File storage must not be used for provider, content, catalog, player distribution, APK hosting, or Downloader-code behavior.
 
 ## Local vs Production
 
@@ -97,4 +103,4 @@ Production must replace every placeholder secret.
 
 ## Final Rule
 
-Environment variables configure platform runtime only; they must not store real secrets in project files.
+Environment variables configure platform runtime only; they must not store real secrets in project files or manage APK/file distribution.
