@@ -87,7 +87,7 @@ Allowed runtime infrastructure:
 - logs
 - monitoring
 - backups
-- APK/file storage for controlled app distribution when needed
+- app version metadata support when needed
 - payment webhook handling when providers are integrated
 - temporary transfer storage when enabled
 
@@ -102,18 +102,13 @@ Forbidden runtime infrastructure:
 - backend playback-control infrastructure
 - stream-authority infrastructure
 
-## Early Access Distribution Infrastructure
+## App Release Boundary
 
-Early access is controlled distribution, not marketplace launch.
+Player app distribution strategy belongs in the player app repository.
 
-Approved early access app distribution:
+This platform repo may support app version metadata and remote configuration only when approved.
 
-- Downloader-code / direct APK installation flow
-- APK/file storage only when needed for controlled app distribution
-
-Do not prioritize public TV/app market publishing infrastructure during early access.
-
-Core reliability has priority over store visibility.
+It must not define player app marketplace or sideload distribution policy.
 
 ## Backup / Rollback
 
