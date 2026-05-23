@@ -4,27 +4,28 @@ Compact UI/UX authority for TV Project Platform.
 
 ## UI Rule
 
-UI must support approved platform operations only.
+UI must support approved web/API platform operations only.
 
-UI must not make the product look like a provider, distribution system, catalog, marketplace, relay, or permanent user-profile authority.
+UI must not make the product look like a provider, distribution system, catalog, marketplace, relay, playback controller, stream authority, or permanent user-profile authority.
 
 ## Product Language
 
 Use clear platform language:
 
-- player access
+- platform access
+- app access status
 - software access
-- subscription
-- device activation
-- license status
-- app configuration
-- app version
+- subscription/access status
+- device record
+- device activation/status
+- license/access status
+- app version metadata
 - remote config
 - reseller credit
 - payment history
 - own device transfer when enabled
 
-Avoid language implying included content, channels, streams, packages, marketplaces, or provider services.
+Avoid language implying included content, channels, streams, packages, marketplaces, provider services, playback control, or player distribution policy.
 
 ## Design Goals
 
@@ -56,12 +57,12 @@ Reseller UI:
 
 - own customers
 - own credit
-- own customer subscription/license state
+- own customer subscription/license/access state
 
 Customer UI:
 
 - own account
-- own subscription
+- own subscription/access state
 - own devices
 - own payment history
 - optional own-device transfer
@@ -77,6 +78,8 @@ Do not build UI for:
 - content catalog
 - broadcast schedule
 - relay/CDN route management
+- backend playback control
+- player distribution policy
 - permanent user-profile credential authority
 - shared profile library
 - public profile search
@@ -87,16 +90,16 @@ Critical actions should be clear, confirmable, and audit-friendly:
 
 - payment approval/rejection
 - reseller credit changes
-- subscription extension
+- subscription/access extension
 - device block/unblock
-- app version force update
+- app version force update metadata
 - remote config changes
 
 ## Copy Rule
 
 UI copy must be honest and boundary-safe.
 
-Payments, plans, and reseller actions must clearly relate to approved platform access only.
+Payments, plans, and reseller actions must clearly relate to approved platform/software access only.
 
 ## Related Authority Files
 
@@ -111,4 +114,4 @@ Payments, plans, and reseller actions must clearly relate to approved platform a
 
 ## Final UI Rule
 
-UI shows what the backend authorizes and communicates the product boundary clearly.
+UI shows what the backend authorizes and communicates the web/API platform boundary clearly.
