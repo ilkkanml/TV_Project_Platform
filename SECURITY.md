@@ -4,13 +4,13 @@ Compact security policy for TV Project Platform.
 
 ## Security Rule
 
-Security decisions apply to backend, frontend, database, payments, reseller operations, app integration, deployment, support, and temporary transfer flows.
+Security decisions apply to backend, frontend, database, payments, reseller operations, app-support API integration, deployment, support, and temporary transfer flows.
 
 ## Product Boundary
 
-The platform is a licensed player platform.
+TV Project Platform is the web/API support platform for Nexora TV.
 
-It must not become a provider, distribution system, relay, catalog, marketplace, or permanent user-profile authority.
+It must not become a provider, distribution system, relay, catalog, marketplace, playback controller, stream authority, media service, player app repository, player distribution system, or permanent user-profile authority.
 
 Detailed boundary authority:
 
@@ -29,6 +29,7 @@ Detailed boundary authority:
 - Always check ownership and resource status.
 - Always audit critical actions.
 - Never log sensitive data.
+- Never return provider credentials, playlists, stream URLs, channel catalogs, or playback-control commands from app-support endpoints.
 
 ## Authentication
 
@@ -72,7 +73,7 @@ Do not expose or log:
 
 Payment card data must not be stored.
 
-Frontend success pages must not directly extend subscriptions.
+Frontend success pages must not directly extend subscriptions or platform access.
 
 Real payment webhooks must be verified before applying backend effects.
 
@@ -84,17 +85,29 @@ Credit operations must be backend-calculated, transaction-based, and audit logge
 
 ## Devices and Licenses
 
-License checks are backend-authoritative.
+License/access checks are backend-authoritative inside approved platform scope.
 
-Primary device identity is app_generated_device_id.
+Primary device identity is app_generated_device_id / installId.
 
 Device block/status rules must be enforced server-side.
+
+## App-Support Boundary
+
+App-support endpoints may provide approved platform information only:
+
+- device status
+- license/access status
+- app version metadata
+- maintenance status
+- remote config values
+
+App-support endpoints must not control playback, provide media sources, store provider credentials by default, or manage channel/content catalogs.
 
 ## Temporary Transfer
 
 Temporary transfer must be scoped, expiring, protected, and consumed safely.
 
-It must not become permanent backend profile storage.
+It must not become permanent backend profile storage, provider storage, stream storage, shared profile library, public profile search, or playback-control mechanism.
 
 ## Deployment
 
@@ -111,4 +124,4 @@ AI may not silently deploy its own output.
 
 ## Final Security Rule
 
-Trust backend authority, protect sensitive data, and keep security milestone-scoped.
+Trust backend authority, protect sensitive data, and keep security milestone-scoped and platform-boundary safe.
